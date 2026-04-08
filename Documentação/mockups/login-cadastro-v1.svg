@@ -1,0 +1,130 @@
+<svg width="1440" height="1024" viewBox="0 0 1440 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="218" y1="114" x2="1212" y2="910" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F6F0E8"/>
+      <stop offset="0.5" stop-color="#F4F7F2"/>
+      <stop offset="1" stop-color="#EEE7DE"/>
+    </linearGradient>
+    <radialGradient id="spotGreen" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(270 210) rotate(30) scale(480 340)">
+      <stop stop-color="#5FAE8E" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#5FAE8E" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="spotSand" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1160 182) rotate(160) scale(410 320)">
+      <stop stop-color="#D9B47B" stop-opacity="0.26"/>
+      <stop offset="1" stop-color="#D9B47B" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="spotSoft" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1090 780) rotate(-160) scale(390 280)">
+      <stop stop-color="#C6D6CA" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#C6D6CA" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blurLarge" x="0" y="0" width="1440" height="1024" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="60"/>
+    </filter>
+    <filter id="shadowCard" x="435" y="166" width="570" height="692" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="22"/>
+      <feGaussianBlur stdDeviation="28"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.176471 0 0 0 0 0.14902 0 0 0 0 0.105882 0 0 0 0.12 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+    </filter>
+    <linearGradient id="cardGradient" x1="720" y1="222" x2="720" y2="746" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#FFFDF9" stop-opacity="0.86"/>
+    </linearGradient>
+    <linearGradient id="buttonGradient" x1="720" y1="650" x2="720" y2="706" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#176B55"/>
+      <stop offset="1" stop-color="#0F5A47"/>
+    </linearGradient>
+    <linearGradient id="tabGradient" x1="578" y1="372" x2="718" y2="372" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EEF7F2"/>
+      <stop offset="1" stop-color="#F7FBF9"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1440" height="1024" fill="url(#bgGradient)"/>
+  <g filter="url(#blurLarge)">
+    <circle cx="260" cy="220" r="220" fill="url(#spotGreen)"/>
+    <circle cx="1192" cy="198" r="220" fill="url(#spotSand)"/>
+    <circle cx="1115" cy="780" r="220" fill="url(#spotSoft)"/>
+  </g>
+
+  <path d="M1086 92C1154 126 1208 191 1234 271" stroke="#FFFFFF" stroke-opacity="0.4" stroke-width="2"/>
+  <path d="M150 812C238 706 342 642 484 612" stroke="#FFFFFF" stroke-opacity="0.32" stroke-width="2"/>
+  <path d="M1020 854C1113 832 1198 770 1266 666" stroke="#FFFFFF" stroke-opacity="0.34" stroke-width="2"/>
+
+  <g filter="url(#shadowCard)">
+    <rect x="491" y="200" width="458" height="580" rx="34" fill="url(#cardGradient)"/>
+    <rect x="491.75" y="200.75" width="456.5" height="578.5" rx="33.25" stroke="#FFFFFF" stroke-opacity="0.78" stroke-width="1.5"/>
+  </g>
+
+  <g opacity="0.96">
+    <rect x="674" y="248" width="92" height="92" rx="28" fill="#EAF4EF"/>
+    <path d="M710.667 272C695.536 272 683.333 284.203 683.333 299.333C683.333 314.464 695.536 326.667 710.667 326.667C725.797 326.667 738 314.464 738 299.333C738 284.203 725.797 272 710.667 272ZM710.667 281.111C720.709 281.111 728.889 289.292 728.889 299.333C728.889 309.375 720.709 317.556 710.667 317.556C700.625 317.556 692.444 309.375 692.444 299.333C692.444 289.292 700.625 281.111 710.667 281.111Z" fill="#176B55"/>
+    <path d="M740.278 307.533C732.365 323.936 719.368 336.778 703.056 344.5" stroke="#176B55" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <text x="720" y="384" text-anchor="middle" fill="#1F1B16" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">
+    Acesse sua jornada
+  </text>
+  <text x="720" y="416" text-anchor="middle" fill="#6A6158" font-family="Arial, Helvetica, sans-serif" font-size="16">
+    Entre ou crie sua conta para comecar a estruturar sua startup.
+  </text>
+
+  <g>
+    <rect x="568" y="448" width="304" height="52" rx="18" fill="#F4F1EB"/>
+    <rect x="573" y="453" width="147" height="42" rx="14" fill="url(#tabGradient)"/>
+    <text x="646.5" y="480" text-anchor="middle" fill="#0F5A47" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">
+      Entrar
+    </text>
+    <text x="793" y="480" text-anchor="middle" fill="#7B7269" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="600">
+      Criar conta
+    </text>
+  </g>
+
+  <g>
+    <text x="568" y="544" fill="#4E463E" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">
+      E-mail
+    </text>
+    <rect x="568" y="558" width="304" height="58" rx="18" fill="#FFFFFF"/>
+    <rect x="568.75" y="558.75" width="302.5" height="56.5" rx="17.25" stroke="#E4DDD3" stroke-width="1.5"/>
+    <text x="590" y="594" fill="#9A9085" font-family="Arial, Helvetica, sans-serif" font-size="15">
+      voce@startup.com
+    </text>
+  </g>
+
+  <g>
+    <text x="568" y="648" fill="#4E463E" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">
+      Senha
+    </text>
+    <rect x="568" y="662" width="304" height="58" rx="18" fill="#FFFFFF"/>
+    <rect x="568.75" y="662.75" width="302.5" height="56.5" rx="17.25" stroke="#E4DDD3" stroke-width="1.5"/>
+    <text x="590" y="699" fill="#9A9085" font-family="Arial, Helvetica, sans-serif" font-size="18">
+      ••••••••••
+    </text>
+  </g>
+
+  <text x="872" y="744" text-anchor="end" fill="#176B55" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">
+    Esqueci minha senha
+  </text>
+
+  <g>
+    <rect x="568" y="760" width="304" height="58" rx="18" fill="url(#buttonGradient)"/>
+    <text x="720" y="796" text-anchor="middle" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">
+      Entrar na plataforma
+    </text>
+  </g>
+
+  <text x="720" y="860" text-anchor="middle" fill="#7B7269" font-family="Arial, Helvetica, sans-serif" font-size="14">
+    Ainda nao tem conta?
+  </text>
+  <text x="720" y="885" text-anchor="middle" fill="#176B55" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">
+    Criar conta gratuitamente
+  </text>
+
+  <text x="720" y="94" text-anchor="middle" fill="#2B3E35" fill-opacity="0.82" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" letter-spacing="0.18em">
+    STARTUP JOURNEY
+  </text>
+</svg>

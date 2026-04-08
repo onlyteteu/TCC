@@ -1,0 +1,14 @@
+{
+  "name": "tcc-startup-platform",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Monorepo do TCC com frontend Next.js e backend Django.",
+  "scripts": {
+    "frontend:dev": "npm --prefix apps/frontend run dev",
+    "frontend:build": "npm --prefix apps/frontend run build",
+    "frontend:lint": "npm --prefix apps/frontend run lint"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  }
+}

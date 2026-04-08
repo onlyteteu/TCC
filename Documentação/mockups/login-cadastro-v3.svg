@@ -1,0 +1,154 @@
+<svg width="1440" height="1024" viewBox="0 0 1440 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgBase" x1="174" y1="68" x2="1226" y2="948" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#120C1D"/>
+      <stop offset="0.42" stop-color="#1B102A"/>
+      <stop offset="0.78" stop-color="#1A1222"/>
+      <stop offset="1" stop-color="#08070E"/>
+    </linearGradient>
+    <radialGradient id="nebulaLeft" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(274 230) rotate(31) scale(438 324)">
+      <stop stop-color="#FFB347" stop-opacity="0.38"/>
+      <stop offset="0.52" stop-color="#FF7A1A" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#FF7A1A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="nebulaRight" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1178 206) rotate(162) scale(440 330)">
+      <stop stop-color="#FFD66E" stop-opacity="0.3"/>
+      <stop offset="0.54" stop-color="#FF8F3A" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#FF8F3A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="nebulaBottom" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(736 884) rotate(-90) scale(356 538)">
+      <stop stop-color="#E9802D" stop-opacity="0.24"/>
+      <stop offset="0.45" stop-color="#C44B0A" stop-opacity="0.13"/>
+      <stop offset="1" stop-color="#C44B0A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowCenter" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(720 334) rotate(90) scale(236 236)">
+      <stop stop-color="#FFE4A7" stop-opacity="0.26"/>
+      <stop offset="0.5" stop-color="#FFB347" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#FFB347" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cardFill" x1="720" y1="272" x2="720" y2="768" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#171320" stop-opacity="0.76"/>
+      <stop offset="1" stop-color="#0C0A12" stop-opacity="0.82"/>
+    </linearGradient>
+    <linearGradient id="cardStroke" x1="542" y1="250" x2="900" y2="784" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFD87A" stop-opacity="0.8"/>
+      <stop offset="0.44" stop-color="#FF9A3C" stop-opacity="0.36"/>
+      <stop offset="1" stop-color="#FFB85A" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="buttonMain" x1="720" y1="688" x2="720" y2="748" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFB84A"/>
+      <stop offset="1" stop-color="#F27A25"/>
+    </linearGradient>
+    <linearGradient id="tabActive" x1="582" y1="426" x2="712" y2="426" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3C2314"/>
+      <stop offset="1" stop-color="#4F2A16"/>
+    </linearGradient>
+    <filter id="shadowCard" x="470" y="210" width="500" height="640" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="24"/>
+      <feGaussianBlur stdDeviation="24"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.0352941 0 0 0 0 0.0196078 0 0 0 0 0.00784314 0 0 0 0.62 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+    </filter>
+    <filter id="blurSoft" x="0" y="0" width="1440" height="1024" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="30"/>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="1024" fill="url(#bgBase)"/>
+  <circle cx="274" cy="230" r="248" fill="url(#nebulaLeft)"/>
+  <circle cx="1178" cy="206" r="252" fill="url(#nebulaRight)"/>
+  <circle cx="736" cy="884" r="308" fill="url(#nebulaBottom)"/>
+  <circle cx="720" cy="334" r="252" fill="url(#glowCenter)"/>
+
+  <g filter="url(#blurSoft)" opacity="0.28">
+    <path d="M106 800C214 718 342 656 510 634" stroke="#F2A543" stroke-width="8" stroke-linecap="round"/>
+    <path d="M968 152C1098 190 1198 278 1298 412" stroke="#FFCB6E" stroke-width="8" stroke-linecap="round"/>
+    <path d="M916 786C1078 820 1208 886 1324 988" stroke="#FF8F3C" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <g opacity="0.86">
+    <circle cx="170" cy="140" r="2.2" fill="#FFF1D1"/>
+    <circle cx="246" cy="302" r="1.8" fill="#FFD47A"/>
+    <circle cx="352" cy="182" r="1.8" fill="#FFC966"/>
+    <circle cx="1208" cy="124" r="2.2" fill="#FFF1D1"/>
+    <circle cx="1126" cy="294" r="1.8" fill="#FFD47A"/>
+    <circle cx="1040" cy="196" r="1.8" fill="#FFC966"/>
+    <circle cx="302" cy="848" r="2" fill="#FFE2A0"/>
+    <circle cx="1142" cy="760" r="2" fill="#FFE2A0"/>
+    <circle cx="938" cy="116" r="1.6" fill="#FFD47A"/>
+    <circle cx="496" cy="106" r="1.6" fill="#FFD47A"/>
+  </g>
+
+  <text x="720" y="102" text-anchor="middle" fill="#FFD88A" fill-opacity="0.94" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" letter-spacing="0.24em">
+    STARTUP QUEST
+  </text>
+
+  <g filter="url(#shadowCard)">
+    <rect x="518" y="234" width="404" height="568" rx="34" fill="url(#cardFill)"/>
+    <rect x="519" y="235" width="402" height="566" rx="33" stroke="url(#cardStroke)" stroke-width="2"/>
+  </g>
+
+  <g opacity="0.98">
+    <circle cx="720" cy="300" r="52" fill="#1C1323"/>
+    <circle cx="720" cy="300" r="52" stroke="#FFBE5A" stroke-opacity="0.42" stroke-width="2"/>
+    <circle cx="720" cy="300" r="72" stroke="#FFB347" stroke-opacity="0.18" stroke-dasharray="8 9"/>
+    <path d="M699 300C699 311.598 708.402 321 720 321C731.598 321 741 311.598 741 300C741 288.402 731.598 279 720 279C708.402 279 699 288.402 699 300Z" stroke="#FFB347" stroke-width="7"/>
+    <path d="M750 310C746 323 735 335 717 344" stroke="#FFB347" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <text x="720" y="384" text-anchor="middle" fill="#FFF5E6" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="700">
+    Acesse sua jornada
+  </text>
+  <text x="720" y="418" text-anchor="middle" fill="#C9BFB1" font-family="Arial, Helvetica, sans-serif" font-size="16">
+    Entre ou troque para cadastro. O resto da magia fica no fundo.
+  </text>
+
+  <g>
+    <rect x="582" y="446" width="276" height="54" rx="20" fill="#0F0C15"/>
+    <rect x="582.8" y="446.8" width="274.4" height="52.4" rx="19.2" stroke="#3A2A1E" stroke-width="1.6"/>
+    <rect x="588" y="452" width="130" height="42" rx="15" fill="url(#tabActive)"/>
+    <rect x="588.8" y="452.8" width="128.4" height="40.4" rx="14.2" stroke="#FFB957" stroke-opacity="0.38" stroke-width="1.6"/>
+    <text x="653" y="480" text-anchor="middle" fill="#FFE4AE" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">
+      Entrar
+    </text>
+    <text x="791" y="480" text-anchor="middle" fill="#A69785" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">
+      Criar conta
+    </text>
+  </g>
+
+  <g>
+    <text x="582" y="560" fill="#F4E6CA" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" letter-spacing="0.08em">
+      E-MAIL
+    </text>
+    <rect x="582" y="572" width="276" height="60" rx="19" fill="#0C0A12"/>
+    <rect x="582.8" y="572.8" width="274.4" height="58.4" rx="18.2" stroke="#413225" stroke-width="1.6"/>
+    <circle cx="606" cy="602" r="5.5" fill="#FFB347"/>
+    <text x="622" y="608" fill="#9F9386" font-family="Arial, Helvetica, sans-serif" font-size="16">
+      voce@startup.quest
+    </text>
+  </g>
+
+  <g>
+    <text x="582" y="664" fill="#F4E6CA" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" letter-spacing="0.08em">
+      SENHA
+    </text>
+    <rect x="582" y="676" width="276" height="60" rx="19" fill="#0C0A12"/>
+    <rect x="582.8" y="676.8" width="274.4" height="58.4" rx="18.2" stroke="#413225" stroke-width="1.6"/>
+    <circle cx="606" cy="706" r="5.5" fill="#FFD66E"/>
+    <text x="622" y="713" fill="#9F9386" font-family="Arial, Helvetica, sans-serif" font-size="17">
+      ••••••••••
+    </text>
+  </g>
+
+  <g>
+    <rect x="582" y="756" width="276" height="60" rx="19" fill="url(#buttonMain)"/>
+    <rect x="582.8" y="756.8" width="274.4" height="58.4" rx="18.2" stroke="#FFF0C9" stroke-opacity="0.28" stroke-width="1.6"/>
+    <text x="720" y="794" text-anchor="middle" fill="#281508" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700">
+      Entrar na plataforma
+    </text>
+  </g>
+</svg>

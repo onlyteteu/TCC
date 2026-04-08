@@ -1,0 +1,42 @@
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+!.env.example
+!*.env.example
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+npm-debug.log*
+
+# Python / Django
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+db.sqlite3
+
+# Docker / database
+postgres_data/
+
+# Logs
+*.log
+
+# Local render temp files
+.tmp-edge-*/

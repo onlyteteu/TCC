@@ -1,0 +1,192 @@
+<svg width="1440" height="1024" viewBox="0 0 1440 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="198" y1="74" x2="1244" y2="962" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#09111B"/>
+      <stop offset="0.52" stop-color="#111A28"/>
+      <stop offset="1" stop-color="#060B12"/>
+    </linearGradient>
+    <radialGradient id="auraLeft" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(272 258) rotate(16) scale(408 328)">
+      <stop stop-color="#22D6A8" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#22D6A8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="auraRight" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1186 240) rotate(169) scale(428 342)">
+      <stop stop-color="#27C6F1" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#27C6F1" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="auraBottom" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(720 936) rotate(-90) scale(410 540)">
+      <stop stop-color="#F0B856" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#F0B856" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orb" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(720 194) rotate(90) scale(84 84)">
+      <stop stop-color="#53FFD3"/>
+      <stop offset="1" stop-color="#0D3A3B"/>
+    </radialGradient>
+    <linearGradient id="cardStroke" x1="534" y1="182" x2="898" y2="836" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#69F1CB" stop-opacity="0.78"/>
+      <stop offset="0.5" stop-color="#6D87FF" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#F1C26C" stop-opacity="0.58"/>
+    </linearGradient>
+    <linearGradient id="cardFill" x1="720" y1="224" x2="720" y2="802" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#121C2A" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#0B131E" stop-opacity="0.94"/>
+    </linearGradient>
+    <linearGradient id="buttonMain" x1="720" y1="762" x2="720" y2="822" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1CE1AE"/>
+      <stop offset="1" stop-color="#0A9E84"/>
+    </linearGradient>
+    <linearGradient id="tabActive" x1="564" y1="430" x2="716" y2="430" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#152A2C"/>
+      <stop offset="1" stop-color="#16373D"/>
+    </linearGradient>
+    <filter id="glow" x="432" y="130" width="576" height="744" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="18" result="effect1_foregroundBlur_1_1"/>
+    </filter>
+    <filter id="shadowCard" x="468" y="160" width="504" height="676" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="26"/>
+      <feGaussianBlur stdDeviation="24"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.0117647 0 0 0 0 0.0588235 0 0 0 0 0.0980392 0 0 0 0.54 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+    </filter>
+    <pattern id="hexPattern" x="0" y="0" width="56" height="48.5" patternUnits="userSpaceOnUse">
+      <path d="M14 1H42L55 24.25L42 47.5H14L1 24.25L14 1Z" stroke="#8CEFD7" stroke-opacity="0.08"/>
+    </pattern>
+  </defs>
+
+  <rect width="1440" height="1024" fill="url(#bg)"/>
+  <rect width="1440" height="1024" fill="url(#hexPattern)" opacity="0.56"/>
+  <circle cx="272" cy="258" r="240" fill="url(#auraLeft)"/>
+  <circle cx="1186" cy="240" r="250" fill="url(#auraRight)"/>
+  <circle cx="720" cy="932" r="300" fill="url(#auraBottom)"/>
+
+  <path d="M162 180C244 130 330 114 452 128" stroke="#5BE7C1" stroke-opacity="0.18" stroke-width="2"/>
+  <path d="M1164 128C1240 170 1288 230 1310 322" stroke="#5CD4F7" stroke-opacity="0.18" stroke-width="2"/>
+  <path d="M180 848C292 762 404 724 540 718" stroke="#F0B856" stroke-opacity="0.14" stroke-width="2"/>
+  <path d="M936 736C1036 760 1132 810 1248 916" stroke="#62F5CC" stroke-opacity="0.14" stroke-width="2"/>
+
+  <g opacity="0.78">
+    <circle cx="180" cy="160" r="2.6" fill="#B9FFF1"/>
+    <circle cx="1220" cy="124" r="2.4" fill="#83E8FF"/>
+    <circle cx="1130" cy="712" r="2.2" fill="#F0C97F"/>
+    <circle cx="260" cy="836" r="1.8" fill="#A1FFE7"/>
+    <circle cx="1022" cy="210" r="1.8" fill="#D8ECFF"/>
+    <circle cx="340" cy="248" r="1.8" fill="#F0C97F"/>
+  </g>
+
+  <g filter="url(#shadowCard)">
+    <path d="M534 210C534 189.013 551.013 172 572 172H868C888.987 172 906 189.013 906 210V796C906 816.987 888.987 834 868 834H572C551.013 834 534 816.987 534 796V210Z" fill="url(#cardFill)"/>
+    <path d="M534.9 210C534.9 189.51 551.51 172.9 572 172.9H868C888.49 172.9 905.1 189.51 905.1 210V796C905.1 816.49 888.49 833.1 868 833.1H572C551.51 833.1 534.9 816.49 534.9 796V210Z" stroke="url(#cardStroke)" stroke-width="1.8"/>
+  </g>
+
+  <g opacity="0.22" filter="url(#glow)">
+    <path d="M554 190H886V816H554V190Z" fill="#4EE2C0"/>
+  </g>
+
+  <path d="M586 194H854" stroke="#7AF6D0" stroke-opacity="0.22"/>
+  <path d="M586 812H854" stroke="#F0B856" stroke-opacity="0.22"/>
+
+  <g>
+    <circle cx="720" cy="220" r="56" fill="url(#orb)"/>
+    <circle cx="720" cy="220" r="74" stroke="#55F0CB" stroke-opacity="0.18" stroke-width="2"/>
+    <circle cx="720" cy="220" r="92" stroke="#F0B856" stroke-opacity="0.16" stroke-dasharray="8 10"/>
+    <path d="M697 220C697 232.702 707.298 243 720 243C732.702 243 743 232.702 743 220C743 207.298 732.702 197 720 197C707.298 197 697 207.298 697 220Z" stroke="#07151E" stroke-width="8"/>
+    <path d="M753 230C748 244 735 257 715 267" stroke="#07151E" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <text x="720" y="94" text-anchor="middle" fill="#93F7DC" fill-opacity="0.85" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" letter-spacing="0.26em">
+    STARTUP QUEST
+  </text>
+  <text x="720" y="334" text-anchor="middle" fill="#F6FBFF" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="700">
+    Entre no seu reino
+  </text>
+  <text x="720" y="370" text-anchor="middle" fill="#A7B8C7" font-family="Arial, Helvetica, sans-serif" font-size="16">
+    Desbloqueie sua jornada, suba de nivel e estruture sua startup como uma guilda em ascensao.
+  </text>
+
+  <g>
+    <rect x="564" y="402" width="312" height="58" rx="22" fill="#0A121B"/>
+    <rect x="564.8" y="402.8" width="310.4" height="56.4" rx="21.2" stroke="#223949" stroke-width="1.6"/>
+    <rect x="570" y="408" width="150" height="46" rx="17" fill="url(#tabActive)"/>
+    <rect x="570.8" y="408.8" width="148.4" height="44.4" rx="16.2" stroke="#63F2CC" stroke-opacity="0.36" stroke-width="1.6"/>
+    <text x="645" y="438" text-anchor="middle" fill="#AEFFF0" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">
+      Entrar
+    </text>
+    <text x="797" y="438" text-anchor="middle" fill="#7F92A5" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">
+      Criar conta
+    </text>
+  </g>
+
+  <g>
+    <text x="568" y="518" fill="#D7E1EA" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" letter-spacing="0.08em">
+      E-MAIL
+    </text>
+    <rect x="568" y="530" width="304" height="62" rx="20" fill="#0A121B"/>
+    <rect x="568.8" y="530.8" width="302.4" height="60.4" rx="19.2" stroke="#234456" stroke-width="1.6"/>
+    <circle cx="594" cy="561" r="6" fill="#1CE1AE" fill-opacity="0.88"/>
+    <text x="612" y="567" fill="#8EA1B2" font-family="Arial, Helvetica, sans-serif" font-size="16">
+      player@startup.quest
+    </text>
+  </g>
+
+  <g>
+    <text x="568" y="628" fill="#D7E1EA" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" letter-spacing="0.08em">
+      SENHA
+    </text>
+    <rect x="568" y="640" width="304" height="62" rx="20" fill="#0A121B"/>
+    <rect x="568.8" y="640.8" width="302.4" height="60.4" rx="19.2" stroke="#234456" stroke-width="1.6"/>
+    <circle cx="594" cy="671" r="6" fill="#F0B856" fill-opacity="0.9"/>
+    <text x="612" y="678" fill="#8EA1B2" font-family="Arial, Helvetica, sans-serif" font-size="17">
+      ••••••••••
+    </text>
+  </g>
+
+  <text x="872" y="728" text-anchor="end" fill="#79F3D0" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">
+    Recuperar artefato de acesso
+  </text>
+
+  <g>
+    <rect x="568" y="754" width="304" height="60" rx="20" fill="url(#buttonMain)"/>
+    <rect x="568.8" y="754.8" width="302.4" height="58.4" rx="19.2" stroke="#B6FFF1" stroke-opacity="0.36" stroke-width="1.6"/>
+    <text x="720" y="792" text-anchor="middle" fill="#03231F" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700">
+      Iniciar aventura
+    </text>
+  </g>
+
+  <g opacity="0.9">
+    <rect x="586" y="846" width="268" height="40" rx="20" fill="#0D1621"/>
+    <rect x="586.8" y="846.8" width="266.4" height="38.4" rx="19.2" stroke="#27384A" stroke-width="1.6"/>
+    <text x="720" y="872" text-anchor="middle" fill="#91A1B2" font-family="Arial, Helvetica, sans-serif" font-size="14">
+      Nao tem conta ainda?
+    </text>
+  </g>
+  <text x="720" y="916" text-anchor="middle" fill="#F4CA76" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">
+    Criar novo personagem empreendedor
+  </text>
+
+  <g opacity="0.72">
+    <rect x="972" y="256" width="182" height="58" rx="22" fill="#101926"/>
+    <rect x="972.8" y="256.8" width="180.4" height="56.4" rx="21.2" stroke="#2C4157" stroke-width="1.6"/>
+    <text x="1063" y="282" text-anchor="middle" fill="#7FF6D5" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.1em">
+      BONUS DE ENTRADA
+    </text>
+    <text x="1063" y="304" text-anchor="middle" fill="#F7FBFF" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">
+      +100 XP de clareza
+    </text>
+  </g>
+
+  <g opacity="0.58">
+    <rect x="286" y="734" width="186" height="62" rx="22" fill="#101926"/>
+    <rect x="286.8" y="734.8" width="184.4" height="60.4" rx="21.2" stroke="#2C4157" stroke-width="1.6"/>
+    <text x="379" y="760" text-anchor="middle" fill="#F0C97F" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.1em">
+      PROXIMA MISSAO
+    </text>
+    <text x="379" y="783" text-anchor="middle" fill="#D8E4EE" font-family="Arial, Helvetica, sans-serif" font-size="14">
+      Criar sua startup
+    </text>
+  </g>
+</svg>
