@@ -16,6 +16,8 @@
 - separacao da documentacao por tema
 - registro formal das decisoes iniciais
 
+- criacao do `handoff.md` para retomada do projeto em outro computador
+
 ### Estruturacao tecnica inicial
 
 - definicao da stack com Next.js, Django e PostgreSQL

@@ -69,6 +69,8 @@ A documentacao do TCC fica concentrada na pasta [Documentação](C:\Users\PROEC\
 - [progresso.md](C:\Users\PROEC\Desktop\TCC\Documentação\progresso.md)
 - [proximos-passos.md](C:\Users\PROEC\Desktop\TCC\Documentação\proximos-passos.md)
 
+- [handoff.md](C:\Users\PROEC\Desktop\TCC\Documentação\handoff.md)
+
 ## Regra de desenvolvimento
 
 Nenhuma decisao importante de produto, arquitetura, fluxo, interface ou funcionalidade deve ficar
