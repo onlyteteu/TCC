@@ -24,10 +24,13 @@ Cria a base para acompanhar a jornada de cada usuario de forma individual.
 
 ## Fluxo 2. Cadastro inicial da startup
 
-1. O usuario acessa o fluxo de cadastro.
-2. Informa dados iniciais do negocio.
-3. Define o estagio atual.
-4. Entra no ambiente principal da startup.
+1. O usuario entra em `/painel` sem ter startup criada.
+2. Informa ou adia o nome da startup.
+3. Conta a ideia da startup em uma frase.
+4. Escolhe um segmento/territorio inicial.
+5. Descreve a dor ou problema que quer resolver.
+6. Recorta quem sente essa dor primeiro.
+7. O sistema cria a startup e leva para a tela provisoria de `Suas startups`.
 
 ### Problema que resolve
 
@@ -35,7 +38,8 @@ Evita que o usuario entre em um sistema vazio e sem contexto.
 
 ### Relacao com o objetivo do projeto
 
-Cria o ponto de partida da jornada guiada e organiza a startup desde o primeiro contato.
+Cria o ponto de partida da jornada guiada, organiza a startup desde o primeiro contato e evita
+que o usuario comece em um dashboard vazio sem ter nomeado ideia, segmento, problema e publico.
 
 ## Fluxo 3. Jornada guiada por etapas
 

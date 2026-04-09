@@ -40,7 +40,12 @@
 - criacao de decima versao do mockup dedicada ao cadastro, mantendo a linguagem da v9 e trocando o formulario para nome, e-mail, senha e confirmar senha
 - criacao do primeiro mockup da tela de painel de startups, com saudacao discreta, cards enxutos e indicador visual de saude
 - criacao do primeiro mockup da home geral da conta, com top bar de navegacao, saudacao destacada e cards limpos de startups
+- criacao da segunda versao do mockup da home geral da conta, redesenhando o hub como uma cabine de comando com startup principal em foco, radar lateral e doca de acoes rapidas
 - criacao do primeiro mockup da tela vazia para iniciar a startup, com bloco central, campo unico de nome e CTA principal
+- criacao do primeiro mockup da segunda etapa da startup, focado em uma descricao curta da ideia
+- criacao do primeiro mockup da etapa de segmento, tratando segmento como territorio inicial da ideia
+- criacao do primeiro mockup da etapa de problema, separando a dor do usuario da solucao proposta
+- criacao do primeiro mockup da etapa de publico inicial, incentivando um recorte pequeno e concreto
 - implementacao real da tela de login/cadastro no frontend com abas funcionais
 - implementacao da logo com animacao sutil de respiracao
 - criacao da pagina institucional em `/sobre` para preservar a visao inicial do produto
@@ -59,6 +64,14 @@
 - implementacao real da tela de criacao da startup em `/painel`
 - adicao da opcao `Ainda nao sei o nome` para permitir criar a startup mesmo sem nome definido
 - implementacao de animacao sutil de respiracao nos elementos de fundo da tela de criacao
+- implementacao de transicao cinematografica curta entre autenticacao e area interna
+- implementacao de entrada por camadas na primeira tela de criacao da startup
+- refinamento do estado intermediario de carregamento do painel autenticado
+- conversao da criacao da startup em uma jornada de cinco etapas: nome, ideia, segmento, problema e publico
+- persistencia de ideia, segmento, problema e publico inicial junto da startup
+- exibicao provisoria do mapa inicial da startup na tela `Suas startups`
+- refinamento da troca entre etapas com titulo digitado, bloco da pergunta em entrada suave e correcao de rolagem lateral
+- ajuste da composicao da jornada: primeira porta restaurada com mais respiro e portas seguintes sem altura de fundo desnecessaria
 - implementacao de uma visao inicial de startups ja criadas para o usuario autenticado
 - integracao do `/painel` para decidir entre criar startup ou mostrar as startups existentes
 
@@ -75,6 +88,7 @@
 - execucao de `.\.venv\Scripts\python.exe manage.py check` com sucesso
 - execucao de `.\.venv\Scripts\python.exe manage.py migrate` com sucesso
 - execucao de `npm.cmd run lint` com sucesso
+- execucao de `.\node_modules\.bin\tsc.cmd --noEmit --pretty false` com sucesso
 - execucao de `npm.cmd run build` com sucesso
 - validacao real da criacao da startup via `http://127.0.0.1:3000/api/startups`
 

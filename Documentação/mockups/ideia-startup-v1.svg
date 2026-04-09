@@ -1,0 +1,210 @@
+<svg width="1440" height="1024" viewBox="0 0 1440 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgBase" x1="154" y1="80" x2="1266" y2="950" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0B0908"/>
+      <stop offset="0.38" stop-color="#14100E"/>
+      <stop offset="0.72" stop-color="#100F0E"/>
+      <stop offset="1" stop-color="#080707"/>
+    </linearGradient>
+    <radialGradient id="emberCenter" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(720 514) rotate(90) scale(430 610)">
+      <stop stop-color="#C57A20" stop-opacity="0.22"/>
+      <stop offset="0.48" stop-color="#8E4D16" stop-opacity="0.1"/>
+      <stop offset="1" stop-color="#8E4D16" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="greenNebula" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1114 246) rotate(150) scale(390 300)">
+      <stop stop-color="#355B47" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#355B47" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="fieldGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(720 660) rotate(90) scale(190 430)">
+      <stop stop-color="#D89A35" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#D89A35" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="centerBeam" x1="720" y1="108" x2="720" y2="964" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D38E2E" stop-opacity="0"/>
+      <stop offset="0.28" stop-color="#D38E2E" stop-opacity="0.06"/>
+      <stop offset="0.52" stop-color="#D38E2E" stop-opacity="0.15"/>
+      <stop offset="0.8" stop-color="#D38E2E" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#D38E2E" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="cardFill" x1="720" y1="238" x2="720" y2="844" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#181310" stop-opacity="0.96"/>
+      <stop offset="1" stop-color="#0E0C0B" stop-opacity="0.98"/>
+    </linearGradient>
+    <linearGradient id="cardStroke" x1="374" y1="238" x2="1066" y2="844" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#573617" stop-opacity="0.86"/>
+      <stop offset="0.48" stop-color="#C28534" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#332317" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="textareaStroke" x1="462" y1="546" x2="978" y2="730" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5B4027"/>
+      <stop offset="0.48" stop-color="#9B6B31"/>
+      <stop offset="1" stop-color="#3B2A1B"/>
+    </linearGradient>
+    <linearGradient id="buttonFill" x1="720" y1="768" x2="720" y2="834" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E8B349"/>
+      <stop offset="1" stop-color="#C07A22"/>
+    </linearGradient>
+    <linearGradient id="ghostButtonFill" x1="590" y1="878" x2="850" y2="878" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#15110F"/>
+      <stop offset="1" stop-color="#0E0C0B"/>
+    </linearGradient>
+    <filter id="cardShadow" x="306" y="178" width="828" height="750" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="28"/>
+      <feGaussianBlur stdDeviation="34"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.028 0 0 0 0 0.02 0 0 0 0 0.012 0 0 0 0.76 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_idea"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_idea" result="shape"/>
+    </filter>
+    <filter id="buttonGlow" x="418" y="724" width="604" height="154" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="20" result="effect1_foregroundBlur_button"/>
+    </filter>
+    <pattern id="gridPattern" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0V28" stroke="#FAECD0" stroke-opacity="0.022"/>
+    </pattern>
+  </defs>
+
+  <rect width="1440" height="1024" fill="url(#bgBase)"/>
+  <rect width="1440" height="1024" fill="url(#gridPattern)"/>
+  <rect x="642" y="108" width="156" height="856" fill="url(#centerBeam)"/>
+  <circle cx="720" cy="514" r="430" fill="url(#emberCenter)"/>
+  <circle cx="1114" cy="246" r="330" fill="url(#greenNebula)"/>
+  <ellipse cx="720" cy="660" rx="420" ry="190" fill="url(#fieldGlow)"/>
+
+  <path d="M150 820C314 690 506 638 700 636" stroke="#CB862B" stroke-opacity="0.1" stroke-width="2"/>
+  <path d="M1030 188C1134 232 1208 308 1274 424" stroke="#3F6752" stroke-opacity="0.11" stroke-width="2"/>
+  <path d="M940 798C1086 820 1198 874 1304 966" stroke="#C88428" stroke-opacity="0.07" stroke-width="2"/>
+
+  <g opacity="0.82">
+    <circle cx="168" cy="124" r="2.2" fill="#F9E9C8"/>
+    <circle cx="312" cy="214" r="1.8" fill="#D7A150"/>
+    <circle cx="498" cy="112" r="1.6" fill="#F1D39D"/>
+    <circle cx="966" cy="142" r="1.6" fill="#F1D39D"/>
+    <circle cx="1160" cy="206" r="1.8" fill="#D7A150"/>
+    <circle cx="1236" cy="126" r="2.2" fill="#F9E9C8"/>
+    <circle cx="1178" cy="770" r="2" fill="#F1D39D"/>
+    <circle cx="292" cy="864" r="2" fill="#F1D39D"/>
+  </g>
+
+  <text x="720" y="80" text-anchor="middle" fill="#D8A34A" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" letter-spacing="0.22em">
+    STARTUP QUEST
+  </text>
+
+  <g>
+    <circle cx="720" cy="154" r="36" fill="#191412"/>
+    <circle cx="720" cy="154" r="35" stroke="#D19134" stroke-opacity="0.36" stroke-width="1.8"/>
+    <path d="M704 154C704 162.837 711.163 170 720 170C728.837 170 736 162.837 736 154C736 145.163 728.837 138 720 138C711.163 138 704 145.163 704 154Z" stroke="#D89A35" stroke-width="5.2"/>
+    <path d="M742 160C739.8 168.4 732.4 176.7 721.2 182.2" stroke="#D89A35" stroke-width="5.2" stroke-linecap="round"/>
+  </g>
+
+  <g aria-label="Progresso da jornada">
+    <path d="M492 218H948" stroke="#5B4027" stroke-width="2"/>
+    <path d="M492 218H606" stroke="#9AC8AB" stroke-width="3" stroke-linecap="round"/>
+    <path d="M606 218H720" stroke="#D89A35" stroke-width="3" stroke-linecap="round"/>
+
+    <g>
+      <circle cx="492" cy="218" r="18" fill="#142018"/>
+      <circle cx="492" cy="218" r="17" stroke="#9AC8AB" stroke-width="2"/>
+      <path d="M484 218L490 224L501 212" stroke="#9AC8AB" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="492" y="258" text-anchor="middle" fill="#9AC8AB" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.12em">NOME</text>
+    </g>
+
+    <g>
+      <circle cx="720" cy="218" r="22" fill="#2A1B0F"/>
+      <circle cx="720" cy="218" r="21" stroke="#D89A35" stroke-width="2.4"/>
+      <text x="720" y="225" text-anchor="middle" fill="#F7E2B6" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">2</text>
+      <text x="720" y="262" text-anchor="middle" fill="#D89A35" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.12em">IDEIA</text>
+    </g>
+
+    <g opacity="0.62">
+      <circle cx="948" cy="218" r="18" fill="#12100F"/>
+      <circle cx="948" cy="218" r="17" stroke="#5B4027" stroke-width="2"/>
+      <text x="948" y="224" text-anchor="middle" fill="#8F7A66" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">3</text>
+      <text x="948" y="258" text-anchor="middle" fill="#8F7A66" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.12em">SEGMENTO</text>
+    </g>
+  </g>
+
+  <g filter="url(#cardShadow)">
+    <path d="M414 286H1026L1066 326V804L1026 844H414L374 804V326L414 286Z" fill="url(#cardFill)"/>
+    <path d="M414.7 286.9H1025.6L1065.1 326.4V803.6L1025.6 843.1H414.7L375.2 803.6V326.4L414.7 286.9Z" stroke="url(#cardStroke)" stroke-width="1.8"/>
+    <path d="M434 306H1006L1046 346V784L1006 824H434L394 784V346L434 306Z" stroke="#D89333" stroke-opacity="0.12" stroke-width="1.4"/>
+  </g>
+
+  <g>
+    <rect x="462" y="344" width="206" height="38" rx="19" fill="#211711"/>
+    <rect x="462.8" y="344.8" width="204.4" height="36.4" rx="18.2" stroke="#6A4A28" stroke-width="1.4"/>
+    <text x="565" y="369" text-anchor="middle" fill="#D7AF79" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.2em">
+      ETAPA 2 / 5
+    </text>
+  </g>
+
+  <text x="462" y="456" fill="#F4E5CA" font-family="Arial, Helvetica, sans-serif" font-size="60" font-weight="700" letter-spacing="-0.05em">
+    Conte a ideia
+  </text>
+  <text x="462" y="514" fill="#F4E5CA" font-family="Arial, Helvetica, sans-serif" font-size="60" font-weight="700" letter-spacing="-0.05em">
+    em uma frase.
+  </text>
+
+  <text x="462" y="558" fill="#A28B72" font-family="Arial, Helvetica, sans-serif" font-size="18">
+    Sem plano de negocio ainda. So queremos entender o que esta nascendo.
+  </text>
+
+  <g>
+    <text x="462" y="626" fill="#DEC49B" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.16em">
+      MINHA STARTUP E...
+    </text>
+    <rect x="462" y="646" width="516" height="144" rx="28" fill="#0D0B0A"/>
+    <rect x="462.8" y="646.8" width="514.4" height="142.4" rx="27.2" stroke="url(#textareaStroke)" stroke-width="1.6"/>
+    <circle cx="498" cy="682" r="6" fill="#D89A35"/>
+    <text x="522" y="686" fill="#D9C29C" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700">
+      Um app que ajuda restaurantes pequenos
+    </text>
+    <text x="522" y="720" fill="#D9C29C" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700">
+      a controlar estoque e evitar desperdicio.
+    </text>
+    <text x="522" y="756" fill="#786756" font-family="Arial, Helvetica, sans-serif" font-size="14">
+      Dica: escreva como se contasse para um amigo em 20 segundos.
+    </text>
+  </g>
+
+  <g filter="url(#buttonGlow)" opacity="0.26">
+    <rect x="462" y="814" width="516" height="66" rx="24" fill="#D68F2E"/>
+  </g>
+
+  <g>
+    <rect x="462" y="814" width="516" height="66" rx="24" fill="url(#buttonFill)"/>
+    <rect x="462.8" y="814.8" width="514.4" height="64.4" rx="23.2" stroke="#F0D7A4" stroke-opacity="0.24" stroke-width="1.6"/>
+    <text x="720" y="856" text-anchor="middle" fill="#2B1807" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700">
+      Continuar para o segmento
+    </text>
+  </g>
+
+  <g>
+    <rect x="838" y="344" width="140" height="38" rx="19" fill="#11100F"/>
+    <rect x="838.8" y="344.8" width="138.4" height="36.4" rx="18.2" stroke="#4A321E" stroke-width="1.4"/>
+    <text x="908" y="369" text-anchor="middle" fill="#A99275" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.14em">
+      AUTO-SALVO
+    </text>
+  </g>
+
+  <g opacity="0.76">
+    <path d="M1018 544C1066 570 1094 610 1102 664" stroke="#456552" stroke-width="1.8"/>
+    <path d="M1102 664L1088 646" stroke="#456552" stroke-width="1.8" stroke-linecap="round"/>
+    <text x="1106" y="690" fill="#8F7A66" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" letter-spacing="0.12em">
+      PROXIMA PORTA
+    </text>
+    <text x="1106" y="724" fill="#D6BD93" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.04em">
+      Segmento
+    </text>
+    <text x="1106" y="754" fill="#8F7A66" font-family="Arial, Helvetica, sans-serif" font-size="15">
+      Vai abrir depois
+    </text>
+    <text x="1106" y="778" fill="#8F7A66" font-family="Arial, Helvetica, sans-serif" font-size="15">
+      que a ideia for salva.
+    </text>
+  </g>
+</svg>

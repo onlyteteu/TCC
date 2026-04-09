@@ -20,6 +20,8 @@ class Startup(models.Model):
     name = models.CharField(max_length=120)
     description = models.TextField(blank=True)
     segment = models.CharField(max_length=120, blank=True)
+    problem = models.TextField(blank=True)
+    audience = models.TextField(blank=True)
     current_stage = models.CharField(
         max_length=20,
         choices=Stage.choices,

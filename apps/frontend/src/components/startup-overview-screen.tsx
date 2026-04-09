@@ -8,8 +8,12 @@ import styles from "./startup-overview-screen.module.css";
 
 type StartupOverviewScreenProps = {
   flashMessage?: string | null;
+  flashTone?: "error" | "success";
+  highlightStartupId?: number | null;
+  deletingStartupId?: number | null;
   isLoggingOut?: boolean;
   onCreateAnother: () => void;
+  onDeleteStartup: (startup: StartupSummary) => void;
   onLogout: () => void;
   startups: StartupSummary[];
   user: AuthUser;
@@ -29,8 +33,12 @@ function formatCreatedAt(value: string) {
 
 export function StartupOverviewScreen({
   flashMessage,
+  flashTone = "success",
+  highlightStartupId = null,
+  deletingStartupId = null,
   isLoggingOut = false,
   onCreateAnother,
+  onDeleteStartup,
   onLogout,
   startups,
   user,
@@ -70,7 +78,19 @@ export function StartupOverviewScreen({
           </div>
         </header>
 
-        {flashMessage ? <div className={styles.flash}>{flashMessage}</div> : null}
+        {flashMessage ? (
+          <div
+            className={[
+              styles.flash,
+              flashTone === "error" ? styles.flashError : "",
+              highlightStartupId ? styles.flashFresh : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          >
+            {flashMessage}
+          </div>
+        ) : null}
 
         <section className={styles.metrics}>
           <article className={styles.metricCard}>
@@ -96,8 +116,16 @@ export function StartupOverviewScreen({
           </div>
 
           <div className={styles.grid}>
-            {startups.map((startup) => (
-              <article className={styles.card} key={startup.id}>
+            {startups.map((startup) => {
+              const isDeleting = deletingStartupId === startup.id;
+
+              return (
+                <article
+                  className={[styles.card, highlightStartupId === startup.id ? styles.cardFresh : ""]
+                    .filter(Boolean)
+                    .join(" ")}
+                  key={startup.id}
+                >
                 <div className={styles.cardHeader}>
                   <span
                     className={[
@@ -116,6 +144,34 @@ export function StartupOverviewScreen({
                 <h3>{startup.name}</h3>
 
                 <dl className={styles.details}>
+                  {startup.description ? (
+                    <div>
+                      <dt>Ideia</dt>
+                      <dd>{startup.description}</dd>
+                    </div>
+                  ) : null}
+
+                  {startup.segment ? (
+                    <div>
+                      <dt>Segmento</dt>
+                      <dd>{startup.segment}</dd>
+                    </div>
+                  ) : null}
+
+                  {startup.problem ? (
+                    <div>
+                      <dt>Problema</dt>
+                      <dd>{startup.problem}</dd>
+                    </div>
+                  ) : null}
+
+                  {startup.audience ? (
+                    <div>
+                      <dt>Publico inicial</dt>
+                      <dd>{startup.audience}</dd>
+                    </div>
+                  ) : null}
+
                   <div>
                     <dt>Etapa atual</dt>
                     <dd>{startup.currentStageLabel}</dd>
@@ -126,8 +182,30 @@ export function StartupOverviewScreen({
                     <dd>{isDeferredName(startup) ? "Pode receber nome depois" : "Nome definido"}</dd>
                   </div>
                 </dl>
-              </article>
-            ))}
+
+                <div className={styles.cardFooter}>
+                  <button
+                    className={styles.dangerButton}
+                    disabled={isDeleting}
+                    onClick={() => {
+                      const shouldDelete = window.confirm(
+                        `Excluir a startup ${startup.name}? Essa acao remove apenas esse teste.`
+                      );
+
+                      if (!shouldDelete) {
+                        return;
+                      }
+
+                      onDeleteStartup(startup);
+                    }}
+                    type="button"
+                  >
+                    {isDeleting ? "Excluindo..." : "Excluir startup"}
+                  </button>
+                </div>
+                </article>
+              );
+            })}
           </div>
         </section>
       </div>

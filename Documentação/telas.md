@@ -36,11 +36,28 @@ Tambem foi criado um mockup visual de referencia para a home geral da conta em:
 
 - `Documentação/mockups/hub-inicial-v1.svg`
 - `Documentação/mockups/hub-inicial-v1.png`
+- `Documentação/mockups/hub-inicial-v2.svg`
 
 Tambem foi criado um mockup visual de referencia para a tela vazia de criacao da startup em:
 
 - `Documentação/mockups/criar-startup-v1.svg`
 - `Documentação/mockups/criar-startup-v1.png`
+
+Tambem foi criado um mockup visual de referencia para a segunda etapa de criacao da startup em:
+
+- `Documentação/mockups/ideia-startup-v1.svg`
+
+Tambem foi criado um mockup visual de referencia para a etapa de segmento em:
+
+- `Documentação/mockups/segmento-startup-v1.svg`
+
+Tambem foi criado um mockup visual de referencia para a etapa de problema em:
+
+- `Documentação/mockups/problema-startup-v1.svg`
+
+Tambem foi criado um mockup visual de referencia para a etapa de publico inicial em:
+
+- `Documentação/mockups/publico-startup-v1.svg`
 
 ## 1. Tela principal de login/cadastro implementada
 
@@ -61,6 +78,7 @@ Permitir entrada real na plataforma, com alternancia entre login e criacao de co
 - fundo com atmosfera quente, escura e futurista
 - validacao visual de erros
 - redirecionamento para painel autenticado inicial
+- portal curto de transicao apos login/cadastro bem-sucedido, antes de abrir a area interna
 
 ### Problema que resolve
 
@@ -95,8 +113,14 @@ Define o contexto da jornada e evita que o sistema comece sem informacoes basica
 - exibida em `/painel` quando a conta autenticada ainda nao tem startup
 - campo principal para nome da startup
 - opcao para continuar sem definir o nome ainda
-- criacao real persistida no backend
+- fluxo em etapas para nome, ideia curta, segmento, problema e publico inicial
+- criacao real persistida no backend apenas no fim da jornada inicial
 - transicao automatica para a visao interna de startups apos sucesso
+- entrada visual por camadas, com flare inicial, marca, logo, card e formulario aparecendo em sequencia
+- troca de etapas refinada com titulo entrando letra por letra e bloco da pergunta aparecendo com fade/blur curto
+- paginas internas da jornada devem conter a largura do card dentro da viewport, sem exigir rolagem lateral
+- a primeira porta de nome deve manter uma composicao mais ritualistica/espacada
+- as portas seguintes devem evitar fundo excedente abaixo do card e manter a decisao principal proxima da primeira dobra
 
 ### Direcao visual do mockup mais recente
 
@@ -142,6 +166,32 @@ plataforma.
 
 Fortalece a percepcao de confianca e organizacao desde o primeiro contato com a plataforma.
 
+## 2B. Segunda etapa da criacao da startup
+
+### Funcao
+
+Coletar uma descricao curta da ideia antes de perguntar classificacoes como segmento ou mercado.
+
+### Direcao de fluxo
+
+- uma pergunta principal por tela
+- depois do nome, perguntar primeiro `Conte a ideia em uma frase`
+- usar campo aberto grande, com dica curta e exemplo de frase
+- mostrar o progresso da jornada no topo sem transformar em menu complexo
+- deixar `Segmento` como proxima etapa, abrindo apenas depois que a ideia for salva
+- na tela de segmento, escolher um territorio principal por vez em cards/chips grandes
+- tratar segmento como ponto de partida editavel, nao como classificacao definitiva
+- depois do segmento, perguntar a dor/problema em campo aberto unico
+- orientar a pessoa a descrever custo, incomodo, atraso, medo ou desperdicio, antes de vender a solucao
+- depois do problema, perguntar quem sente essa dor primeiro
+- orientar publico inicial por pessoa, contexto e sinal da dor, evitando respostas amplas como `todo mundo`
+- ao finalizar esta etapa, gerar o primeiro mapa/resumo inicial da startup
+- manter a sensacao de portal/jornada, nao de formulario administrativo
+
+### Problema que resolve
+
+Ajuda o usuario a sentir avanco constante e evita uma tela inicial pesada com muitas perguntas.
+
 ## 3. Dashboard principal
 
 ### Funcao
@@ -180,6 +230,15 @@ Exibir uma visao geral da evolucao da startup.
 - resumo rapido com startups, conquistas, jornada e saude media
 - cards de startups com pouco texto e leitura visual imediata
 - acesso visivel para perfil, conta e saida
+
+### Refinamento proposto na v2 do hub inicial
+
+- transformar a home em uma especie de cabine de comando, e nao apenas uma grade de indicadores
+- destacar uma startup principal no topo, deixando claro onde a energia do dia deve entrar
+- adicionar um radar lateral de conta e jornada, com saude, recompensa proxima e decisao pendente
+- criar uma doca de acoes rapidas entre hero e lista de startups
+- quebrar a grade simetrica com uma composicao mais intencional: startup principal, fila secundaria e painel de radar
+- manter a linguagem quente, premium e levemente gamer, sem parecer dashboard corporativo
 
 ## 4. Tela de jornada
 

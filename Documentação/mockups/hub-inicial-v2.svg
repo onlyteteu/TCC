@@ -1,0 +1,402 @@
+<svg width="1440" height="1080" viewBox="0 0 1440 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgBaseV2" x1="154" y1="54" x2="1268" y2="1018" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0D0A09"/>
+      <stop offset="0.4" stop-color="#12100E"/>
+      <stop offset="0.76" stop-color="#0F0D0C"/>
+      <stop offset="1" stop-color="#090808"/>
+    </linearGradient>
+    <radialGradient id="coreGlowV2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(716 520) rotate(90) scale(428 548)">
+      <stop stop-color="#C17A24" stop-opacity="0.18"/>
+      <stop offset="0.52" stop-color="#8E5318" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#8E5318" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="topRightGlowV2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1126 210) rotate(155) scale(326 258)">
+      <stop stop-color="#355F4B" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#355F4B" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bottomGlowV2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(724 946) rotate(-90) scale(250 470)">
+      <stop stop-color="#B86C1D" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#B86C1D" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="gridPatternV2" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0V28" stroke="#FAECD0" stroke-opacity="0.022"/>
+    </pattern>
+    <linearGradient id="topbarFillV2" x1="720" y1="52" x2="720" y2="128" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#171311" stop-opacity="0.94"/>
+      <stop offset="1" stop-color="#120E0D" stop-opacity="0.98"/>
+    </linearGradient>
+    <linearGradient id="topbarStrokeV2" x1="96" y1="52" x2="1344" y2="128" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#50361D"/>
+      <stop offset="0.46" stop-color="#B67D31"/>
+      <stop offset="1" stop-color="#342419"/>
+    </linearGradient>
+    <linearGradient id="panelFillV2" x1="0" y1="0" x2="0" y2="320" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#171311"/>
+      <stop offset="1" stop-color="#110D0C"/>
+    </linearGradient>
+    <linearGradient id="panelStrokeV2" x1="96" y1="160" x2="1344" y2="984" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#50361D"/>
+      <stop offset="0.45" stop-color="#875B2A"/>
+      <stop offset="1" stop-color="#302218"/>
+    </linearGradient>
+    <linearGradient id="panelStrokeSoftV2" x1="120" y1="160" x2="1320" y2="984" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3F2D1A"/>
+      <stop offset="0.52" stop-color="#6E4B25"/>
+      <stop offset="1" stop-color="#281D16"/>
+    </linearGradient>
+    <linearGradient id="pillActiveV2" x1="0" y1="0" x2="0" y2="40" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3A2714"/>
+      <stop offset="1" stop-color="#5B3C1A"/>
+    </linearGradient>
+    <linearGradient id="ctaPrimaryV2" x1="0" y1="0" x2="0" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E8B349"/>
+      <stop offset="1" stop-color="#C57D23"/>
+    </linearGradient>
+    <linearGradient id="successLineV2" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#9BC8AA"/>
+      <stop offset="1" stop-color="#D6DE7B"/>
+    </linearGradient>
+    <linearGradient id="amberLineV2" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#D8A957"/>
+      <stop offset="1" stop-color="#E9CA73"/>
+    </linearGradient>
+    <filter id="softShadowV2" x="60" y="18" width="1320" height="156" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="16"/>
+      <feGaussianBlur stdDeviation="18"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.028 0 0 0 0 0.02 0 0 0 0 0.012 0 0 0 0.68 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1" result="shape"/>
+    </filter>
+    <filter id="panelShadowV2" x="70" y="136" width="1300" height="868" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="18"/>
+      <feGaussianBlur stdDeviation="16"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.03 0 0 0 0 0.021 0 0 0 0 0.012 0 0 0 0.62 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_2"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_2" result="shape"/>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="1080" fill="url(#bgBaseV2)"/>
+  <rect width="1440" height="1080" fill="url(#gridPatternV2)"/>
+  <circle cx="716" cy="520" r="412" fill="url(#coreGlowV2)"/>
+  <circle cx="1126" cy="210" r="300" fill="url(#topRightGlowV2)"/>
+  <circle cx="724" cy="946" r="288" fill="url(#bottomGlowV2)"/>
+
+  <path d="M168 870C314 742 486 676 704 668" stroke="#C98528" stroke-opacity="0.08" stroke-width="2"/>
+  <path d="M1038 186C1122 224 1196 294 1266 404" stroke="#3F6852" stroke-opacity="0.1" stroke-width="2"/>
+  <path d="M982 936C1108 918 1192 878 1280 804" stroke="#C98528" stroke-opacity="0.06" stroke-width="2"/>
+
+  <g opacity="0.76">
+    <circle cx="154" cy="118" r="2.1" fill="#F8E9C7"/>
+    <circle cx="286" cy="176" r="1.6" fill="#DAA454"/>
+    <circle cx="466" cy="116" r="1.4" fill="#F1D6A2"/>
+    <circle cx="964" cy="128" r="1.5" fill="#F1D6A2"/>
+    <circle cx="1166" cy="184" r="1.7" fill="#DAA454"/>
+    <circle cx="1258" cy="124" r="2" fill="#F8E9C7"/>
+    <circle cx="1192" cy="770" r="1.8" fill="#F1D6A2"/>
+    <circle cx="298" cy="910" r="1.8" fill="#F1D6A2"/>
+  </g>
+
+  <g filter="url(#softShadowV2)">
+    <rect x="96" y="52" width="1248" height="76" rx="28" fill="url(#topbarFillV2)"/>
+    <rect x="97" y="53" width="1246" height="74" rx="27" stroke="url(#topbarStrokeV2)" stroke-width="2"/>
+  </g>
+
+  <g>
+    <circle cx="148" cy="90" r="24" fill="#1A1411"/>
+    <circle cx="148" cy="90" r="23.2" stroke="#C98A33" stroke-opacity="0.44" stroke-width="1.6"/>
+    <path d="M138 90C138 95.523 142.477 100 148 100C153.523 100 158 95.523 158 90C158 84.477 153.523 80 148 80C142.477 80 138 84.477 138 90Z" stroke="#D89A35" stroke-width="3.6"/>
+    <path d="M162 94C160.2 99.2 155.2 104.2 147.2 108" stroke="#D89A35" stroke-width="3.6" stroke-linecap="round"/>
+    <text x="188" y="87" fill="#D9A24A" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.22em">
+      STARTUP QUEST
+    </text>
+    <text x="188" y="106" fill="#8D7863" font-family="Arial, Helvetica, sans-serif" font-size="11">
+      hub inicial v2
+    </text>
+  </g>
+
+  <g>
+    <rect x="360" y="70" width="88" height="40" rx="20" fill="url(#pillActiveV2)"/>
+    <rect x="360.8" y="70.8" width="86.4" height="38.4" rx="19.2" stroke="#C18433" stroke-opacity="0.34" stroke-width="1.6"/>
+    <text x="404" y="96" text-anchor="middle" fill="#F6E2BE" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">Inicio</text>
+
+    <rect x="460" y="70" width="108" height="40" rx="20" fill="#120E0D"/>
+    <rect x="460.8" y="70.8" width="106.4" height="38.4" rx="19.2" stroke="#413022" stroke-width="1.4"/>
+    <text x="514" y="96" text-anchor="middle" fill="#A89073" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">Startups</text>
+
+    <rect x="580" y="70" width="122" height="40" rx="20" fill="#120E0D"/>
+    <rect x="580.8" y="70.8" width="120.4" height="38.4" rx="19.2" stroke="#413022" stroke-width="1.4"/>
+    <text x="641" y="96" text-anchor="middle" fill="#A89073" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">Conquistas</text>
+
+    <rect x="714" y="70" width="108" height="40" rx="20" fill="#120E0D"/>
+    <rect x="714.8" y="70.8" width="106.4" height="38.4" rx="19.2" stroke="#413022" stroke-width="1.4"/>
+    <text x="768" y="96" text-anchor="middle" fill="#A89073" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">Jornada</text>
+  </g>
+
+  <g>
+    <rect x="1188" y="66" width="122" height="48" rx="24" fill="#120E0D"/>
+    <rect x="1188.8" y="66.8" width="120.4" height="46.4" rx="23.2" stroke="#473220" stroke-width="1.4"/>
+    <circle cx="1214" cy="90" r="14" fill="#201814"/>
+    <circle cx="1214" cy="90" r="13.2" stroke="#D39A42" stroke-opacity="0.42" stroke-width="1.2"/>
+    <text x="1240" y="86" fill="#F2DEC0" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">Matheus</text>
+    <text x="1240" y="101" fill="#8D7863" font-family="Arial, Helvetica, sans-serif" font-size="11">conta</text>
+    <path d="M1285 87L1290 92L1295 87" stroke="#B2936A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <text x="96" y="182" fill="#9F8A73" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" letter-spacing="0.18em">
+    CENTRAL DA CONTA
+  </text>
+  <text x="96" y="238" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="56" font-weight="700">
+    Ola, Matheus.
+  </text>
+  <text x="96" y="274" fill="#9C8772" font-family="Arial, Helvetica, sans-serif" font-size="19">
+    Uma home menos corporativa e mais cabine de comando: startup principal em foco, radar da conta
+  </text>
+  <text x="96" y="301" fill="#9C8772" font-family="Arial, Helvetica, sans-serif" font-size="19">
+    e um caminho rapido para decidir o que merece energia agora.
+  </text>
+
+  <g filter="url(#panelShadowV2)">
+    <rect x="96" y="334" width="760" height="250" rx="36" fill="url(#panelFillV2)"/>
+    <rect x="97.2" y="335.2" width="757.6" height="247.6" rx="34.8" stroke="url(#panelStrokeV2)" stroke-width="2.4"/>
+    <rect x="122" y="360" width="164" height="34" rx="17" fill="#1B1411"/>
+    <rect x="122.8" y="360.8" width="162.4" height="32.4" rx="16.2" stroke="#5B4121" stroke-width="1.2"/>
+    <text x="204" y="382" text-anchor="middle" fill="#D9A24A" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.16em">
+      HUB EM FOCO
+    </text>
+
+    <text x="122" y="434" fill="#F3E1C2" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="700">
+      Aurora Labs lidera o dia.
+    </text>
+    <text x="122" y="468" fill="#A88F73" font-family="Arial, Helvetica, sans-serif" font-size="18">
+      O hub ja sabe qual startup merece a primeira energia e empilha o resto sem virar planilha.
+    </text>
+
+    <rect x="122" y="500" width="246" height="54" rx="27" fill="url(#ctaPrimaryV2)"/>
+    <text x="245" y="534" text-anchor="middle" fill="#2A1808" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700">
+      Abrir startup principal
+    </text>
+
+    <rect x="382" y="500" width="166" height="54" rx="27" fill="#140F0D"/>
+    <rect x="382.8" y="500.8" width="164.4" height="52.4" rx="26.2" stroke="#5B4121" stroke-width="1.6"/>
+    <text x="465" y="534" text-anchor="middle" fill="#EAD9BB" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">
+      Nova startup
+    </text>
+
+    <rect x="584" y="360" width="240" height="194" rx="28" fill="#120E0D"/>
+    <rect x="584.8" y="360.8" width="238.4" height="192.4" rx="27.2" stroke="#3F2D1A" stroke-width="1.4"/>
+    <text x="612" y="392" fill="#A78F73" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.12em">
+      HOJE NO COMANDO
+    </text>
+    <circle cx="618" cy="424" r="5" fill="#9AC8AB"/>
+    <text x="634" y="429" fill="#EBDAB9" font-family="Arial, Helvetica, sans-serif" font-size="16">
+      validar publico inicial
+    </text>
+    <circle cx="618" cy="460" r="5" fill="#D9A24A"/>
+    <text x="634" y="465" fill="#EBDAB9" font-family="Arial, Helvetica, sans-serif" font-size="16">
+      revisar mapa da AtlasPay
+    </text>
+    <circle cx="618" cy="496" r="5" fill="#F0D7A5"/>
+    <text x="634" y="501" fill="#EBDAB9" font-family="Arial, Helvetica, sans-serif" font-size="16">
+      resgatar conquista pronta
+    </text>
+    <text x="612" y="538" fill="#8F7A66" font-family="Arial, Helvetica, sans-serif" font-size="14">
+      Em vez de quatro numeros frios, o bloco aponta a acao.
+    </text>
+  </g>
+
+  <g filter="url(#panelShadowV2)">
+    <rect x="880" y="334" width="464" height="250" rx="36" fill="url(#panelFillV2)"/>
+    <rect x="881.2" y="335.2" width="461.6" height="247.6" rx="34.8" stroke="url(#panelStrokeV2)" stroke-width="2.4"/>
+    <text x="912" y="382" fill="#A78F73" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.14em">
+      RADAR DA JORNADA
+    </text>
+    <text x="912" y="414" fill="#F3E1C2" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">
+      Tudo que pede decisao rapida.
+    </text>
+
+    <circle cx="1008" cy="482" r="76" stroke="#312419" stroke-width="16"/>
+    <path d="M1008 406 A76 76 0 1 1 948 530" stroke="url(#successLineV2)" stroke-width="16" stroke-linecap="round"/>
+    <circle cx="1008" cy="482" r="58" fill="#140F0D"/>
+    <text x="1008" y="476" text-anchor="middle" fill="#D7A14A" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" letter-spacing="0.1em">
+      SAUDE
+    </text>
+    <text x="1008" y="512" text-anchor="middle" fill="#F4E1BF" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">
+      74%
+    </text>
+
+    <rect x="1114" y="430" width="198" height="36" rx="18" fill="#15100D"/>
+    <rect x="1114.8" y="430.8" width="196.4" height="34.4" rx="17.2" stroke="#4B341E" stroke-width="1.2"/>
+    <text x="1132" y="453" fill="#8F7A66" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700">EM FOCO</text>
+    <text x="1216" y="453" fill="#F3E1C2" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">Aurora Labs</text>
+
+    <rect x="1114" y="476" width="198" height="36" rx="18" fill="#15100D"/>
+    <rect x="1114.8" y="476.8" width="196.4" height="34.4" rx="17.2" stroke="#4B341E" stroke-width="1.2"/>
+    <text x="1132" y="499" fill="#8F7A66" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700">PROXIMA</text>
+    <text x="1212" y="499" fill="#F3E1C2" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">3 entrevistas</text>
+
+    <rect x="1114" y="522" width="198" height="36" rx="18" fill="#15100D"/>
+    <rect x="1114.8" y="522.8" width="196.4" height="34.4" rx="17.2" stroke="#4B341E" stroke-width="1.2"/>
+    <text x="1132" y="545" fill="#8F7A66" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700">RECOMPENSA</text>
+    <text x="1218" y="545" fill="#F3E1C2" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">Mapa fundador</text>
+  </g>
+
+  <g filter="url(#panelShadowV2)">
+    <rect x="96" y="616" width="1248" height="112" rx="30" fill="url(#panelFillV2)"/>
+    <rect x="97.2" y="617.2" width="1245.6" height="109.6" rx="28.8" stroke="url(#panelStrokeSoftV2)" stroke-width="2.4"/>
+
+    <g>
+      <rect x="122" y="638" width="282" height="68" rx="22" fill="#120E0D"/>
+      <rect x="122.8" y="638.8" width="280.4" height="66.4" rx="21.2" stroke="#433021" stroke-width="1.4"/>
+      <text x="146" y="664" fill="#A78F73" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.1em">
+        CONTINUAR
+      </text>
+      <text x="146" y="689" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">
+        Aurora Labs
+      </text>
+      <text x="322" y="689" fill="#9AC8AB" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">
+        Publico inicial
+      </text>
+    </g>
+
+    <g>
+      <rect x="420" y="638" width="282" height="68" rx="22" fill="#120E0D"/>
+      <rect x="420.8" y="638.8" width="280.4" height="66.4" rx="21.2" stroke="#433021" stroke-width="1.4"/>
+      <text x="444" y="664" fill="#A78F73" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.1em">
+        CONQUISTAS
+      </text>
+      <text x="444" y="689" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">
+        2 prontas para abrir
+      </text>
+    </g>
+
+    <g>
+      <rect x="718" y="638" width="282" height="68" rx="22" fill="#120E0D"/>
+      <rect x="718.8" y="638.8" width="280.4" height="66.4" rx="21.2" stroke="#433021" stroke-width="1.4"/>
+      <text x="742" y="664" fill="#A78F73" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.1em">
+        CONTA
+      </text>
+      <text x="742" y="689" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">
+        Perfil, preferencias e saida
+      </text>
+    </g>
+
+    <g>
+      <rect x="1016" y="638" width="302" height="68" rx="22" fill="#120E0D"/>
+      <rect x="1016.8" y="638.8" width="300.4" height="66.4" rx="21.2" stroke="#433021" stroke-width="1.4"/>
+      <text x="1040" y="664" fill="#A78F73" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.1em">
+        NOVA ABERTURA
+      </text>
+      <text x="1040" y="689" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">
+        Criar outra startup sem sair do hub
+      </text>
+    </g>
+  </g>
+
+  <text x="96" y="790" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">
+    Seu hangar
+  </text>
+  <text x="96" y="822" fill="#9C8772" font-family="Arial, Helvetica, sans-serif" font-size="16">
+    Uma leitura rapida do que esta vivo, do que esta maduro e do que merece entrar em campo primeiro.
+  </text>
+
+  <g filter="url(#panelShadowV2)">
+    <rect x="96" y="848" width="560" height="176" rx="32" fill="url(#panelFillV2)"/>
+    <rect x="97.2" y="849.2" width="557.6" height="173.6" rx="30.8" stroke="url(#panelStrokeV2)" stroke-width="2.4"/>
+    <rect x="124" y="874" width="132" height="32" rx="16" fill="#1B1411"/>
+    <rect x="124.8" y="874.8" width="130.4" height="30.4" rx="15.2" stroke="#5B4121" stroke-width="1.2"/>
+    <text x="190" y="895" text-anchor="middle" fill="#E7B863" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.1em">
+      STARTUP PRINCIPAL
+    </text>
+    <text x="124" y="944" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">
+      Aurora Labs
+    </text>
+    <text x="124" y="972" fill="#9F8A73" font-family="Arial, Helvetica, sans-serif" font-size="16">
+      Sistema para reduzir desperdicio em restaurantes pequenos.
+    </text>
+
+    <text x="124" y="1002" fill="#A78F73" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.1em">
+      MAPA INICIAL
+    </text>
+    <rect x="124" y="1012" width="244" height="8" rx="4" fill="#2F251D"/>
+    <rect x="124" y="1012" width="166" height="8" rx="4" fill="url(#successLineV2)"/>
+    <text x="382" y="1020" fill="#9AC8AB" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">
+      68% concluido
+    </text>
+
+    <rect x="408" y="882" width="214" height="92" rx="24" fill="#120E0D"/>
+    <rect x="408.8" y="882.8" width="212.4" height="90.4" rx="23.2" stroke="#433021" stroke-width="1.4"/>
+    <text x="430" y="910" fill="#A78F73" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.1em">
+      PROXIMA MISSAO
+    </text>
+    <text x="430" y="938" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">
+      Validar publico inicial
+    </text>
+    <text x="430" y="960" fill="#9C8772" font-family="Arial, Helvetica, sans-serif" font-size="13">
+      Fazer 3 entrevistas e fechar
+    </text>
+    <text x="430" y="978" fill="#9C8772" font-family="Arial, Helvetica, sans-serif" font-size="13">
+      o recorte de cliente.
+    </text>
+  </g>
+
+  <g filter="url(#panelShadowV2)">
+    <rect x="680" y="848" width="320" height="76" rx="28" fill="url(#panelFillV2)"/>
+    <rect x="681.2" y="849.2" width="317.6" height="73.6" rx="26.8" stroke="url(#panelStrokeSoftV2)" stroke-width="2"/>
+    <text x="706" y="878" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">
+      AtlasPay
+    </text>
+    <text x="706" y="900" fill="#9C8772" font-family="Arial, Helvetica, sans-serif" font-size="14">
+      Conta PJ simples para autonomos
+    </text>
+    <text x="894" y="900" fill="#E7B863" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700">
+      problema
+    </text>
+  </g>
+
+  <g filter="url(#panelShadowV2)">
+    <rect x="680" y="948" width="320" height="76" rx="28" fill="url(#panelFillV2)"/>
+    <rect x="681.2" y="949.2" width="317.6" height="73.6" rx="26.8" stroke="url(#panelStrokeSoftV2)" stroke-width="2"/>
+    <text x="706" y="978" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">
+      Nebula Studio
+    </text>
+    <text x="706" y="1000" fill="#9C8772" font-family="Arial, Helvetica, sans-serif" font-size="14">
+      Ferramenta visual para roteiros
+    </text>
+    <text x="918" y="1000" fill="#9AC8AB" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700">
+      mvp
+    </text>
+  </g>
+
+  <g filter="url(#panelShadowV2)">
+    <rect x="1024" y="848" width="320" height="176" rx="32" fill="url(#panelFillV2)"/>
+    <rect x="1025.2" y="849.2" width="317.6" height="173.6" rx="30.8" stroke="url(#panelStrokeV2)" stroke-width="2.4"/>
+    <text x="1052" y="882" fill="#A78F73" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.12em">
+      HOJE NO RADAR
+    </text>
+    <circle cx="1060" cy="918" r="5" fill="#9AC8AB"/>
+    <text x="1076" y="923" fill="#EBDAB9" font-family="Arial, Helvetica, sans-serif" font-size="15">
+      Aurora Labs quase abre validacao.
+    </text>
+    <circle cx="1060" cy="952" r="5" fill="#D9A24A"/>
+    <text x="1076" y="957" fill="#EBDAB9" font-family="Arial, Helvetica, sans-serif" font-size="15">
+      AtlasPay ainda pede a dor central.
+    </text>
+    <circle cx="1060" cy="986" r="5" fill="#F0D7A5"/>
+    <text x="1076" y="991" fill="#EBDAB9" font-family="Arial, Helvetica, sans-serif" font-size="15">
+      Conquista pronta: mapa fundador.
+    </text>
+
+    <rect x="1052" y="1004" width="264" height="1" fill="#2E241C"/>
+    <text x="1052" y="1024" fill="#9C8772" font-family="Arial, Helvetica, sans-serif" font-size="13">
+      A ideia da v2 e trocar grade fria por foco, radar e decisao.
+    </text>
+  </g>
+</svg>

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import type { CSSProperties } from "react";
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 
 import { QuestMark } from "@/components/quest-mark";
 import type { AuthErrorPayload, AuthMode, AuthSuccessPayload } from "@/lib/auth-types";
@@ -30,6 +30,8 @@ const fieldLabels: Record<keyof AuthFormState, string> = {
   confirmPassword: "Confirmar senha",
 };
 
+const JOURNEY_OPENING_DELAY = 1050;
+
 export function AuthScreen() {
   const router = useRouter();
   const [mode, setMode] = useState<AuthMode>("login");
@@ -37,9 +39,23 @@ export function AuthScreen() {
   const [visiblePasswords, setVisiblePasswords] = useState<Record<string, boolean>>({});
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [isJourneyOpening, setIsJourneyOpening] = useState(false);
+  const journeyTimeoutRef = useRef<number | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const submitLabel = mode === "login" ? "Entrar na plataforma" : "Criar conta";
+  const isAuthBusy = isAuthenticating || isPending || isJourneyOpening;
+
+  useEffect(() => {
+    router.prefetch("/painel");
+
+    return () => {
+      if (journeyTimeoutRef.current !== null) {
+        window.clearTimeout(journeyTimeoutRef.current);
+      }
+    };
+  }, [router]);
 
   const activeFields =
     mode === "login"
@@ -92,6 +108,11 @@ export function AuthScreen() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (isAuthBusy) {
+      return;
+    }
+
     setStatusMessage(null);
     setFieldErrors({});
 
@@ -112,6 +133,8 @@ export function AuthScreen() {
           }
         : formState;
 
+    setIsAuthenticating(true);
+
     try {
       const response = await fetch(endpoint, {
         method: "POST",
@@ -129,15 +152,24 @@ export function AuthScreen() {
       }
 
       const successPayload = (await response.json()) as AuthSuccessPayload;
-      setStatusMessage(successPayload.message);
+      setStatusMessage(
+        mode === "register"
+          ? "Conta criada. Abrindo sua primeira jornada..."
+          : successPayload.message
+      );
+      setIsJourneyOpening(true);
 
-      startTransition(() => {
-        router.push("/painel");
-      });
+      journeyTimeoutRef.current = window.setTimeout(() => {
+        startTransition(() => {
+          router.push("/painel");
+        });
+      }, JOURNEY_OPENING_DELAY);
     } catch {
       setStatusMessage(
         "Nao foi possivel falar com o servidor agora. Confira se o backend Django esta rodando."
       );
+    } finally {
+      setIsAuthenticating(false);
     }
   }
 
@@ -149,6 +181,10 @@ export function AuthScreen() {
   }
 
   function changeMode(nextMode: AuthMode) {
+    if (isAuthBusy) {
+      return;
+    }
+
     setMode(nextMode);
     setStatusMessage(null);
     setFieldErrors({});
@@ -164,7 +200,7 @@ export function AuthScreen() {
   const activeTabIndex = mode === "login" ? 0 : 1;
 
   return (
-    <main className={styles.page}>
+    <main className={[styles.page, isJourneyOpening ? styles.pageJourneyOpening : ""].join(" ")}>
       <div className={styles.beam} />
       <div className={styles.orbitLeft} />
       <div className={styles.orbitRight} />
@@ -172,6 +208,14 @@ export function AuthScreen() {
       {Array.from({ length: 8 }).map((_, index) => (
         <span className={styles.star} key={index} />
       ))}
+
+      {isJourneyOpening ? (
+        <div className={styles.journeyPortal} aria-live="polite" aria-label="Preparando sua jornada">
+          <div className={styles.portalRing} />
+          <div className={styles.portalCore} />
+          <p className={styles.portalMessage}>Preparando sua jornada...</p>
+        </div>
+      ) : null}
 
       <div className={styles.content}>
         <div
@@ -202,7 +246,7 @@ export function AuthScreen() {
                 className={[styles.tab, mode === "login" ? styles.tabActive : ""]
                   .filter(Boolean)
                   .join(" ")}
-                disabled={isPending}
+                disabled={isAuthBusy}
                 onClick={() => changeMode("login")}
                 role="tab"
                 type="button"
@@ -214,7 +258,7 @@ export function AuthScreen() {
                 className={[styles.tab, mode === "register" ? styles.tabActive : ""]
                   .filter(Boolean)
                   .join(" ")}
-                disabled={isPending}
+                disabled={isAuthBusy}
                 onClick={() => changeMode("register")}
                 role="tab"
                 type="button"
@@ -361,8 +405,14 @@ export function AuthScreen() {
                   {statusMessage}
                 </div>
 
-                <button className={styles.submitButton} disabled={isPending} type="submit">
-                  <span>{isPending ? "Preparando sua jornada..." : submitLabel}</span>
+                <button className={styles.submitButton} disabled={isAuthBusy} type="submit">
+                  <span>
+                    {isJourneyOpening
+                      ? "Abrindo sua jornada..."
+                      : isAuthenticating || isPending
+                        ? "Confirmando dados..."
+                        : submitLabel}
+                  </span>
                 </button>
               </form>
             </div>

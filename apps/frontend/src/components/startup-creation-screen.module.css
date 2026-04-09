@@ -1,13 +1,25 @@
 .page {
-  position: relative;
+  position: fixed;
+  inset: 0;
   min-height: 100dvh;
-  overflow: clip;
+  height: 100dvh;
+  overflow-x: clip;
+  overflow-y: hidden;
   background:
     radial-gradient(circle at 50% 45%, rgba(197, 122, 32, 0.18), transparent 29%),
     radial-gradient(circle at 76% 24%, rgba(53, 91, 71, 0.16), transparent 22%),
     radial-gradient(circle at 50% 88%, rgba(181, 100, 28, 0.14), transparent 24%),
     linear-gradient(180deg, #0b0908 0%, #12100f 38%, #0f0e0d 72%, #080707 100%);
   color: #f4e5ca;
+  scrollbar-width: none;
+}
+
+.page::-webkit-scrollbar {
+  display: none;
+}
+
+.pageCelebrating {
+  isolation: isolate;
 }
 
 .page::before {
@@ -19,6 +31,18 @@
     linear-gradient(90deg, rgba(250, 236, 208, 0.022) 1px, transparent 1px);
   background-size: 28px 28px;
   pointer-events: none;
+}
+
+.page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 228, 174, 0.34), transparent 24%),
+    linear-gradient(180deg, rgba(8, 7, 6, 0.02), rgba(8, 7, 6, 0.82));
+  pointer-events: none;
+  animation: startupArrivalFlare 980ms ease-out forwards;
 }
 
 .beam,
@@ -172,14 +196,27 @@
   position: relative;
   z-index: 1;
   display: grid;
+  align-content: start;
   justify-items: center;
+  width: 100%;
+  min-height: auto;
+  padding: 22px 24px 34px;
+  overflow-x: clip;
+  overflow-y: hidden;
+}
+
+.contentNameStep {
   min-height: 100dvh;
   padding: 40px 24px 72px;
 }
 
+.contentCelebrating {
+  animation: foundationSceneSettle 2000ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
 .brandTitle {
-  margin-top: 10px;
-  padding: 12px 28px;
+  margin-top: 2px;
+  padding: 9px 24px;
   border-radius: 999px;
   background: linear-gradient(
     90deg,
@@ -189,25 +226,61 @@
   );
   color: #d7a14a;
   font-family: var(--font-heading), "Segoe UI", sans-serif;
-  font-size: 1rem;
+  font-size: 0.88rem;
   font-weight: 800;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   box-shadow: 0 0 30px rgba(229, 182, 91, 0.06);
+  opacity: 0;
+  animation: journeyLayerIn 520ms cubic-bezier(0.22, 1, 0.36, 1) 90ms forwards;
 }
 
 .logoRegion {
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  margin-top: 8px;
+  margin-bottom: 24px;
+  opacity: 0;
+  transform-origin: center;
+  animation: logoInvocationIn 640ms cubic-bezier(0.22, 1, 0.36, 1) 210ms forwards;
+}
+
+.logoRegion > * {
+  transform: scale(0.75);
+}
+
+.logoRegionNameStep {
+  width: auto;
+  height: auto;
   margin-top: 22px;
   margin-bottom: 24px;
 }
 
+.logoRegionNameStep > * {
+  transform: none;
+}
+
 .cardFrame {
-  width: min(560px, calc(100vw - 32px));
+  width: min(690px, 100%);
+  margin-top: 10px;
+  opacity: 0;
+  transform-origin: top center;
+  animation: startupCardFrameIn 720ms cubic-bezier(0.16, 1, 0.3, 1) 360ms forwards;
+}
+
+.cardFrameNameStep {
+  width: min(560px, 100%);
+}
+
+.cardFrameSegmentStep {
+  width: min(740px, 100%);
 }
 
 .card {
   position: relative;
-  padding: 58px 46px 56px;
+  padding: 34px clamp(22px, 5vw, 54px) 38px;
   background: linear-gradient(180deg, rgba(23, 19, 17, 0.94), rgba(14, 12, 11, 0.97));
   color: #f4e5ca;
   clip-path: polygon(
@@ -223,6 +296,129 @@
   box-shadow:
     0 28px 68px rgba(7, 5, 2, 0.52),
     inset 0 0 0 1px rgba(99, 64, 27, 0.34);
+  animation: cardBorderWake 1000ms ease-out 420ms both;
+}
+
+.cardNameStep {
+  padding: 58px 46px 56px;
+}
+
+.cardNameStep .cardNav {
+  margin-bottom: 16px;
+}
+
+.cardNameStep .progressTrack {
+  margin-bottom: 26px;
+}
+
+.cardNameStep .badge {
+  min-height: 38px;
+  padding: 0 26px;
+}
+
+.cardNameStep .title {
+  margin-top: 26px;
+  font-size: clamp(2.8rem, 6vw, 4rem);
+}
+
+.cardNameStep .subtitle {
+  margin-top: 14px;
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.cardNameStep .form {
+  margin-top: 34px;
+}
+
+.cardNameStep .field {
+  gap: 12px;
+}
+
+.cardNameStep .inputShell {
+  min-height: 68px;
+  padding: 0 22px;
+}
+
+.cardNameStep .fieldMessage {
+  min-height: 18px;
+}
+
+.cardNameStep .status {
+  min-height: 22px;
+  margin-top: 12px;
+}
+
+.cardNameStep .submitButton {
+  min-height: 66px;
+  margin-top: 26px;
+}
+
+.cardSegmentStep {
+  padding-top: 31px;
+  padding-bottom: 32px;
+}
+
+.cardSegmentStep .cardNav {
+  margin-bottom: 9px;
+}
+
+.cardSegmentStep .progressTrack {
+  margin-bottom: 15px;
+}
+
+.cardSegmentStep .badge {
+  min-height: 33px;
+  padding: 0 19px;
+}
+
+.cardSegmentStep .title {
+  margin-top: 14px;
+  font-size: clamp(2.2rem, 4vw, 3.35rem);
+}
+
+.cardSegmentStep .subtitle {
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+.cardSegmentStep .form {
+  margin-top: 18px;
+}
+
+.cardSegmentStep .field {
+  gap: 8px;
+}
+
+.cardSegmentStep .segmentGrid {
+  gap: 10px;
+}
+
+.cardSegmentStep .segmentOption {
+  min-height: 80px;
+  padding: 14px;
+}
+
+.cardSegmentStep .segmentName {
+  font-size: 0.98rem;
+}
+
+.cardSegmentStep .segmentDescription {
+  font-size: 0.76rem;
+  line-height: 1.34;
+}
+
+.cardSegmentStep .fieldMessage {
+  min-height: 13px;
+}
+
+.cardSegmentStep .status {
+  margin-top: 6px;
+}
+
+.cardSegmentStep .submitButton {
+  min-height: 56px;
+  margin-top: 16px;
 }
 
 .card::before,
@@ -245,10 +441,15 @@
   opacity: 0.9;
 }
 
+.cardNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 28px;
+  margin-bottom: 10px;
+}
+
 .backButton {
-  position: absolute;
-  top: 24px;
-  right: 28px;
   border: 0;
   background: transparent;
   color: #b8986d;
@@ -258,12 +459,42 @@
   cursor: pointer;
 }
 
+.backButton:disabled {
+  opacity: 0.42;
+  cursor: default;
+}
+
+.progressText {
+  color: #8f7a66;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.progressTrack {
+  height: 4px;
+  margin-bottom: 18px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(91, 64, 39, 0.62);
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #9ac8ab 0%, #d89a35 100%);
+  box-shadow: 0 0 16px rgba(216, 154, 53, 0.18);
+  transition: width 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 38px;
-  padding: 0 26px;
+  min-height: 34px;
+  padding: 0 22px;
   border: 1.4px solid #6a4a28;
   border-radius: 999px;
   background: linear-gradient(180deg, #382515, #211711);
@@ -272,31 +503,70 @@
   font-weight: 800;
   letter-spacing: 0.22em;
   text-transform: uppercase;
+  opacity: 0;
+  animation: cardDetailIn 440ms cubic-bezier(0.22, 1, 0.36, 1) 650ms forwards;
 }
 
 .title {
-  margin: 26px 0 0;
+  margin: 20px 0 0;
   font-family: var(--font-heading), "Segoe UI", sans-serif;
-  font-size: clamp(2.8rem, 6vw, 4rem);
+  font-size: clamp(2.35rem, 4.4vw, 3.75rem);
   line-height: 0.98;
   letter-spacing: -0.04em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  opacity: 1;
+}
+
+.titleWord {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.titleSpace {
+  white-space: pre;
+}
+
+.titleCharacter {
+  display: inline-block;
+  min-width: 0.02em;
+  opacity: 0;
+  transform: translateY(0.14em);
+  filter: blur(5px);
+  animation: titleCharacterWrite 240ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(120ms + min(var(--character-index, 0), 36) * 22ms);
+}
+
+.titleAccessible {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.stepMotion {
+  animation: stepContentIn 520ms cubic-bezier(0.22, 1, 0.36, 1) 220ms both;
 }
 
 .subtitle {
-  margin: 14px 0 0;
+  margin: 12px 0 0;
   color: #9f8973;
-  font-size: 1.02rem;
-  line-height: 1.7;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  text-wrap: pretty;
 }
 
 .form {
   display: grid;
-  margin-top: 34px;
+  margin-top: 22px;
 }
 
 .field {
   display: grid;
-  gap: 12px;
+  gap: 8px;
 }
 
 .label {
@@ -311,8 +581,8 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  min-height: 68px;
-  padding: 0 22px;
+  min-height: 58px;
+  padding: 0 18px;
   border: 1.6px solid #5b4027;
   border-radius: 24px;
   background: #0d0b0a;
@@ -320,6 +590,26 @@
     border-color 180ms ease,
     box-shadow 180ms ease,
     transform 180ms ease;
+}
+
+.textareaShell {
+  display: flex;
+  gap: 14px;
+  min-height: 118px;
+  padding: 18px;
+  border: 1.6px solid #5b4027;
+  border-radius: 28px;
+  background: #0d0b0a;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.textareaShell:focus-within {
+  border-color: #c58531;
+  box-shadow: 0 0 0 4px rgba(197, 133, 49, 0.12);
+  transform: translateY(-1px);
 }
 
 .inputShell:focus-within {
@@ -351,12 +641,29 @@
   font-size: 1.05rem;
 }
 
+.textarea {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  resize: vertical;
+  background: transparent;
+  color: #f0d8b4;
+  font: inherit;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
 .input::placeholder {
   color: #a99885;
 }
 
+.textarea::placeholder {
+  color: #a99885;
+}
+
 .fieldMessage {
-  min-height: 18px;
+  min-height: 16px;
   color: #e3a08b;
   font-size: 0.86rem;
 }
@@ -437,9 +744,70 @@
   font-size: 0.82rem;
 }
 
+.helperText {
+  margin: 8px 0 0;
+  color: #8f7a66;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.segmentGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.segmentOption {
+  display: grid;
+  gap: 8px;
+  min-height: 84px;
+  padding: 14px;
+  border: 1.4px solid #5b4027;
+  border-radius: 22px;
+  background: #0d0b0a;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease,
+    background-color 180ms ease;
+}
+
+.segmentOption:hover,
+.segmentOptionActive {
+  border-color: rgba(154, 200, 171, 0.76);
+  background: linear-gradient(135deg, rgba(42, 29, 18, 0.94), rgba(19, 32, 24, 0.94));
+  box-shadow: 0 0 0 4px rgba(154, 200, 171, 0.08);
+  transform: translateY(-2px);
+}
+
+.segmentOption:disabled {
+  cursor: default;
+}
+
+.segmentName {
+  color: #f4e5ca;
+  font-family: var(--font-heading), "Segoe UI", sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.segmentDescription {
+  color: #9f8973;
+  font-size: 0.78rem;
+  line-height: 1.38;
+}
+
+.segmentOptionActive .segmentDescription {
+  color: #9ac8ab;
+}
+
 .status {
-  min-height: 22px;
-  margin-top: 12px;
+  min-height: 18px;
+  margin-top: 6px;
   font-size: 0.92rem;
   line-height: 1.5;
 }
@@ -455,8 +823,8 @@
 .submitButton {
   position: relative;
   overflow: hidden;
-  min-height: 66px;
-  margin-top: 26px;
+  min-height: 58px;
+  margin-top: 18px;
   border: 1px solid rgba(240, 215, 164, 0.24);
   border-radius: 24px;
   background: linear-gradient(180deg, #e8b349 0%, #c07a22 100%);
@@ -493,6 +861,157 @@
   cursor: wait;
 }
 
+.celebrationOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: grid;
+  place-items: center;
+  padding: 32px 24px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.celebrationOverlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(248, 218, 151, 0.18), transparent 20%),
+    linear-gradient(180deg, rgba(7, 6, 5, 0.12), rgba(7, 6, 5, 0.82));
+  animation: foundationBackdropIn 1050ms ease-out forwards;
+}
+
+.celebrationGlow,
+.celebrationRing,
+.celebrationRingSecondary,
+.celebrationSpark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+}
+
+.celebrationGlow {
+  width: min(48vw, 520px);
+  height: min(48vw, 520px);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(233, 182, 79, 0.42), rgba(233, 182, 79, 0.12) 38%, transparent 72%);
+  transform: translate(-50%, -50%) scale(0.58);
+  filter: blur(18px);
+  animation: foundationGlowPulse 2200ms cubic-bezier(0.2, 1, 0.36, 1) forwards;
+}
+
+.celebrationRing,
+.celebrationRingSecondary {
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.6);
+  opacity: 0;
+}
+
+.celebrationRing {
+  width: min(32vw, 320px);
+  height: min(32vw, 320px);
+  border: 1.8px solid rgba(248, 216, 144, 0.62);
+  box-shadow: 0 0 28px rgba(233, 182, 79, 0.18);
+  animation: foundationRingExpand 1800ms cubic-bezier(0.16, 1, 0.3, 1) 120ms forwards;
+}
+
+.celebrationRingSecondary {
+  width: min(42vw, 440px);
+  height: min(42vw, 440px);
+  border: 1px dashed rgba(242, 202, 129, 0.32);
+  animation: foundationRingExpand 2200ms cubic-bezier(0.16, 1, 0.3, 1) 240ms forwards;
+}
+
+.celebrationSpark {
+  width: 4px;
+  height: 52px;
+  border-radius: 999px;
+  opacity: 0;
+  background: linear-gradient(180deg, rgba(255, 240, 204, 0), rgba(255, 225, 163, 0.94), rgba(255, 240, 204, 0));
+  transform:
+    translate(-50%, -50%)
+    rotate(calc(var(--spark-index, 0) * 30deg))
+    translateY(16px)
+    scaleY(0.28);
+  transform-origin: center calc(100% + 26px);
+  filter: drop-shadow(0 0 12px rgba(233, 182, 79, 0.28));
+  animation: foundationSparkRise 1700ms cubic-bezier(0.22, 1, 0.36, 1)
+    calc(180ms + var(--spark-index, 0) * 42ms) forwards;
+}
+
+.celebrationCard {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  width: min(520px, 100%);
+  padding: 34px 30px 30px;
+  border: 1px solid rgba(234, 192, 106, 0.32);
+  border-radius: 32px;
+  background: linear-gradient(180deg, rgba(28, 22, 17, 0.92), rgba(13, 11, 10, 0.96));
+  box-shadow:
+    0 32px 80px rgba(0, 0, 0, 0.42),
+    0 0 44px rgba(226, 171, 66, 0.12);
+  text-align: center;
+  backdrop-filter: blur(10px);
+  animation: foundationCardRise 1900ms cubic-bezier(0.16, 1, 0.3, 1) 140ms both;
+}
+
+.celebrationLogo {
+  display: grid;
+  place-items: center;
+  width: 126px;
+  height: 126px;
+  margin-bottom: 12px;
+  animation: foundationSealLift 1900ms cubic-bezier(0.16, 1, 0.3, 1) 100ms both;
+}
+
+.celebrationLogo > * {
+  transform: scale(0.95);
+}
+
+.celebrationEyebrow {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: rgba(232, 179, 73, 0.12);
+  color: #e6b55c;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.celebrationTitle {
+  margin-top: 16px;
+  font-family: var(--font-heading), "Segoe UI", sans-serif;
+  font-size: clamp(2rem, 4.2vw, 3.1rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.celebrationText {
+  margin: 12px 0 0;
+  color: #e8d7b8;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.celebrationHint {
+  margin-top: 16px;
+  color: #99c9aa;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 @keyframes auraBreathePrimary {
   0%,
   100% {
@@ -519,8 +1038,262 @@
   }
 }
 
+@keyframes startupArrivalFlare {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  52% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.14);
+    visibility: hidden;
+  }
+}
+
+@keyframes journeyLayerIn {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(-12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes logoInvocationIn {
+  0% {
+    opacity: 0;
+    filter: blur(10px) drop-shadow(0 0 0 rgba(216, 154, 53, 0));
+    transform: translateY(-6px) scale(0.78);
+  }
+
+  68% {
+    opacity: 1;
+    filter: blur(0) drop-shadow(0 0 28px rgba(216, 154, 53, 0.26));
+    transform: translateY(0) scale(1.06);
+  }
+
+  100% {
+    opacity: 1;
+    filter: blur(0) drop-shadow(0 0 14px rgba(216, 154, 53, 0.12));
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes startupCardFrameIn {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(42px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes cardBorderWake {
+  0% {
+    box-shadow:
+      0 20px 48px rgba(7, 5, 2, 0.34),
+      0 0 0 rgba(214, 143, 46, 0),
+      inset 0 0 0 1px rgba(99, 64, 27, 0.2);
+  }
+
+  52% {
+    box-shadow:
+      0 32px 76px rgba(7, 5, 2, 0.56),
+      0 0 56px rgba(214, 143, 46, 0.18),
+      inset 0 0 0 1px rgba(216, 147, 51, 0.48);
+  }
+
+  100% {
+    box-shadow:
+      0 28px 68px rgba(7, 5, 2, 0.52),
+      inset 0 0 0 1px rgba(99, 64, 27, 0.34);
+  }
+}
+
+@keyframes cardDetailIn {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes titleCharacterWrite {
+  0% {
+    opacity: 0;
+    filter: blur(5px);
+    transform: translateY(0.14em);
+  }
+
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes stepContentIn {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(22px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes foundationSceneSettle {
+  0% {
+    opacity: 1;
+    filter: saturate(1) brightness(1);
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0.44;
+    filter: saturate(1.08) brightness(0.88) blur(1px);
+    transform: scale(0.986);
+  }
+}
+
+@keyframes foundationBackdropIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes foundationGlowPulse {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.48);
+  }
+
+  55% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.02);
+  }
+
+  100% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(0.94);
+  }
+}
+
+@keyframes foundationRingExpand {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.52);
+  }
+
+  48% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.42);
+  }
+}
+
+@keyframes foundationSparkRise {
+  0% {
+    opacity: 0;
+    transform:
+      translate(-50%, -50%)
+      rotate(calc(var(--spark-index, 0) * 30deg))
+      translateY(14px)
+      scaleY(0.28);
+  }
+
+  30% {
+    opacity: 0.9;
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      translate(-50%, -50%)
+      rotate(calc(var(--spark-index, 0) * 30deg))
+      translateY(-178px)
+      scaleY(1.24);
+  }
+}
+
+@keyframes foundationCardRise {
+  0% {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(26px) scale(0.94);
+  }
+
+  55% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(-6px) scale(1.02);
+  }
+
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes foundationSealLift {
+  0% {
+    opacity: 0;
+    filter: blur(10px) drop-shadow(0 0 0 rgba(216, 154, 53, 0));
+    transform: translateY(18px) scale(0.82);
+  }
+
+  58% {
+    opacity: 1;
+    filter: blur(0) drop-shadow(0 0 34px rgba(216, 154, 53, 0.3));
+    transform: translateY(-4px) scale(1.04);
+  }
+
+  100% {
+    opacity: 1;
+    filter: blur(0) drop-shadow(0 0 16px rgba(216, 154, 53, 0.18));
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (max-width: 640px) {
   .content {
+    padding: 28px 14px 44px;
+  }
+
+  .contentNameStep {
     padding: 28px 14px 44px;
   }
 
@@ -529,13 +1302,23 @@
     letter-spacing: 0.18em;
   }
 
-  .logoRegion {
+  .cardFrame {
+    width: 100%;
+  }
+
+  .cardFrameSegmentStep {
+    width: 100%;
+  }
+
+  .logoRegion,
+  .logoRegionNameStep {
     margin-top: 14px;
     margin-bottom: 18px;
   }
 
-  .card {
-    padding: 44px 22px 40px;
+  .card,
+  .cardNameStep {
+    padding: 36px 20px 38px;
   }
 
   .badge {
@@ -557,17 +1340,82 @@
     padding: 0 18px;
   }
 
+  .textareaShell {
+    min-height: 176px;
+    padding: 18px;
+  }
+
+  .segmentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .segmentOption {
+    min-height: auto;
+  }
+
   .deferRow {
     grid-template-columns: auto 1fr;
+  }
+
+  .celebrationCard {
+    padding: 30px 20px 24px;
+    border-radius: 26px;
+  }
+
+  .celebrationLogo {
+    width: 108px;
+    height: 108px;
+  }
+
+  .celebrationText {
+    font-size: 0.95rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page::after {
+    display: none;
+  }
+
+  .brandTitle,
+  .logoRegion,
+  .cardFrame,
+  .card,
+  .badge,
+  .subtitle,
+  .form,
+  .stepMotion,
+  .titleCharacter,
+  .contentCelebrating,
+  .celebrationOverlay::before,
+  .celebrationGlow,
+  .celebrationRing,
+  .celebrationRingSecondary,
+  .celebrationSpark,
+  .celebrationCard,
+  .celebrationLogo {
+    opacity: 1;
+    animation: none;
+    transform: none;
+    filter: none;
   }
 }
 
 @media (max-height: 760px) {
+  .content {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 760px) {
   .page {
+    position: relative;
+    inset: auto;
+    height: auto;
     overflow-y: auto;
   }
 
   .content {
-    min-height: 100dvh;
+    overflow-y: visible;
   }
 }

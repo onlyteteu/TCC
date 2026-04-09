@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core import signing
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from accounts.tokens import get_user_from_token
 
@@ -49,6 +49,8 @@ def _serialize_startup(startup):
         "name": startup.name,
         "description": startup.description,
         "segment": startup.segment,
+        "problem": startup.problem,
+        "audience": startup.audience,
         "currentStage": startup.current_stage,
         "currentStageLabel": startup.get_current_stage_display(),
         "initialGoal": startup.initial_goal,
@@ -76,6 +78,10 @@ def _build_deferred_name(user):
     return f"{DEFERRED_STARTUP_NAME} {suffix}"
 
 
+def _clean_text(payload, key):
+    return (payload.get(key) or "").strip()
+
+
 @require_GET
 def list_startups(request):
     try:
@@ -100,8 +106,12 @@ def create_startup(request):
     except ValueError as error:
         return _error_response(str(error))
 
-    name = (payload.get("name") or "").strip()
+    name = _clean_text(payload, "name")
     defer_naming = bool(payload.get("deferNaming"))
+    description = _clean_text(payload, "description")
+    segment = _clean_text(payload, "segment")
+    problem = _clean_text(payload, "problem")
+    audience = _clean_text(payload, "audience")
     field_errors = {}
 
     if not name and not defer_naming:
@@ -109,21 +119,39 @@ def create_startup(request):
     elif len(name) > 120:
         field_errors["name"] = ["Use um nome com ate 120 caracteres."]
 
+    required_fields = {
+        "description": (description, "Conte a ideia da startup em uma frase."),
+        "segment": (segment, "Escolha o segmento inicial da startup."),
+        "problem": (problem, "Descreva a dor que essa startup quer resolver."),
+        "audience": (audience, "Descreva quem sente essa dor primeiro."),
+    }
+
+    for field_name, (value, message) in required_fields.items():
+        if not value:
+            field_errors[field_name] = [message]
+
+    if len(segment) > 120:
+        field_errors["segment"] = ["Use um segmento com ate 120 caracteres."]
+
     if field_errors:
         return _error_response(
-            "Revise os dados da startup antes de continuar.",
+            "Revise o mapa inicial da startup antes de continuar.",
             field_errors=field_errors,
         )
 
     startup = Startup.objects.create(
         owner=user,
         name=name or _build_deferred_name(user),
+        description=description,
+        segment=segment,
+        problem=problem,
+        audience=audience,
     )
 
     message = (
-        "Startup criada. Voce pode definir o nome com calma depois."
+        "Mapa inicial criado. Voce pode definir o nome com calma depois."
         if defer_naming and not name
-        else "Startup criada com sucesso."
+        else "Mapa inicial da startup criado com sucesso."
     )
 
     return JsonResponse(
@@ -132,4 +160,28 @@ def create_startup(request):
             "startup": _serialize_startup(startup),
         },
         status=201,
+    )
+
+
+@csrf_exempt
+@require_http_methods(["DELETE"])
+def delete_startup(request, startup_id):
+    try:
+        user = _authenticate_request(request)
+    except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
+        return _error_response("Sessao invalida ou expirada.", status=401)
+
+    startup = Startup.objects.filter(owner=user, pk=startup_id).first()
+
+    if startup is None:
+        return _error_response("Startup nao encontrada.", status=404)
+
+    startup_name = startup.name
+    startup.delete()
+
+    return JsonResponse(
+        {
+            "deletedStartupId": startup_id,
+            "message": f'{startup_name} foi excluida com sucesso.',
+        }
     )
