@@ -40,3 +40,8 @@ postgres_data/
 
 # Local render temp files
 .tmp-edge-*/
+
+# Local setup caches
+apps/frontend/.npm-cache/
+apps/backend/.codex-temp/
+.codex-runtime-logs/

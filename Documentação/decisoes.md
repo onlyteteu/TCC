@@ -186,3 +186,22 @@ Os proximos refinamentos da tela devem preservar:
 - destaque em laranja e amarelo
 - card central flutuando
 - formulario mais direto e sem repeticao desnecessaria
+
+## DEC-011: Implementar autenticacao com Django nativo e token assinado
+
+### Decisao
+
+O fluxo de autenticacao foi implementado com o `User` nativo do Django, endpoints JSON proprios e
+token assinado no backend, enquanto o frontend em Next.js faz a ponte por rotas internas e guarda
+a sessao em cookie HTTP-only.
+
+### Motivo
+
+Essa abordagem entrega login e cadastro reais sem introduzir DRF ou uma camada extra de
+complexidade antes de o fluxo principal do produto amadurecer.
+
+### Impacto
+
+- o backend passa a ter o modulo `accounts`
+- o frontend deixa de ser apenas estatico e passa a ter autenticacao funcional
+- os proximos fluxos podem assumir a existencia de um usuario autenticado

@@ -2,8 +2,8 @@
 
 ## Estado atual
 
-Na data de 2026-04-08, a arquitetura conceitual foi convertida em uma base tecnica inicial ja
-implementada no repositorio.
+Na data de 2026-04-09, a arquitetura conceitual ja avancou para uma base tecnica funcional com
+autenticacao real e primeiro fluxo de startups entre frontend e backend.
 
 ## Stack definida
 
@@ -43,9 +43,22 @@ Construir uma base organizada e escalavel para sustentar:
 
 Responsavel pelo endpoint inicial de saude da aplicacao em `/api/health/`.
 
+### `accounts`
+
+Responsavel pelo fluxo de autenticacao da plataforma:
+
+- cadastro de conta
+- login
+- validacao de sessao
+- encerramento de sessao
+
 ### `startups`
 
-Responsavel pela primeira entidade de dominio do projeto, `Startup`.
+Responsavel pela primeira entidade de dominio do projeto, `Startup`, e pelo fluxo inicial de:
+
+- listagem das startups do usuario autenticado
+- criacao da startup
+- associacao entre startup e conta autenticada
 
 ## Entidade inicial implementada
 
@@ -53,6 +66,7 @@ Responsavel pela primeira entidade de dominio do projeto, `Startup`.
 
 Campos atuais:
 
+- `owner`
 - `name`
 - `description`
 - `segment`
@@ -72,11 +86,31 @@ Sem a entidade de startup, nao existe base para cadastro, progresso ou jornada g
 
 ## Frontend inicial implementado
 
-O frontend possui uma homepage inicial em `app router`, criada para:
+O frontend possui:
 
-- apresentar a proposta da plataforma
-- comunicar o recorte do TCC
-- servir como ponto de partida visual do produto
+- tela principal de login/cadastro em `app router`
+- rotas internas em `app/api/auth` para conversar com o backend Django
+- rota interna em `app/api/startups` para conversar com a API de startups
+- fluxo interno em `/painel` que decide entre criar a startup ou mostrar as startups ja criadas
+- pagina institucional anterior preservada em `/sobre`
+
+### Tela principal de autenticacao
+
+Foi criada para:
+
+- materializar os mockups aprovados de login e cadastro
+- manter a identidade futurista e gamificada
+- servir como ponto de entrada real da plataforma
+
+### Integracao com o backend
+
+O frontend usa rotas internas do Next.js para:
+
+- enviar login e cadastro ao Django
+- armazenar a sessao em cookie HTTP-only
+- validar o usuario autenticado antes de abrir o painel
+- listar startups da conta autenticada
+- criar a startup a partir da tela real de onboarding interno
 
 ## Infraestrutura inicial
 
@@ -86,16 +120,15 @@ O frontend possui uma homepage inicial em `app router`, criada para:
 
 ## O que foi deixado de fora neste ciclo
 
-- autenticacao
-- API completa de cadastro da startup
-- dashboard funcional
+- edicao completa da startup
+- dashboard funcional completo
 - jornada guiada interativa
 - DRF
 - containers de frontend e backend
 
 ## Decisoes em aberto
 
-- autenticacao e autorizacao
 - formato da API de aplicacao
 - estrategia de deploy
 - aprofundamento do modelo de dados para jornada e progresso
+- aprofundamento da autorizacao por funcionalidades internas

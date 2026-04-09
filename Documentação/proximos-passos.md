@@ -2,12 +2,11 @@
 
 ## Prioridade imediata
 
-1. Implementar o fluxo de cadastro da startup no backend.
-2. Criar a tela de cadastro da startup no frontend.
-3. Conectar frontend e backend no primeiro fluxo real do produto.
-4. Estruturar a base inicial da jornada guiada.
-5. Iniciar o dashboard de progresso.
-6. Definir a primeira camada de gamificacao leve.
+1. Permitir editar e renomear a startup depois da criacao inicial.
+2. Estruturar a base inicial da jornada guiada.
+3. Evoluir o painel interno para um dashboard de progresso real.
+4. Definir a primeira camada de gamificacao leve.
+5. Ampliar o CRUD de startups sem perder o foco do MVP.
 
 ## Itens que devem acompanhar cada ciclo
 

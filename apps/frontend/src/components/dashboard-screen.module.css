@@ -1,0 +1,58 @@
+.loadingState {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 24% 18%, rgba(201, 128, 34, 0.18), transparent 22%),
+    radial-gradient(circle at 82% 14%, rgba(54, 94, 72, 0.16), transparent 20%),
+    linear-gradient(180deg, #0d0a09 0%, #14100e 38%, #11100f 72%, #090808 100%);
+  color: #d7a14a;
+}
+
+.feedbackCard {
+  width: min(420px, 100%);
+  padding: 28px 24px;
+  border: 1px solid rgba(190, 131, 50, 0.22);
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(23, 18, 16, 0.92), rgba(15, 12, 11, 0.96));
+  box-shadow: 0 22px 54px rgba(7, 5, 2, 0.36);
+  text-align: center;
+}
+
+.feedbackCard strong {
+  display: block;
+  font-family: var(--font-heading), "Segoe UI", sans-serif;
+  font-size: 1.6rem;
+  color: #f4e1bf;
+}
+
+.feedbackCard p {
+  margin: 12px 0 0;
+  color: #bca88e;
+  line-height: 1.6;
+}
+
+.retryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  margin-top: 18px;
+  padding: 0 18px;
+  border: 1px solid rgba(197, 133, 49, 0.32);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #e4ad41 0%, #bf7920 100%);
+  color: #2b1807;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    filter 180ms ease;
+}
+
+.retryButton:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+}

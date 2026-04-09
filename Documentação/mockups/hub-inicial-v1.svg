@@ -1,0 +1,448 @@
+<svg width="1440" height="1024" viewBox="0 0 1440 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgBase" x1="148" y1="60" x2="1272" y2="952" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0D0A09"/>
+      <stop offset="0.42" stop-color="#12100E"/>
+      <stop offset="0.78" stop-color="#0E0D0C"/>
+      <stop offset="1" stop-color="#090808"/>
+    </linearGradient>
+    <radialGradient id="nebulaCenter" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(728 506) rotate(90) scale(430 540)">
+      <stop stop-color="#BB7722" stop-opacity="0.18"/>
+      <stop offset="0.5" stop-color="#8A4F15" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#8A4F15" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="nebulaRight" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1112 214) rotate(161) scale(320 250)">
+      <stop stop-color="#335E4A" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#335E4A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="nebulaBottom" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(718 870) rotate(-90) scale(220 450)">
+      <stop stop-color="#B4661C" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#B4661C" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="topbarFill" x1="720" y1="54" x2="720" y2="132" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#171311" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#110D0C" stop-opacity="0.96"/>
+    </linearGradient>
+    <linearGradient id="topbarStroke" x1="100" y1="54" x2="1340" y2="132" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5C3C1A" stop-opacity="0.8"/>
+      <stop offset="0.45" stop-color="#B77E31" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#3A2818" stop-opacity="0.84"/>
+    </linearGradient>
+    <linearGradient id="pillActive" x1="0" y1="0" x2="0" y2="40" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3A2714"/>
+      <stop offset="1" stop-color="#5A3B1A"/>
+    </linearGradient>
+    <linearGradient id="tileFill" x1="0" y1="0" x2="0" y2="76" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#161210"/>
+      <stop offset="1" stop-color="#100D0C"/>
+    </linearGradient>
+    <linearGradient id="tileStroke" x1="110" y1="294" x2="1286" y2="370" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4E361E"/>
+      <stop offset="0.5" stop-color="#7A5528"/>
+      <stop offset="1" stop-color="#302218"/>
+    </linearGradient>
+    <linearGradient id="cardFill" x1="0" y1="0" x2="0" y2="298" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#171311"/>
+      <stop offset="1" stop-color="#110D0C"/>
+    </linearGradient>
+    <linearGradient id="cardStroke" x1="112" y1="444" x2="1248" y2="742" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4F371F"/>
+      <stop offset="0.5" stop-color="#845A2A"/>
+      <stop offset="1" stop-color="#312318"/>
+    </linearGradient>
+    <linearGradient id="gaugeGreen" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#8CCB98"/>
+      <stop offset="1" stop-color="#D4E17A"/>
+    </linearGradient>
+    <linearGradient id="gaugeAmber" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#D8A957"/>
+      <stop offset="1" stop-color="#E9CC74"/>
+    </linearGradient>
+    <linearGradient id="gaugeOrange" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#C97850"/>
+      <stop offset="1" stop-color="#E19D57"/>
+    </linearGradient>
+    <linearGradient id="ctaFill" x1="0" y1="0" x2="0" y2="44" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E4AD41"/>
+      <stop offset="1" stop-color="#C07B23"/>
+    </linearGradient>
+    <filter id="softShadow" x="64" y="18" width="1312" height="152" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="16"/>
+      <feGaussianBlur stdDeviation="18"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.025 0 0 0 0 0.019 0 0 0 0 0.011 0 0 0 0.65 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+    </filter>
+    <filter id="cardShadow" x="84" y="420" width="1270" height="350" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="14"/>
+      <feGaussianBlur stdDeviation="14"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.03 0 0 0 0 0.021 0 0 0 0 0.012 0 0 0 0.58 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_2"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_2" result="shape"/>
+    </filter>
+    <pattern id="gridPattern" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0V28" stroke="#FAECD0" stroke-opacity="0.022"/>
+    </pattern>
+  </defs>
+
+  <rect width="1440" height="1024" fill="url(#bgBase)"/>
+  <rect width="1440" height="1024" fill="url(#gridPattern)"/>
+  <circle cx="728" cy="506" r="404" fill="url(#nebulaCenter)"/>
+  <circle cx="1112" cy="214" r="292" fill="url(#nebulaRight)"/>
+  <circle cx="718" cy="870" r="262" fill="url(#nebulaBottom)"/>
+
+  <path d="M172 834C310 722 488 662 700 658" stroke="#C98528" stroke-opacity="0.08" stroke-width="2"/>
+  <path d="M1032 176C1116 212 1190 280 1260 386" stroke="#3E6650" stroke-opacity="0.1" stroke-width="2"/>
+
+  <g opacity="0.76">
+    <circle cx="164" cy="112" r="2.1" fill="#F8E9C7"/>
+    <circle cx="286" cy="170" r="1.6" fill="#DAA454"/>
+    <circle cx="474" cy="108" r="1.4" fill="#F1D6A2"/>
+    <circle cx="968" cy="132" r="1.5" fill="#F1D6A2"/>
+    <circle cx="1154" cy="184" r="1.7" fill="#DAA454"/>
+    <circle cx="1246" cy="120" r="2" fill="#F8E9C7"/>
+    <circle cx="1178" cy="744" r="1.8" fill="#F1D6A2"/>
+    <circle cx="292" cy="858" r="1.8" fill="#F1D6A2"/>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <rect x="100" y="54" width="1240" height="78" rx="28" fill="url(#topbarFill)"/>
+    <rect x="101" y="55" width="1238" height="76" rx="27" stroke="url(#topbarStroke)" stroke-width="2"/>
+  </g>
+
+  <g>
+    <circle cx="154" cy="93" r="24" fill="#1A1411"/>
+    <circle cx="154" cy="93" r="23.2" stroke="#C98A33" stroke-opacity="0.44" stroke-width="1.6"/>
+    <path d="M144 93C144 98.523 148.477 103 154 103C159.523 103 164 98.523 164 93C164 87.477 159.523 83 154 83C148.477 83 144 87.477 144 93Z" stroke="#D89A35" stroke-width="3.6"/>
+    <path d="M168 97C166.2 102.2 161.2 107.2 153.2 111" stroke="#D89A35" stroke-width="3.6" stroke-linecap="round"/>
+    <text x="194" y="90" fill="#D9A24A" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.22em">
+      STARTUP QUEST
+    </text>
+    <text x="194" y="108" fill="#8D7863" font-family="Arial, Helvetica, sans-serif" font-size="11">
+      home geral
+    </text>
+  </g>
+
+  <g>
+    <rect x="362" y="73" width="88" height="40" rx="20" fill="url(#pillActive)"/>
+    <rect x="362.8" y="73.8" width="86.4" height="38.4" rx="19.2" stroke="#C18433" stroke-opacity="0.34" stroke-width="1.6"/>
+    <text x="406" y="99" text-anchor="middle" fill="#F6E2BE" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">
+      In&#237;cio
+    </text>
+
+    <rect x="462" y="73" width="104" height="40" rx="20" fill="#120E0D"/>
+    <rect x="462.8" y="73.8" width="102.4" height="38.4" rx="19.2" stroke="#413022" stroke-width="1.4"/>
+    <text x="514" y="99" text-anchor="middle" fill="#A89073" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">
+      Startups
+    </text>
+
+    <rect x="578" y="73" width="122" height="40" rx="20" fill="#120E0D"/>
+    <rect x="578.8" y="73.8" width="120.4" height="38.4" rx="19.2" stroke="#413022" stroke-width="1.4"/>
+    <text x="639" y="99" text-anchor="middle" fill="#A89073" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">
+      Conquistas
+    </text>
+
+    <rect x="712" y="73" width="108" height="40" rx="20" fill="#120E0D"/>
+    <rect x="712.8" y="73.8" width="106.4" height="38.4" rx="19.2" stroke="#413022" stroke-width="1.4"/>
+    <text x="766" y="99" text-anchor="middle" fill="#A89073" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">
+      Jornada
+    </text>
+
+    <rect x="832" y="73" width="104" height="40" rx="20" fill="#120E0D"/>
+    <rect x="832.8" y="73.8" width="102.4" height="38.4" rx="19.2" stroke="#413022" stroke-width="1.4"/>
+    <text x="884" y="99" text-anchor="middle" fill="#A89073" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">
+      Recursos
+    </text>
+  </g>
+
+  <g>
+    <circle cx="1162" cy="93" r="20" fill="#120E0D"/>
+    <circle cx="1162" cy="93" r="19.2" stroke="#473220" stroke-width="1.4"/>
+    <path d="M1157 93C1157 90.239 1159.24 88 1162 88C1164.76 88 1167 90.239 1167 93C1167 95.761 1164.76 98 1162 98C1159.24 98 1157 95.761 1157 93Z" stroke="#D9A24A" stroke-width="1.8"/>
+    <path d="M1170 101C1168.2 98.2 1165.2 96.6 1162 96.6C1158.8 96.6 1155.8 98.2 1154 101" stroke="#D9A24A" stroke-width="1.8" stroke-linecap="round"/>
+  </g>
+
+  <g>
+    <rect x="1194" y="69" width="108" height="48" rx="24" fill="#120E0D"/>
+    <rect x="1194.8" y="69.8" width="106.4" height="46.4" rx="23.2" stroke="#473220" stroke-width="1.4"/>
+    <circle cx="1220" cy="93" r="14" fill="#201814"/>
+    <circle cx="1220" cy="93" r="13.2" stroke="#D39A42" stroke-opacity="0.42" stroke-width="1.2"/>
+    <text x="1246" y="89" fill="#F2DEC0" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">
+      Matheus
+    </text>
+    <text x="1246" y="104" fill="#8D7863" font-family="Arial, Helvetica, sans-serif" font-size="11">
+      conta
+    </text>
+    <path d="M1283 90L1288 95L1293 90" stroke="#B2936A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g>
+    <circle cx="1318" cy="93" r="20" fill="#120E0D"/>
+    <circle cx="1318" cy="93" r="19.2" stroke="#473220" stroke-width="1.4"/>
+    <path d="M1318 83V93" stroke="#D9A24A" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M1324.4 86.8C1326.2 88.6 1327.2 91 1327.2 93.6C1327.2 98.8 1323 103 1318 103C1313 103 1308.8 98.8 1308.8 93.6C1308.8 91 1309.8 88.6 1311.6 86.8" stroke="#D9A24A" stroke-width="1.8" stroke-linecap="round"/>
+  </g>
+
+  <text x="110" y="208" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="700">
+    Ol&#225;, Matheus.
+  </text>
+  <text x="110" y="244" fill="#9C8772" font-family="Arial, Helvetica, sans-serif" font-size="18">
+    Sua central para startups, conquistas e tudo que importa na conta.
+  </text>
+
+  <g>
+    <rect x="110" y="294" width="280" height="76" rx="24" fill="url(#tileFill)"/>
+    <rect x="110.8" y="294.8" width="278.4" height="74.4" rx="23.2" stroke="url(#tileStroke)" stroke-width="1.6"/>
+    <circle cx="150" cy="332" r="18" fill="#201814"/>
+    <path d="M144 332H156" stroke="#D9A24A" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M150 326V338" stroke="#D9A24A" stroke-width="1.8" stroke-linecap="round"/>
+    <text x="182" y="323" fill="#A78F73" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.1em">
+      STARTUPS
+    </text>
+    <text x="182" y="347" fill="#F3E1C2" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">
+      03 ativas
+    </text>
+  </g>
+
+  <g>
+    <rect x="408" y="294" width="280" height="76" rx="24" fill="url(#tileFill)"/>
+    <rect x="408.8" y="294.8" width="278.4" height="74.4" rx="23.2" stroke="url(#tileStroke)" stroke-width="1.6"/>
+    <circle cx="448" cy="332" r="18" fill="#201814"/>
+    <path d="M448 341C448 341 438 334.5 438 327C438 323.5 440.7 321 444.1 321C446.2 321 448 322.2 448 324.1C448 322.2 449.8 321 451.9 321C455.3 321 458 323.5 458 327C458 334.5 448 341 448 341Z" fill="#D9A24A"/>
+    <text x="480" y="323" fill="#A78F73" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.1em">
+      CONQUISTAS
+    </text>
+    <text x="480" y="347" fill="#F3E1C2" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">
+      12 liberadas
+    </text>
+  </g>
+
+  <g>
+    <rect x="706" y="294" width="280" height="76" rx="24" fill="url(#tileFill)"/>
+    <rect x="706.8" y="294.8" width="278.4" height="74.4" rx="23.2" stroke="url(#tileStroke)" stroke-width="1.6"/>
+    <circle cx="746" cy="332" r="18" fill="#201814"/>
+    <path d="M738 336L744 329L748 333L755 325" stroke="#D9A24A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="778" y="323" fill="#A78F73" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.1em">
+      JORNADA
+    </text>
+    <text x="778" y="347" fill="#F3E1C2" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">
+      05 miss&#245;es
+    </text>
+  </g>
+
+  <g>
+    <rect x="1004" y="294" width="280" height="76" rx="24" fill="url(#tileFill)"/>
+    <rect x="1004.8" y="294.8" width="278.4" height="74.4" rx="23.2" stroke="url(#tileStroke)" stroke-width="1.6"/>
+    <circle cx="1044" cy="332" r="18" fill="#201814"/>
+    <path d="M1038 332C1038 328.686 1040.69 326 1044 326C1047.31 326 1050 328.686 1050 332C1050 335.314 1047.31 338 1044 338C1040.69 338 1038 335.314 1038 332Z" stroke="#D9A24A" stroke-width="1.8"/>
+    <path d="M1054 332H1060" stroke="#D9A24A" stroke-width="1.8" stroke-linecap="round"/>
+    <text x="1076" y="323" fill="#A78F73" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.1em">
+      SA&#218;DE M&#201;DIA
+    </text>
+    <text x="1076" y="347" fill="#F3E1C2" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">
+      62%
+    </text>
+  </g>
+
+  <text x="112" y="416" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">
+    Suas startups
+  </text>
+  <text x="112" y="446" fill="#9C8772" font-family="Arial, Helvetica, sans-serif" font-size="16">
+    Clique em uma delas para entrar.
+  </text>
+
+  <g filter="url(#cardShadow)">
+    <rect x="112" y="444" width="374" height="298" rx="30" fill="url(#cardFill)"/>
+    <rect x="112.8" y="444.8" width="372.4" height="296.4" rx="29.2" stroke="url(#cardStroke)" stroke-width="1.6"/>
+  </g>
+  <g>
+    <rect x="140" y="472" width="104" height="30" rx="15" fill="#16110F"/>
+    <rect x="140.8" y="472.8" width="102.4" height="28.4" rx="14.2" stroke="#584028" stroke-width="1.4"/>
+    <text x="192" y="492" text-anchor="middle" fill="#D5B188" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.1em">
+      VALIDANDO
+    </text>
+
+    <text x="140" y="546" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700">
+      Aurora Labs
+    </text>
+
+    <circle cx="404" cy="540" r="52" fill="#15100F"/>
+    <circle cx="404" cy="540" r="51" stroke="#38281B" stroke-width="2"/>
+    <circle cx="404" cy="540" r="38" stroke="#2C211B" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="404" cy="540" r="38" stroke="url(#gaugeGreen)" stroke-width="9" stroke-linecap="round" stroke-dasharray="198 239" transform="rotate(-90 404 540)"/>
+    <text x="404" y="537" text-anchor="middle" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">
+      84%
+    </text>
+    <text x="404" y="558" text-anchor="middle" fill="#8F7B66" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" letter-spacing="0.1em">
+      SA&#218;DE
+    </text>
+
+    <rect x="140" y="596" width="318" height="10" rx="5" fill="#1A1411"/>
+    <rect x="140" y="596" width="267" height="10" rx="5" fill="url(#gaugeGreen)"/>
+
+    <rect x="140" y="626" width="82" height="34" rx="17" fill="#16110F"/>
+    <rect x="140.8" y="626.8" width="80.4" height="32.4" rx="16.2" stroke="#56402B" stroke-width="1.4"/>
+    <text x="181" y="648" text-anchor="middle" fill="#CFAF86" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700">
+      Clientes
+    </text>
+
+    <rect x="232" y="626" width="74" height="34" rx="17" fill="#16110F"/>
+    <rect x="232.8" y="626.8" width="72.4" height="32.4" rx="16.2" stroke="#56402B" stroke-width="1.4"/>
+    <text x="269" y="648" text-anchor="middle" fill="#CFAF86" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700">
+      Pitch
+    </text>
+
+    <rect x="316" y="626" width="66" height="34" rx="17" fill="#16110F"/>
+    <rect x="316.8" y="626.8" width="64.4" height="32.4" rx="16.2" stroke="#56402B" stroke-width="1.4"/>
+    <text x="349" y="648" text-anchor="middle" fill="#CFAF86" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700">
+      Time
+    </text>
+
+    <rect x="392" y="626" width="66" height="34" rx="17" fill="url(#ctaFill)"/>
+    <rect x="392.8" y="626.8" width="64.4" height="32.4" rx="16.2" stroke="#F0D7A4" stroke-opacity="0.22" stroke-width="1.4"/>
+    <path d="M420 643H432" stroke="#2D1808" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M428 639L432 643L428 647" stroke="#2D1808" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g filter="url(#cardShadow)">
+    <rect x="532" y="444" width="374" height="298" rx="30" fill="url(#cardFill)"/>
+    <rect x="532.8" y="444.8" width="372.4" height="296.4" rx="29.2" stroke="url(#cardStroke)" stroke-width="1.6"/>
+  </g>
+  <g>
+    <rect x="560" y="472" width="74" height="30" rx="15" fill="#16110F"/>
+    <rect x="560.8" y="472.8" width="72.4" height="28.4" rx="14.2" stroke="#584028" stroke-width="1.4"/>
+    <text x="597" y="492" text-anchor="middle" fill="#D5B188" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.1em">
+      MVP
+    </text>
+
+    <text x="560" y="546" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700">
+      AtlasPay
+    </text>
+
+    <circle cx="824" cy="540" r="52" fill="#15100F"/>
+    <circle cx="824" cy="540" r="51" stroke="#38281B" stroke-width="2"/>
+    <circle cx="824" cy="540" r="38" stroke="#2C211B" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="824" cy="540" r="38" stroke="url(#gaugeAmber)" stroke-width="9" stroke-linecap="round" stroke-dasharray="148 239" transform="rotate(-90 824 540)"/>
+    <text x="824" y="537" text-anchor="middle" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">
+      62%
+    </text>
+    <text x="824" y="558" text-anchor="middle" fill="#8F7B66" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" letter-spacing="0.1em">
+      SA&#218;DE
+    </text>
+
+    <rect x="560" y="596" width="318" height="10" rx="5" fill="#1A1411"/>
+    <rect x="560" y="596" width="197" height="10" rx="5" fill="url(#gaugeAmber)"/>
+
+    <rect x="560" y="626" width="102" height="34" rx="17" fill="#16110F"/>
+    <rect x="560.8" y="626.8" width="100.4" height="32.4" rx="16.2" stroke="#56402B" stroke-width="1.4"/>
+    <text x="611" y="648" text-anchor="middle" fill="#CFAF86" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700">
+      Onboarding
+    </text>
+
+    <rect x="672" y="626" width="70" height="34" rx="17" fill="#16110F"/>
+    <rect x="672.8" y="626.8" width="68.4" height="32.4" rx="16.2" stroke="#56402B" stroke-width="1.4"/>
+    <text x="707" y="648" text-anchor="middle" fill="#CFAF86" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700">
+      Caixa
+    </text>
+
+    <rect x="752" y="626" width="70" height="34" rx="17" fill="#16110F"/>
+    <rect x="752.8" y="626.8" width="68.4" height="32.4" rx="16.2" stroke="#56402B" stroke-width="1.4"/>
+    <text x="787" y="648" text-anchor="middle" fill="#CFAF86" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700">
+      Ritmo
+    </text>
+
+    <rect x="832" y="626" width="46" height="34" rx="17" fill="url(#ctaFill)"/>
+    <rect x="832.8" y="626.8" width="44.4" height="32.4" rx="16.2" stroke="#F0D7A4" stroke-opacity="0.22" stroke-width="1.4"/>
+    <path d="M848 643H860" stroke="#2D1808" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M856 639L860 643L856 647" stroke="#2D1808" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g filter="url(#cardShadow)">
+    <rect x="952" y="444" width="374" height="298" rx="30" fill="url(#cardFill)"/>
+    <rect x="952.8" y="444.8" width="372.4" height="296.4" rx="29.2" stroke="url(#cardStroke)" stroke-width="1.6"/>
+  </g>
+  <g>
+    <rect x="980" y="472" width="118" height="30" rx="15" fill="#16110F"/>
+    <rect x="980.8" y="472.8" width="116.4" height="28.4" rx="14.2" stroke="#584028" stroke-width="1.4"/>
+    <text x="1039" y="492" text-anchor="middle" fill="#D5B188" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="0.1em">
+      OPERA&#199;&#195;O
+    </text>
+
+    <text x="980" y="546" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">
+      Raiz Commerce
+    </text>
+
+    <circle cx="1244" cy="540" r="52" fill="#15100F"/>
+    <circle cx="1244" cy="540" r="51" stroke="#38281B" stroke-width="2"/>
+    <circle cx="1244" cy="540" r="38" stroke="#2C211B" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="1244" cy="540" r="38" stroke="url(#gaugeOrange)" stroke-width="9" stroke-linecap="round" stroke-dasharray="93 239" transform="rotate(-90 1244 540)"/>
+    <text x="1244" y="537" text-anchor="middle" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">
+      39%
+    </text>
+    <text x="1244" y="558" text-anchor="middle" fill="#8F7B66" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" letter-spacing="0.1em">
+      SA&#218;DE
+    </text>
+
+    <rect x="980" y="596" width="318" height="10" rx="5" fill="#1A1411"/>
+    <rect x="980" y="596" width="124" height="10" rx="5" fill="url(#gaugeOrange)"/>
+
+    <rect x="980" y="626" width="66" height="34" rx="17" fill="#16110F"/>
+    <rect x="980.8" y="626.8" width="64.4" height="32.4" rx="16.2" stroke="#56402B" stroke-width="1.4"/>
+    <text x="1013" y="648" text-anchor="middle" fill="#CFAF86" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700">
+      Foco
+    </text>
+
+    <rect x="1056" y="626" width="70" height="34" rx="17" fill="#16110F"/>
+    <rect x="1056.8" y="626.8" width="68.4" height="32.4" rx="16.2" stroke="#56402B" stroke-width="1.4"/>
+    <text x="1091" y="648" text-anchor="middle" fill="#CFAF86" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700">
+      Caixa
+    </text>
+
+    <rect x="1136" y="626" width="72" height="34" rx="17" fill="#16110F"/>
+    <rect x="1136.8" y="626.8" width="70.4" height="32.4" rx="16.2" stroke="#56402B" stroke-width="1.4"/>
+    <text x="1172" y="648" text-anchor="middle" fill="#CFAF86" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700">
+      Vendas
+    </text>
+
+    <rect x="1218" y="626" width="80" height="34" rx="17" fill="url(#ctaFill)"/>
+    <rect x="1218.8" y="626.8" width="78.4" height="32.4" rx="16.2" stroke="#F0D7A4" stroke-opacity="0.22" stroke-width="1.4"/>
+    <path d="M1248 643H1260" stroke="#2D1808" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M1256 639L1260 643L1256 647" stroke="#2D1808" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g opacity="0.9">
+    <text x="112" y="808" fill="#A28B73" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" letter-spacing="0.12em">
+      ACESSOS R&#193;PIDOS
+    </text>
+
+    <rect x="112" y="828" width="148" height="64" rx="22" fill="#14100F"/>
+    <rect x="112.8" y="828.8" width="146.4" height="62.4" rx="21.2" stroke="#4A3520" stroke-width="1.4"/>
+    <text x="186" y="867" text-anchor="middle" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">
+      Ver conquistas
+    </text>
+
+    <rect x="278" y="828" width="156" height="64" rx="22" fill="#14100F"/>
+    <rect x="278.8" y="828.8" width="154.4" height="62.4" rx="21.2" stroke="#4A3520" stroke-width="1.4"/>
+    <text x="356" y="867" text-anchor="middle" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">
+      Editar perfil
+    </text>
+
+    <rect x="452" y="828" width="142" height="64" rx="22" fill="#14100F"/>
+    <rect x="452.8" y="828.8" width="140.4" height="62.4" rx="21.2" stroke="#4A3520" stroke-width="1.4"/>
+    <text x="523" y="867" text-anchor="middle" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">
+      Ver jornada
+    </text>
+
+    <rect x="612" y="828" width="118" height="64" rx="22" fill="#14100F"/>
+    <rect x="612.8" y="828.8" width="116.4" height="62.4" rx="21.2" stroke="#4A3520" stroke-width="1.4"/>
+    <text x="671" y="867" text-anchor="middle" fill="#F2E2C6" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">
+      Sair
+    </text>
+  </g>
+</svg>

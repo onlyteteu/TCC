@@ -14,7 +14,7 @@ const bodyFont = IBM_Plex_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "TCC Startup Platform",
+  title: "Startup Quest",
   description: "Plataforma digital para apoiar a estruturacao inicial de startups.",
 };
 

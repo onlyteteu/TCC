@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -9,6 +10,13 @@ class Startup(models.Model):
         VALIDATION = "validation", "Validacao inicial"
         MVP = "mvp", "Planejamento do MVP"
 
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="startups",
+        null=True,
+        blank=True,
+    )
     name = models.CharField(max_length=120)
     description = models.TextField(blank=True)
     segment = models.CharField(max_length=120, blank=True)

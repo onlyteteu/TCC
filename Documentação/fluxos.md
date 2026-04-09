@@ -2,23 +2,25 @@
 
 ## Estado atual
 
-O fluxo de entrada ja possui uma representacao inicial no frontend. Os demais fluxos seguem
-definidos em nivel de produto e orientam a implementacao futura.
+O fluxo de entrada deixou de ser apenas conceitual e agora possui autenticacao real com cadastro,
+login e acesso a um painel autenticado inicial. Os demais fluxos continuam definidos em nivel de
+produto e orientam as proximas implementacoes.
 
-## Fluxo 1. Entrada na plataforma
+## Fluxo 1. Entrada e autenticacao na plataforma
 
 1. O usuario acessa a tela inicial.
-2. Entende a proposta da plataforma.
-3. Visualiza o recorte e os pilares do produto.
-4. E preparado para iniciar a criacao da startup nos proximos ciclos.
+2. Escolhe entre entrar ou criar conta.
+3. Preenche os dados de autenticacao.
+4. O sistema valida as credenciais.
+5. O usuario entra em um painel autenticado inicial.
 
 ### Problema que resolve
 
-Evita uma experiencia inicial vazia e sem direcionamento.
+Evita uma tela inicial apenas decorativa e cria uma porta de entrada real para o produto.
 
 ### Relacao com o objetivo do projeto
 
-Cria a primeira camada de comunicacao e orientacao do produto.
+Cria a base para acompanhar a jornada de cada usuario de forma individual.
 
 ## Fluxo 2. Cadastro inicial da startup
 
