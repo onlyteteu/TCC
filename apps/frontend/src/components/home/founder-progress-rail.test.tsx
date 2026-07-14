@@ -31,9 +31,9 @@ describe("FounderProgressRail", () => {
     render(<FounderProgressRail account={account} journey={journey} />);
 
     expect(screen.getByText("4 dias")).toBeInTheDocument();
-    expect(screen.getByText("Nivel 3")).toBeInTheDocument();
+    expect(screen.getByText("Nível 3")).toBeInTheDocument();
     expect(screen.getByText("Etapa atual: Definir o problema")).toBeInTheDocument();
-    expect(screen.getByRole("progressbar", { name: "Progresso do nivel" })).toHaveAttribute(
+    expect(screen.getByRole("progressbar", { name: "Progresso do nível" })).toHaveAttribute(
       "aria-valuenow",
       "60"
     );

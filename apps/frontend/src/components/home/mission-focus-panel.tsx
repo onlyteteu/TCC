@@ -5,27 +5,31 @@ import styles from "./startup-home-screen.module.css";
 
 type MissionFocusPanelProps = {
   mission: MissionSummary;
+  isPrimaryActionPending: boolean;
   onOpenStep: (stepKey: string) => void;
   onPrimaryAction: () => void;
 };
 
 const statusLabels = {
-  available: "Disponivel",
-  completed: "Concluido",
+  available: "Disponível",
+  completed: "Concluído",
   current: "Em andamento",
   locked: "Bloqueado",
 } as const;
 
 export function MissionFocusPanel({
   mission,
+  isPrimaryActionPending,
   onOpenStep,
   onPrimaryAction,
 }: MissionFocusPanelProps) {
-  const primaryLabel = mission.canComplete
-    ? "Concluir missao"
-    : mission.canAddLearning
-      ? "Registrar aprendizado"
-      : "Registrar entrevista";
+  const primaryLabel = isPrimaryActionPending
+    ? "Concluindo missão..."
+    : mission.canComplete
+      ? "Concluir missão"
+      : mission.canAddLearning
+        ? "Registrar aprendizado"
+        : "Registrar entrevista";
 
   return (
     <section className={styles.missionPanel} aria-labelledby="mission-title">
@@ -48,7 +52,7 @@ export function MissionFocusPanel({
         <span>{mission.progress}%</span>
       </div>
       <div
-        aria-label={`${mission.progress}% da missao concluida`}
+        aria-label={`${mission.progress}% da missão concluída`}
         aria-valuemax={100}
         aria-valuemin={0}
         aria-valuenow={mission.progress}
@@ -107,7 +111,13 @@ export function MissionFocusPanel({
       </div>
 
       <div className={styles.missionActions}>
-        <button className={styles.primaryButton} onClick={onPrimaryAction} type="button">
+        <button
+          aria-busy={isPrimaryActionPending || undefined}
+          className={styles.primaryButton}
+          disabled={isPrimaryActionPending}
+          onClick={onPrimaryAction}
+          type="button"
+        >
           {primaryLabel}
         </button>
       </div>

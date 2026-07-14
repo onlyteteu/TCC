@@ -1,4 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
 import type { MissionSummary } from "@/lib/startup-types";
@@ -56,6 +58,7 @@ describe("MissionFocusPanel", () => {
     render(
       <MissionFocusPanel
         mission={mission}
+        isPrimaryActionPending={false}
         onOpenStep={onOpenStep}
         onPrimaryAction={vi.fn()}
       />
@@ -70,5 +73,30 @@ describe("MissionFocusPanel", () => {
     );
     fireEvent.click(screen.getByText("Registre 5 entrevistas"));
     expect(onOpenStep).toHaveBeenCalledWith("interviews");
+  });
+
+  it("disables the completion action and announces its pending state", () => {
+    render(
+      <MissionFocusPanel
+        mission={{ ...mission, canComplete: true, progress: 100 }}
+        isPrimaryActionPending
+        onOpenStep={vi.fn()}
+        onPrimaryAction={vi.fn()}
+      />
+    );
+
+    expect(screen.getByRole("button", { name: "Concluindo missão..." })).toBeDisabled();
+  });
+
+  it("defines a high-contrast amber focus outline for actionable rows", () => {
+    const cssPath = resolve(
+      process.cwd(),
+      "src/components/home/startup-home-screen.module.css"
+    );
+    const css = readFileSync(cssPath, "utf8");
+
+    expect(css).toMatch(
+      /\.stepAction:focus-visible\s*\{[\s\S]*?outline:\s*3px solid #9a6700;[\s\S]*?outline-offset:\s*3px;/
+    );
   });
 });

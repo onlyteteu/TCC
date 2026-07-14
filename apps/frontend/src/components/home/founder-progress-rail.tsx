@@ -9,8 +9,8 @@ type FounderProgressRailProps = {
 };
 
 const streakMessages: Record<NonNullable<AccountProgress["streakStatus"]>, string> = {
-  inactive: "Conclua uma atividade para iniciar sua sequencia.",
-  maintained: "Sequencia mantida hoje.",
+  inactive: "Conclua uma atividade para iniciar sua sequência.",
+  maintained: "Sequência mantida hoje.",
   at_risk: "Registre uma atividade hoje para manter.",
   broken: "Recomece com uma atividade significativa.",
 };
@@ -41,14 +41,14 @@ export function FounderProgressRail({ account, journey }: FounderProgressRailPro
         <div className={styles.levelRow}>
           <ProductIcon name="level" />
           <div>
-            <strong>Nivel {account.level}</strong>
+            <strong>Nível {account.level}</strong>
             <span>
               {account.xpIntoLevel}/{account.xpPerLevel} XP
             </span>
           </div>
         </div>
         <div
-          aria-label="Progresso do nivel"
+          aria-label="Progresso do nível"
           aria-valuemax={account.xpPerLevel}
           aria-valuemin={0}
           aria-valuenow={account.xpIntoLevel}
@@ -69,7 +69,7 @@ export function FounderProgressRail({ account, journey }: FounderProgressRailPro
             <strong>Fase da Jornada</strong>
             <span>{journey.progress}%</span>
           </div>
-          <p>Etapa atual: {journey.currentStepLabel ?? "Jornada inicial concluida"}</p>
+          <p>Etapa atual: {journey.currentStepLabel ?? "Jornada inicial concluída"}</p>
         </div>
         <div
           aria-label="Progresso da fase"

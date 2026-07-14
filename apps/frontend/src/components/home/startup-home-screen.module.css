@@ -142,10 +142,19 @@
   transition: border-color 150ms ease, background 150ms ease;
 }
 
-.stepAction:hover,
-.stepAction:focus-visible {
+.stepAction:hover {
   border-color: #75ad8d;
   background: #f3faf6;
+}
+
+.stepAction:focus-visible {
+  border-color: #9a6700;
+  background: #fffaf0;
+  outline: 3px solid #9a6700;
+  outline-offset: 3px;
+}
+
+.stepAction:focus:not(:focus-visible) {
   outline: none;
 }
 

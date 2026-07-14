@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type FormEvent, useCallback, useEffect, useState } from "react";
+import {
+  type FormEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { ProductIcon } from "@/components/product-icon";
 import type { AuthErrorPayload } from "@/lib/auth-types";
@@ -115,7 +122,7 @@ function RecentActivity({ activities }: { activities: ActivitySummary[] }) {
         <div className={styles.emptyActivity}>
           <ProductIcon name="mission" />
           <div>
-            <strong>Seu historico comeca com trabalho real</strong>
+            <strong>Seu histórico começa com trabalho real</strong>
             <p>Registre a primeira entrevista para criar a primeira atividade.</p>
           </div>
         </div>
@@ -127,7 +134,7 @@ function RecentActivity({ activities }: { activities: ActivitySummary[] }) {
 function NextUnlock({ unlock }: { unlock: TodayPayload["nextUnlock"] }) {
   return (
     <section className={styles.secondarySection}>
-      <h2>Proximo desbloqueio</h2>
+      <h2>Próximo desbloqueio</h2>
       <div className={styles.unlockRow}>
         <span className={unlock.available ? styles.unlockAvailable : styles.unlockLocked}>
           <ProductIcon name={unlock.available ? "check" : "lock"} />
@@ -136,7 +143,7 @@ function NextUnlock({ unlock }: { unlock: TodayPayload["nextUnlock"] }) {
           <strong>{unlock.title}</strong>
           <p>{unlock.description}</p>
         </div>
-        <small>{unlock.available ? "Disponivel" : "Bloqueado"}</small>
+        <small>{unlock.available ? "Disponível" : "Bloqueado"}</small>
       </div>
     </section>
   );
@@ -153,6 +160,9 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
   const [formError, setFormError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
+  const completionRequestRef = useRef(false);
+  const dialogRef = useRef<HTMLElement>(null);
+  const dialogTriggerRef = useRef<HTMLElement | null>(null);
 
   const loadToday = useCallback(async () => {
     setIsLoading(true);
@@ -166,18 +176,18 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
         return;
       }
       if (response.status === 404) {
-        setLoadError("Essa startup nao existe ou nao pertence a sua conta.");
+        setLoadError("Essa startup não existe ou não pertence à sua conta.");
         return;
       }
       if (!response.ok) {
         const error = (await response.json()) as AuthErrorPayload;
-        setLoadError(error.message ?? "Nao foi possivel carregar o trabalho de hoje.");
+        setLoadError(error.message ?? "Não foi possível carregar o trabalho de hoje.");
         return;
       }
 
       setPayload((await response.json()) as TodayPayload);
     } catch {
-      setLoadError("Nao foi possivel carregar o trabalho de hoje.");
+      setLoadError("Não foi possível carregar o trabalho de hoje.");
     } finally {
       setIsLoading(false);
     }
@@ -188,6 +198,33 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
   }, [loadToday]);
 
   const mission = payload?.mission ?? null;
+
+  useEffect(() => {
+    if (workMode === "overview") {
+      const trigger = dialogTriggerRef.current;
+      dialogTriggerRef.current = null;
+      trigger?.focus();
+      return;
+    }
+
+    const dialog = dialogRef.current;
+    if (!dialog) {
+      return;
+    }
+
+    const initialTarget =
+      workMode === "details"
+        ? dialog
+        : dialog.querySelector<HTMLElement>("[data-initial-focus]") ?? dialog;
+    initialTarget.focus();
+  }, [workMode]);
+
+  function openWorkDialog(mode: Exclude<WorkMode, "overview">) {
+    dialogTriggerRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    setFormError(null);
+    setWorkMode(mode);
+  }
 
   function closeWorkDialog() {
     setWorkMode("overview");
@@ -231,7 +268,7 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
       setInterview(emptyInterview());
       applySuccess(nextPayload as TodayPayload);
     } catch {
-      setFormError("A entrevista nao foi registrada. Verifique sua conexao e tente novamente.");
+      setFormError("A entrevista não foi registrada. Verifique sua conexão e tente novamente.");
     } finally {
       setIsSaving(false);
     }
@@ -269,17 +306,18 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
       setLearning(emptyLearning());
       applySuccess(nextPayload as TodayPayload);
     } catch {
-      setFormError("O aprendizado nao foi registrado. Verifique sua conexao e tente novamente.");
+      setFormError("O aprendizado não foi registrado. Verifique sua conexão e tente novamente.");
     } finally {
       setIsSaving(false);
     }
   }
 
   async function completeMission() {
-    if (!mission) {
+    if (!mission || isCompleting || completionRequestRef.current) {
       return;
     }
 
+    completionRequestRef.current = true;
     setIsCompleting(true);
     setFormError(null);
 
@@ -301,15 +339,17 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
 
       applySuccess(nextPayload as TodayPayload);
     } catch {
-      setFormError("A missao nao foi concluida. Verifique sua conexao e tente novamente.");
+      setFormError("A missão não foi concluída. Verifique sua conexão e tente novamente.");
     } finally {
+      completionRequestRef.current = false;
       setIsCompleting(false);
     }
   }
 
   function handleOpenMissionStep(stepKey: string) {
-    setFormError(null);
-    setWorkMode(stepKey === "interviews" ? "interview" : stepKey === "review" ? "learning" : "details");
+    openWorkDialog(
+      stepKey === "interviews" ? "interview" : stepKey === "review" ? "learning" : "details"
+    );
   }
 
   function handlePrimaryMissionAction() {
@@ -320,7 +360,45 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
       void completeMission();
       return;
     }
-    setWorkMode(mission.canAddLearning ? "learning" : "interview");
+    openWorkDialog(mission.canAddLearning ? "learning" : "interview");
+  }
+
+  function handleDialogKeyDown(event: ReactKeyboardEvent<HTMLElement>) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeWorkDialog();
+      return;
+    }
+
+    if (event.key !== "Tab") {
+      return;
+    }
+
+    const dialog = dialogRef.current;
+    if (!dialog) {
+      return;
+    }
+
+    const focusable = Array.from(
+      dialog.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+      )
+    );
+    if (!focusable.length) {
+      event.preventDefault();
+      dialog.focus();
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && (document.activeElement === first || document.activeElement === dialog)) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
   }
 
   function renderWorkDialog() {
@@ -333,7 +411,7 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
         ? "Registrar entrevista"
         : workMode === "learning"
           ? "Resumir aprendizados"
-          : "Entender esta missao";
+          : "Entender esta missão";
 
     return (
       <div className={styles.dialogBackdrop} onMouseDown={closeWorkDialog}>
@@ -341,16 +419,19 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
           aria-labelledby="work-dialog-title"
           aria-modal="true"
           className={styles.workDialog}
+          onKeyDown={handleDialogKeyDown}
           onMouseDown={(event) => event.stopPropagation()}
+          ref={dialogRef}
           role="dialog"
+          tabIndex={-1}
         >
           <div className={styles.dialogHeader}>
             <div>
               <h2 id="work-dialog-title">{title}</h2>
               {workMode === "interview" ? (
-                <p>Registre o que aconteceu. A qualidade da evidencia importa mais que a quantidade de texto.</p>
+                <p>Registre o que aconteceu. A qualidade da evidência importa mais que a quantidade de texto.</p>
               ) : workMode === "learning" ? (
-                <p>Transforme as conversas em uma conclusao que oriente a proxima decisao.</p>
+                <p>Transforme as conversas em uma conclusão que oriente a próxima decisão.</p>
               ) : (
                 <p>{mission.objective}</p>
               )}
@@ -364,15 +445,15 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
             <form className={styles.workForm} onSubmit={submitInterview}>
               <div className={styles.formGrid}>
                 <label>
-                  <span>Nome ou identificacao</span>
+                  <span>Nome ou identificação</span>
                   <input
-                    autoFocus
+                    data-initial-focus
                     disabled={isSaving}
                     maxLength={120}
                     onChange={(event) =>
                       setInterview((current) => ({ ...current, intervieweeName: event.target.value }))
                     }
-                    placeholder="Ex.: Cliente 01 ou Joao"
+                    placeholder="Ex.: Cliente 01 ou João"
                     required
                     value={interview.intervieweeName}
                   />
@@ -410,7 +491,7 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
                     onChange={(event) =>
                       setInterview((current) => ({ ...current, context: event.target.value }))
                     }
-                    placeholder="Ex.: conversa de 20 minutos por video"
+                    placeholder="Ex.: conversa de 20 minutos por vídeo"
                     value={interview.context}
                   />
                 </label>
@@ -422,7 +503,7 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
                   onChange={(event) =>
                     setInterview((current) => ({ ...current, notes: event.target.value }))
                   }
-                  placeholder="Registre situacoes, frequencia da dor, alternativas usadas e frases importantes."
+                  placeholder="Registre situações, frequência da dor, alternativas usadas e frases importantes."
                   required
                   rows={5}
                   value={interview.notes}
@@ -441,9 +522,9 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
           ) : workMode === "learning" ? (
             <form className={styles.workForm} onSubmit={submitLearning}>
               <label className={styles.fullField}>
-                <span>Qual padrao apareceu nas entrevistas?</span>
+                <span>Qual padrão apareceu nas entrevistas?</span>
                 <textarea
-                  autoFocus
+                  data-initial-focus
                   disabled={isSaving}
                   onChange={(event) => setLearning((current) => ({ ...current, content: event.target.value }))}
                   placeholder="Ex.: quatro das cinco pessoas enfrentam o problema toda semana."
@@ -458,14 +539,14 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
                   <textarea
                     disabled={isSaving}
                     onChange={(event) => setLearning((current) => ({ ...current, impact: event.target.value }))}
-                    placeholder="Explique o impacto sobre o problema, publico ou solucao."
+                    placeholder="Explique o impacto sobre o problema, público ou solução."
                     required
                     rows={4}
                     value={learning.impact}
                   />
                 </label>
                 <label>
-                  <span>Qual deve ser a proxima acao?</span>
+                  <span>Qual deve ser a próxima ação?</span>
                   <textarea
                     disabled={isSaving}
                     onChange={(event) => setLearning((current) => ({ ...current, nextAction: event.target.value }))}
@@ -477,7 +558,7 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
                 </label>
               </div>
               <label className={styles.confidenceField}>
-                <span>Confianca nesse aprendizado</span>
+                <span>Confiança nesse aprendizado</span>
                 <select
                   disabled={isSaving}
                   onChange={(event) =>
@@ -488,9 +569,9 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
                   }
                   value={learning.confidence}
                 >
-                  <option value="low">Baixa - ainda ha poucos sinais</option>
-                  <option value="medium">Media - o padrao apareceu mais de uma vez</option>
-                  <option value="high">Alta - o padrao foi recorrente e consistente</option>
+                  <option value="low">Baixa · ainda há poucos sinais</option>
+                  <option value="medium">Média · o padrão apareceu mais de uma vez</option>
+                  <option value="high">Alta · o padrão foi recorrente e consistente</option>
                 </select>
               </label>
               {formError ? <p className={styles.formError}>{formError}</p> : null}
@@ -513,7 +594,7 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
                   <li key={instruction}>{instruction}</li>
                 ))}
               </ol>
-              <strong>Criterio de conclusao</strong>
+              <strong>Critério de conclusão</strong>
               <p>{mission.completionCriteria}</p>
             </div>
           )}
@@ -526,7 +607,7 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
     return (
       <div className={styles.loadingPage} aria-busy="true" aria-live="polite">
         <span className={styles.loadingMark} />
-        <span className={styles.srOnly}>Preparando a missao de hoje.</span>
+        <span className={styles.srOnly}>Preparando a missão de hoje.</span>
       </div>
     );
   }
@@ -535,8 +616,8 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
     return (
       <section className={styles.errorPanel}>
         <ProductIcon name="info" />
-        <h1>Nao conseguimos abrir o trabalho de hoje</h1>
-        <p>{loadError ?? "Tente carregar a pagina novamente."}</p>
+        <h1>Não conseguimos abrir o trabalho de hoje</h1>
+        <p>{loadError ?? "Tente carregar a página novamente."}</p>
         <div className={styles.formActions}>
           <button className={styles.primaryButton} onClick={loadToday} type="button">
             Tentar novamente
@@ -550,10 +631,15 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
   }
 
   return (
-    <div className={styles.page}>
+    <>
+      <div
+        aria-hidden={workMode !== "overview" ? "true" : undefined}
+        className={styles.page}
+        inert={workMode !== "overview" ? true : undefined}
+      >
       <header className={styles.pageHeader}>
         <h1>Bom dia, {payload.user.firstName}</h1>
-        <p>Hoje, o foco e entender o problema antes de construir a solucao.</p>
+        <p>Hoje, o foco é entender o problema antes de construir a solução.</p>
       </header>
 
       {payload.message ? (
@@ -569,36 +655,31 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
           <div>
             <strong>{payload.celebration.title}</strong>
             <p>
-              +{payload.celebration.xpAwarded} XP - {payload.celebration.unlocked} desbloqueado
+              +{payload.celebration.xpAwarded} XP · {payload.celebration.unlocked} desbloqueado
             </p>
           </div>
         </section>
       ) : null}
 
-      <div
-        aria-hidden={workMode !== "overview" ? "true" : undefined}
-        className={styles.primaryGrid}
-      >
+      <div className={styles.primaryGrid}>
         {payload.mission ? (
           <MissionFocusPanel
+            isPrimaryActionPending={isCompleting}
             mission={payload.mission}
             onOpenStep={handleOpenMissionStep}
             onPrimaryAction={handlePrimaryMissionAction}
           />
         ) : (
           <section className={styles.missionUnavailable}>
-            <h2>Sua proxima missao ainda esta bloqueada</h2>
-            <p>Continue a etapa atual da Jornada para liberar uma nova missao.</p>
+            <h2>Sua próxima missão ainda está bloqueada</h2>
+            <p>Continue a etapa atual da Jornada para liberar uma nova missão.</p>
             <Link href={`/painel/startup/${startupId}/jornada`}>Continuar Jornada</Link>
           </section>
         )}
         <FounderProgressRail account={payload.gamification} journey={payload.journey} />
       </div>
 
-      <div
-        aria-hidden={workMode !== "overview" ? "true" : undefined}
-        className={styles.secondaryGrid}
-      >
+      <div className={styles.secondaryGrid}>
         <RecentActivity activities={payload.recentActivities} />
         <NextUnlock unlock={payload.nextUnlock} />
       </div>
@@ -608,8 +689,9 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
           {formError}
         </p>
       ) : null}
-      {isCompleting ? <p className={styles.srOnly}>Concluindo missao...</p> : null}
+      {isCompleting ? <p className={styles.srOnly}>Concluindo missão...</p> : null}
+      </div>
       {workMode !== "overview" ? renderWorkDialog() : null}
-    </div>
+    </>
   );
 }
