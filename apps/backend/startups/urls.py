@@ -8,6 +8,7 @@ from .views import (
     list_startups,
     mission_evidence,
     mission_learning,
+    open_startup,
     startup_detail,
     today,
 )
@@ -15,6 +16,7 @@ from .views import (
 urlpatterns = [
     path("startups/", list_startups),
     path("startups/create/", create_startup),
+    path("startups/<int:startup_id>/open/", open_startup),
     path("startups/<int:startup_id>/", startup_detail),
     path("startups/<int:startup_id>/today/", today),
     path(

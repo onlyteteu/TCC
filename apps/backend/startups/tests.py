@@ -1,5 +1,8 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.utils import timezone
 
 from accounts.tokens import issue_auth_token
 
@@ -29,6 +32,110 @@ class StartupApiTests(TestCase):
         }
         payload.update(overrides)
         return payload
+
+    def test_create_marks_startup_as_opened(self):
+        response = self.client.post(
+            "/api/startups/create/",
+            data=self.startup_payload(),
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        startup = Startup.objects.get(pk=response.json()["startup"]["id"])
+        self.assertIsNotNone(startup.last_opened_at)
+        self.assertIsNotNone(response.json()["startup"]["lastOpenedAt"])
+
+    def test_list_orders_startups_by_last_opened_at(self):
+        now = timezone.now()
+        older = Startup.objects.create(
+            owner=self.user,
+            name="Antiga",
+            last_opened_at=now - timedelta(days=2),
+        )
+        recent = Startup.objects.create(
+            owner=self.user,
+            name="Recente",
+            last_opened_at=now - timedelta(minutes=5),
+        )
+
+        response = self.client.get(
+            "/api/startups/",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            [item["id"] for item in response.json()["startups"]],
+            [recent.pk, older.pk],
+        )
+
+    def test_owner_can_mark_startup_as_opened(self):
+        startup = Startup.objects.create(owner=self.user, name="Aurora Labs")
+
+        response = self.client.post(
+            f"/api/startups/{startup.pk}/open/",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        startup.refresh_from_db()
+        self.assertIsNotNone(startup.last_opened_at)
+        self.assertEqual(response.json()["startup"]["id"], startup.pk)
+
+    def test_user_cannot_mark_another_users_startup_as_opened(self):
+        other_user = User.objects.create_user(
+            username="open-other@example.com",
+            email="open-other@example.com",
+            password="123",
+        )
+        startup = Startup.objects.create(owner=other_user, name="AtlasPay")
+
+        response = self.client.post(
+            f"/api/startups/{startup.pk}/open/",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_returns_next_recent_startup(self):
+        now = timezone.now()
+        fallback = Startup.objects.create(
+            owner=self.user,
+            name="Fallback",
+            last_opened_at=now - timedelta(hours=1),
+        )
+        active = Startup.objects.create(
+            owner=self.user,
+            name="Ativa",
+            last_opened_at=now,
+        )
+
+        response = self.client.delete(
+            f"/api/startups/{active.pk}/",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["nextStartupId"], fallback.pk)
+
+    def test_update_startup_accepts_initial_goal(self):
+        startup = Startup.objects.create(owner=self.user, name="Aurora Labs")
+
+        response = self.client.patch(
+            f"/api/startups/{startup.pk}/",
+            data={"initialGoal": "Validar o problema com cinco entrevistas."},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        startup.refresh_from_db()
+        self.assertEqual(startup.initial_goal, "Validar o problema com cinco entrevistas.")
+        self.assertEqual(
+            response.json()["startup"]["initialGoal"],
+            "Validar o problema com cinco entrevistas.",
+        )
 
     def test_authenticated_user_can_list_only_own_startups(self):
         other_user = User.objects.create_user(

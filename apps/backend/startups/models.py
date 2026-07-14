@@ -32,6 +32,7 @@ class Startup(models.Model):
         default=Stage.PROBLEM,
     )
     initial_goal = models.CharField(max_length=255, blank=True)
+    last_opened_at = models.DateTimeField(null=True, blank=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

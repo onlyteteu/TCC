@@ -4,7 +4,7 @@ from datetime import timedelta
 from django.contrib.auth import get_user_model
 from django.core import signing
 from django.db import transaction
-from django.db.models import Sum
+from django.db.models import F, Sum
 from django.http import JsonResponse
 from django.utils.dateparse import parse_date
 from django.views.decorators.csrf import csrf_exempt
@@ -69,6 +69,7 @@ def _serialize_startup(startup):
         "currentStage": startup.current_stage,
         "currentStageLabel": startup.get_current_stage_display(),
         "initialGoal": startup.initial_goal,
+        "lastOpenedAt": startup.last_opened_at.isoformat() if startup.last_opened_at else None,
         "createdAt": startup.created_at.isoformat(),
         "updatedAt": startup.updated_at.isoformat(),
     }
@@ -157,6 +158,19 @@ def _build_streak(events):
         "streakStatus": status,
         "lastActivityDate": last_activity.isoformat(),
     }
+
+
+def _ordered_startups_for_user(user):
+    return Startup.objects.filter(owner=user).order_by(
+        F("last_opened_at").desc(nulls_last=True),
+        "-updated_at",
+        "-created_at",
+    )
+
+
+def _last_activity_at(startup):
+    event = startup.activity_events.order_by("-occurred_at").first()
+    return event.occurred_at.isoformat() if event else startup.updated_at.isoformat()
 
 
 def _build_account_progress(startups_with_steps):
@@ -276,7 +290,7 @@ def list_startups(request):
     except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
         return _error_response("Sessao invalida ou expirada.", status=401)
 
-    startups = list(Startup.objects.filter(owner=user))
+    startups = list(_ordered_startups_for_user(user))
 
     payload = []
     startups_with_steps = []
@@ -290,6 +304,7 @@ def list_startups(request):
         )
 
         serialized = _serialize_startup(startup)
+        serialized["lastActivityAt"] = _last_activity_at(startup)
         serialized["journeyProgress"] = progress
         serialized["nextStepLabel"] = current.get_key_display() if current else None
         payload.append(serialized)
@@ -299,6 +314,28 @@ def list_startups(request):
         {
             "startups": payload,
             "accountProgress": _build_account_progress(startups_with_steps),
+        }
+    )
+
+
+@csrf_exempt
+@require_POST
+def open_startup(request, startup_id):
+    try:
+        user = _authenticate_request(request)
+    except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
+        return _error_response("Sessao invalida ou expirada.", status=401)
+
+    startup = Startup.objects.filter(owner=user, pk=startup_id).first()
+    if startup is None:
+        return _error_response("Startup nao encontrada.", status=404)
+
+    startup.last_opened_at = timezone.now()
+    startup.save(update_fields=["last_opened_at"])
+    return JsonResponse(
+        {
+            "message": f"{startup.name} agora e a startup ativa.",
+            "startup": _serialize_startup(startup),
         }
     )
 
@@ -356,6 +393,7 @@ def create_startup(request):
         segment=segment,
         problem=problem,
         audience=audience,
+        last_opened_at=timezone.now(),
     )
     ensure_journey(startup)
     ensure_missions(startup)
@@ -392,24 +430,35 @@ def startup_detail(request, startup_id):
         return JsonResponse({"startup": _serialize_startup(startup)})
 
     if request.method == "DELETE":
-        return _delete_startup(startup, startup_id)
+        return _delete_startup(startup, startup_id, user)
 
     return _update_startup(request, startup)
 
 
-def _delete_startup(startup, startup_id):
+def _delete_startup(startup, startup_id, user):
     startup_name = startup.name
     startup.delete()
+    next_startup = _ordered_startups_for_user(user).first()
 
     return JsonResponse(
         {
             "deletedStartupId": startup_id,
+            "nextStartupId": next_startup.pk if next_startup else None,
             "message": f'{startup_name} foi excluida com sucesso.',
         }
     )
 
 
-UPDATABLE_FIELDS = ("name", "description", "segment", "problem", "audience")
+UPDATABLE_FIELDS = ("name", "description", "segment", "problem", "audience", "initialGoal")
+
+MODEL_FIELD_BY_PAYLOAD_FIELD = {
+    "name": "name",
+    "description": "description",
+    "segment": "segment",
+    "problem": "problem",
+    "audience": "audience",
+    "initialGoal": "initial_goal",
+}
 
 
 def _update_startup(request, startup):
@@ -435,6 +484,9 @@ def _update_startup(request, startup):
     if "segment" in cleaned and len(cleaned["segment"]) > 120:
         field_errors["segment"] = ["Use um segmento com ate 120 caracteres."]
 
+    if "initialGoal" in cleaned and len(cleaned["initialGoal"]) > 255:
+        field_errors["initialGoal"] = ["Use uma meta inicial com ate 255 caracteres."]
+
     for field in ("description", "problem", "audience"):
         if field in cleaned and not cleaned[field]:
             field_errors[field] = ["Esse campo nao pode ficar vazio."]
@@ -445,10 +497,13 @@ def _update_startup(request, startup):
             field_errors=field_errors,
         )
 
+    model_fields = []
     for field, value in cleaned.items():
-        setattr(startup, field, value)
+        model_field = MODEL_FIELD_BY_PAYLOAD_FIELD[field]
+        setattr(startup, model_field, value)
+        model_fields.append(model_field)
 
-    startup.save(update_fields=[*cleaned.keys(), "updated_at"])
+    startup.save(update_fields=[*model_fields, "updated_at"])
 
     # Problema e publico tambem vivem como etapas da jornada; manter as respostas em sincronia.
     stage_by_field = {"problem": Startup.Stage.PROBLEM, "audience": Startup.Stage.AUDIENCE}

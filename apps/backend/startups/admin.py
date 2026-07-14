@@ -5,7 +5,7 @@ from .models import ActivityEvent, Learning, Mission, MissionEvidence, Startup
 
 @admin.register(Startup)
 class StartupAdmin(admin.ModelAdmin):
-    list_display = ("name", "owner", "segment", "current_stage", "created_at")
+    list_display = ("name", "owner", "segment", "current_stage", "last_opened_at", "created_at")
     search_fields = (
         "name",
         "description",
