@@ -165,6 +165,7 @@ def _ordered_startups_for_user(user):
         F("last_opened_at").desc(nulls_last=True),
         "-updated_at",
         "-created_at",
+        "-pk",
     )
 
 

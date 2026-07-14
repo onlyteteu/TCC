@@ -70,6 +70,58 @@ class StartupApiTests(TestCase):
             [recent.pk, older.pk],
         )
 
+    def test_list_places_never_opened_startups_last(self):
+        now = timezone.now()
+        never_opened = Startup.objects.create(owner=self.user, name="Nunca aberta")
+        opened = Startup.objects.create(
+            owner=self.user,
+            name="Aberta",
+            last_opened_at=now - timedelta(days=30),
+        )
+
+        response = self.client.get(
+            "/api/startups/",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+
+        self.assertEqual(
+            [item["id"] for item in response.json()["startups"]],
+            [opened.pk, never_opened.pk],
+        )
+
+    def test_list_uses_primary_key_as_final_order_tiebreaker(self):
+        timestamp = timezone.now()
+        first = Startup.objects.create(owner=self.user, name="Primeira", last_opened_at=timestamp)
+        second = Startup.objects.create(owner=self.user, name="Segunda", last_opened_at=timestamp)
+        Startup.objects.filter(pk__in=[first.pk, second.pk]).update(
+            created_at=timestamp,
+            updated_at=timestamp,
+        )
+
+        response = self.client.get(
+            "/api/startups/",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+
+        self.assertEqual(
+            [item["id"] for item in response.json()["startups"]],
+            [second.pk, first.pk],
+        )
+
+    def test_list_uses_updated_at_when_there_is_no_activity_event(self):
+        startup = Startup.objects.create(owner=self.user, name="Sem atividade")
+
+        response = self.client.get(
+            "/api/startups/",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+        startup.refresh_from_db()
+
+        self.assertEqual(
+            response.json()["startups"][0]["lastActivityAt"],
+            startup.updated_at.isoformat(),
+        )
+
     def test_owner_can_mark_startup_as_opened(self):
         startup = Startup.objects.create(owner=self.user, name="Aurora Labs")
 
@@ -136,6 +188,33 @@ class StartupApiTests(TestCase):
             response.json()["startup"]["initialGoal"],
             "Validar o problema com cinco entrevistas.",
         )
+
+    def test_update_startup_accepts_initial_goal_at_model_limit(self):
+        startup = Startup.objects.create(owner=self.user, name="Aurora Labs")
+        goal = "x" * 255
+
+        response = self.client.patch(
+            f"/api/startups/{startup.pk}/",
+            data={"initialGoal": goal},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["startup"]["initialGoal"], goal)
+
+    def test_update_startup_rejects_initial_goal_over_model_limit(self):
+        startup = Startup.objects.create(owner=self.user, name="Aurora Labs")
+
+        response = self.client.patch(
+            f"/api/startups/{startup.pk}/",
+            data={"initialGoal": "x" * 256},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("initialGoal", response.json()["fieldErrors"])
 
     def test_authenticated_user_can_list_only_own_startups(self):
         other_user = User.objects.create_user(
