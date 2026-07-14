@@ -1,0 +1,707 @@
+.page {
+  width: min(1540px, 100%);
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.pageHeader {
+  margin-bottom: 24px;
+}
+
+.pageHeader h1 {
+  margin: 0;
+  color: #173c2a;
+  font-size: clamp(1.8rem, 2.3vw, 2.5rem);
+}
+
+.pageHeader p {
+  margin: 8px 0 0;
+  color: #62736a;
+  font-size: 1rem;
+}
+
+.primaryGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 360px);
+  gap: 24px;
+  align-items: start;
+}
+
+.secondaryGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.missionPanel {
+  min-width: 0;
+  padding: 28px;
+  border: 1px solid #dbe5df;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgb(20 54 39 / 7%);
+}
+
+.missionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.missionHeader h2 {
+  margin: 10px 0 8px;
+  color: #173c2a;
+  font-size: clamp(1.6rem, 2vw, 2.15rem);
+  line-height: 1.15;
+}
+
+.missionType {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #397255;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.missionType svg,
+.tip svg {
+  width: 18px;
+  height: 18px;
+}
+
+.missionObjective {
+  margin: 0;
+  color: #607269;
+  line-height: 1.6;
+}
+
+.reward {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #eef8f1;
+  color: #21734a;
+  font-weight: 800;
+}
+
+.missionProgressLabel {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 28px;
+  color: #5b6c63;
+  font-size: 0.9rem;
+}
+
+.progressTrack {
+  height: 8px;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5ede8;
+}
+
+.progressTrack > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #2f8d5d;
+}
+
+.missionSteps {
+  display: grid;
+  gap: 10px;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stepAction,
+.stepLocked {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  width: 100%;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid #e1e9e4;
+  border-radius: 12px;
+  background: #fbfcfb;
+  color: inherit;
+  text-align: left;
+}
+
+.stepAction {
+  cursor: pointer;
+  font: inherit;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.stepAction:hover,
+.stepAction:focus-visible {
+  border-color: #75ad8d;
+  background: #f3faf6;
+  outline: none;
+}
+
+.stepLocked {
+  color: #7b8981;
+  background: #f5f7f6;
+}
+
+.stepMarker {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e7f3eb;
+  color: #26744c;
+  font-weight: 800;
+}
+
+.stepMarker svg {
+  width: 17px;
+  height: 17px;
+}
+
+.stepCopy {
+  display: grid;
+  gap: 3px;
+}
+
+.stepCopy strong {
+  color: #254433;
+}
+
+.stepCopy span,
+.stepAction small,
+.stepLocked small {
+  color: #718078;
+  font-size: 0.82rem;
+}
+
+.tip {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #f3f7f4;
+  color: #52665a;
+}
+
+.tip p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.missionActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.primaryButton {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 10px;
+  background: #26744c;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.primaryButton:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.statusRail {
+  display: grid;
+  gap: 16px;
+}
+
+.statusPanel {
+  padding: 20px;
+  border: 1px solid #dbe5df;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(20 54 39 / 5%);
+}
+
+.streakRow,
+.levelRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.streakRow strong,
+.levelRow strong,
+.phaseHeader strong {
+  color: #254433;
+  font-size: 1rem;
+}
+
+.streakRow p,
+.phaseHeader p {
+  margin: 4px 0 0;
+  color: #6a7a71;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.streakMark,
+.levelRow > svg {
+  display: inline-grid;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 12px;
+  background: #fff3dc;
+  color: #c97916;
+}
+
+.streakMark svg,
+.levelRow > svg {
+  width: 22px;
+  height: 22px;
+}
+
+.levelRow > svg {
+  padding: 10px;
+  background: #eaf2ff;
+  color: #3f6fae;
+}
+
+.levelRow div,
+.phaseHeader div {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  gap: 12px;
+}
+
+.levelRow span,
+.phaseHeader span {
+  color: #61736a;
+  font-size: 0.85rem;
+}
+
+.levelTrack,
+.phaseTrack {
+  height: 7px;
+  margin-top: 16px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5ede8;
+}
+
+.levelTrack span,
+.phaseTrack span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #397eb4;
+}
+
+.phaseTrack span {
+  background: #2f8d5d;
+}
+
+.successMessage,
+.celebration {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  border: 1px solid #bce0c9;
+  border-radius: 12px;
+  background: #effaf3;
+  color: #236a46;
+}
+
+.successMessage svg,
+.celebration > svg {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+}
+
+.celebration {
+  border-color: #efd29d;
+  background: #fff8e9;
+  color: #825616;
+}
+
+.celebration p {
+  margin: 3px 0 0;
+}
+
+.secondarySection,
+.missionUnavailable,
+.errorPanel {
+  padding: 22px;
+  border: 1px solid #dbe5df;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.secondarySection h2,
+.missionUnavailable h2 {
+  margin: 0 0 16px;
+  color: #254433;
+  font-size: 1.05rem;
+}
+
+.activityList {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.activityList li,
+.unlockRow,
+.emptyActivity {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid #edf1ee;
+}
+
+.activityList li:last-child {
+  border-bottom: 0;
+}
+
+.activityList p,
+.unlockRow p,
+.emptyActivity p {
+  margin: 3px 0 0;
+  color: #697a70;
+  font-size: 0.85rem;
+}
+
+.activityList time,
+.unlockRow small {
+  color: #7c8a82;
+  font-size: 0.78rem;
+}
+
+.activityIcon,
+.unlockAvailable,
+.unlockLocked {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 10px;
+  background: #e8f4ec;
+  color: #2a7b50;
+}
+
+.activityIcon svg,
+.unlockAvailable svg,
+.unlockLocked svg,
+.emptyActivity > svg {
+  width: 18px;
+  height: 18px;
+}
+
+.unlockLocked {
+  background: #eff2f0;
+  color: #76847c;
+}
+
+.emptyActivity {
+  grid-template-columns: 38px minmax(0, 1fr);
+  border: 0;
+}
+
+.missionUnavailable {
+  min-height: 260px;
+}
+
+.missionUnavailable p {
+  color: #65766d;
+}
+
+.missionUnavailable a {
+  display: inline-flex;
+  margin-top: 14px;
+  color: #26744c;
+  font-weight: 800;
+}
+
+.dialogBackdrop {
+  position: fixed;
+  z-index: 50;
+  display: grid;
+  padding: 24px;
+  background: rgb(14 34 24 / 50%);
+  inset: 0;
+  overflow-y: auto;
+  place-items: center;
+}
+
+.workDialog {
+  width: min(760px, 100%);
+  max-height: calc(100vh - 48px);
+  padding: 26px;
+  overflow-y: auto;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 24px 80px rgb(10 35 23 / 28%);
+}
+
+.dialogHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.dialogHeader h2 {
+  margin: 0;
+  color: #203f2f;
+}
+
+.dialogHeader p {
+  margin: 7px 0 0;
+  color: #65766d;
+  line-height: 1.5;
+}
+
+.closeButton {
+  display: inline-grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  border: 1px solid #dce5df;
+  border-radius: 9px;
+  background: #f7f9f8;
+  color: #40574a;
+  cursor: pointer;
+  font: inherit;
+  place-items: center;
+}
+
+.workForm,
+.missionDetails {
+  display: grid;
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.formGrid,
+.formGridLearning {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.workForm label,
+.fullField,
+.confidenceField {
+  display: grid;
+  gap: 7px;
+  color: #324d3e;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.workForm input,
+.workForm textarea,
+.workForm select {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #cedbd3;
+  border-radius: 9px;
+  background: #fff;
+  color: #233c2f;
+  font: inherit;
+  font-weight: 400;
+}
+
+.workForm textarea {
+  resize: vertical;
+}
+
+.workForm input:focus,
+.workForm textarea:focus,
+.workForm select:focus {
+  border-color: #448d65;
+  outline: 3px solid rgb(68 141 101 / 14%);
+}
+
+.formActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.secondaryButton {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  border: 1px solid #cddbd3;
+  border-radius: 10px;
+  background: #fff;
+  color: #315642;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.formError {
+  margin: 0;
+  color: #b13f3f;
+  font-size: 0.88rem;
+}
+
+.missionDetails {
+  color: #53675c;
+  line-height: 1.55;
+}
+
+.missionDetails p,
+.missionDetails ol {
+  margin: 0;
+}
+
+.loadingPage,
+.errorPanel {
+  display: grid;
+  min-height: 300px;
+  place-content: center;
+}
+
+.loadingMark {
+  width: 42px;
+  height: 42px;
+  border: 4px solid #dce9e1;
+  border-top-color: #2f8054;
+  border-radius: 50%;
+  animation: spin 800ms linear infinite;
+}
+
+.errorPanel {
+  width: min(620px, calc(100% - 48px));
+  margin: 48px auto;
+  text-align: center;
+}
+
+.errorPanel > svg {
+  margin: 0 auto;
+}
+
+.errorPanel .formActions {
+  justify-content: center;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1450px) {
+  .page {
+    padding: 24px;
+  }
+
+  .primaryGrid {
+    grid-template-columns: minmax(0, 1fr) 320px;
+  }
+}
+
+@media (max-width: 1120px) {
+  .primaryGrid,
+  .secondaryGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  .page {
+    padding: 18px;
+  }
+
+  .missionPanel {
+    padding: 20px;
+  }
+
+  .missionHeader,
+  .missionActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .stepAction,
+  .stepLocked {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .stepAction small,
+  .stepLocked small {
+    grid-column: 2;
+  }
+
+  .formGrid,
+  .formGridLearning {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .activityList li,
+  .unlockRow {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .activityList time,
+  .unlockRow small {
+    grid-column: 2;
+  }
+
+  .dialogBackdrop {
+    padding: 12px;
+  }
+
+  .workDialog {
+    max-height: calc(100vh - 24px);
+    padding: 20px;
+  }
+}
