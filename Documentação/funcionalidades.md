@@ -121,13 +121,101 @@ jornada.
 Entrega o primeiro ponto em que o usuario autenticado realmente inicia a estruturacao da startup
 dentro da plataforma.
 
+### 8. Edicao e renomeacao da startup
+
+Foi implementada a atualizacao da startup depois da criacao:
+
+- endpoint `PATCH /api/startups/<id>/` com atualizacao parcial de nome, ideia, segmento, problema e publico
+- renomeacao inline no painel `Suas startups`
+- chamada `Dar nome agora` em destaque para startups criadas sem nome
+- modal proprio de confirmacao de exclusao no estilo do produto
+
+### Problema que resolve
+
+Cumpre a promessa `Ainda nao sei o nome / posso definir isso depois`, que antes nao tinha caminho
+de conclusao, e remove o dialogo nativo do navegador do fluxo de exclusao.
+
+### Relacao com o objetivo do projeto
+
+Fecha o ciclo basico de CRUD da startup e prepara o painel para a proxima etapa: entrar na startup
+e acompanhar a jornada.
+
+### 9. Pagina de detalhe da startup
+
+Foi implementada a primeira visao interna de uma startup especifica em `/painel/startup/[id]`:
+
+- endpoint `GET /api/startups/<id>/` restrito ao dono da startup
+- card do painel virou porta de entrada (titulo clicavel e botao `Entrar na startup`)
+- mapa inicial com edicao inline de ideia, segmento, problema e publico
+- bloco `Proximo passo` derivado do estado real da startup
+- mapa da jornada com as 8 etapas do TCC e status honesto de progresso
+
+### Problema que resolve
+
+Elimina o beco sem saida do pos-criacao: antes, criar uma startup nao levava a lugar nenhum.
+Agora o card abre um espaco proprio da startup, onde a jornada guiada vai morar.
+
+### Relacao com o objetivo do projeto
+
+E o elo entre o funil de criacao e o fluxo central do produto (jornada guiada por etapas),
+alem de dar visibilidade de progresso desde ja.
+
+### 10. Jornada guiada por etapas (nucleo do produto)
+
+Foi implementada a jornada guiada real, com as 8 etapas do TCC:
+
+1. definicao do problema
+2. publico-alvo
+3. proposta de valor
+4. diferenciais
+5. validacao inicial
+6. modelo de negocio
+7. planejamento do MVP
+8. metas iniciais
+
+Comportamento:
+
+- cada startup recebe a jornada automaticamente na criacao
+- problema e publico ja nascem concluidos, porque foram respondidos na fundacao
+- uma porta de cada vez: so a etapa atual aceita resposta; as futuras ficam travadas
+- concluir uma etapa abre a proxima e avanca a etapa atual da startup
+- etapas concluidas podem ser refinadas a qualquer momento
+- progresso calculado e exibido na pagina de detalhe
+- cada etapa tem pergunta, dica e exemplo para orientar a resposta
+
+### Problema que resolve
+
+Era a maior lacuna entre a proposta do TCC e o codigo: o fluxo central da plataforma
+(fluxo 3 da documentacao) nao existia. Agora o usuario estrutura a startup passo a passo.
+
+### Relacao com o objetivo do projeto
+
+E o coracao do produto: transforma uma ideia ampla em passos organizados com progresso visivel.
+
+### 11. Gamificacao leve
+
+Foi implementada a primeira camada de gamificacao, calculada do estado real da jornada:
+
+- 100 XP por etapa concluida; um nivel a cada 300 XP
+- cinco conquistas: Fundacao, Batismo, Primeira porta, Meio caminho e Jornada completa
+- exibicao no painel: metrica de nivel com XP e fileira de conquistas
+
+### Problema que resolve
+
+Da retorno visivel a cada avanco sem inflar o escopo: nenhuma tabela nova, nenhum sistema
+paralelo — as recompensas derivam dos mesmos dados da jornada.
+
+### Relacao com o objetivo do projeto
+
+Fecha o fluxo 5 da documentacao (retorno de gamificacao) de forma coerente com o principio de
+que a gamificacao apoia a jornada, nao vira o produto.
+
 ## Funcionalidades em construcao conceitual
 
-- jornada guiada por etapas
-- dashboard com visao de progresso aprofundada
-- recomendacao de proximos passos
+- dashboard com visao de progresso aprofundada no painel
+- recomendacao de proximos passos mais inteligente
 - tarefas por etapa
-- gamificacao leve com niveis, badges e missoes
+- missoes e niveis mais profundos de gamificacao
 
 ## Funcionalidades previstas para o MVP
 

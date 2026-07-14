@@ -318,10 +318,14 @@ export function StartupCreationScreen({
           isCelebrating ? styles.contentCelebrating : "",
         ].join(" ")}
       >
-        <div className={styles.brandTitle}>Startup Quest</div>
-
-        <div className={[styles.logoRegion, isNameStep ? styles.logoRegionNameStep : ""].join(" ")}>
-          <QuestMark animated />
+        <div className={styles.identityCorner}>
+          <div className={styles.logoRegion}>
+            <QuestMark animated mode="compact" />
+          </div>
+          <div aria-label="Startup Quest" className={styles.brandTitle}>
+            <span>Startup</span>
+            <span>Quest</span>
+          </div>
         </div>
 
         <div

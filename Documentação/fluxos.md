@@ -41,13 +41,29 @@ Evita que o usuario entre em um sistema vazio e sem contexto.
 Cria o ponto de partida da jornada guiada, organiza a startup desde o primeiro contato e evita
 que o usuario comece em um dashboard vazio sem ter nomeado ideia, segmento, problema e publico.
 
-## Fluxo 3. Jornada guiada por etapas
+## Fluxo 2A. Entrada na startup (implementado em 2026-07-08)
 
-1. O usuario visualiza as etapas da estruturacao inicial.
-2. Escolhe a etapa atual ou sugerida.
-3. Preenche as informacoes da etapa.
-4. Marca avancos ou conclui tarefas.
-5. Recebe orientacao para o proximo passo.
+1. O usuario ve suas startups no painel.
+2. Clica no titulo do card ou em `Entrar na startup`.
+3. Abre a pagina de detalhe da startup.
+4. Ve o proximo passo sugerido, o mapa inicial e a jornada.
+5. Refina nome, ideia, segmento, problema ou publico quando quiser.
+
+### Problema que resolve
+
+Antes, o pos-criacao era um beco sem saida: o card nao abria e a unica acao era excluir.
+
+### Relacao com o objetivo do projeto
+
+Cria o espaco onde a jornada guiada (fluxo 3) vai acontecer.
+
+## Fluxo 3. Jornada guiada por etapas (implementado em 2026-07-08)
+
+1. O usuario visualiza as 8 etapas na pagina de detalhe da startup.
+2. A etapa atual esta aberta; as futuras, travadas na sequencia.
+3. Abre a etapa, le a pergunta, a dica e o exemplo, e escreve a resposta.
+4. Conclui a etapa (ou salva rascunho para continuar depois).
+5. A proxima porta abre, o progresso avanca e o proximo passo e atualizado.
 
 ### Problema que resolve
 

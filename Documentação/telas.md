@@ -212,6 +212,18 @@ Exibir uma visao geral da evolucao da startup.
 - contagem simples de startups com nome definido e pendente
 - CTA para criar outra startup
 - botao de saida da conta
+- renomeacao inline no card, com chamada `Dar nome agora` para startups sem nome
+- modal proprio de confirmacao de exclusao (substituiu o dialogo nativo do navegador)
+- titulo do card clicavel e botao `Entrar na startup` levando a pagina de detalhe
+- barra fina de progresso da jornada e proxima etapa em cada card (2026-07-08)
+- metrica `Progresso medio` da conta no lugar de `A definir depois`
+- metrica `Nivel` com XP da conta e fileira de conquistas (2026-07-08)
+
+### Nota de direcao (2026-07-08)
+
+A composicao implementada desta tela foi preferida em relacao aos mockups do hub. Os mockups
+permanecem como referencia de conteudo futuro (saude, proximo passo, acessos rapidos), sem
+substituir o visual atual.
 
 ### Direcao visual do mockup mais recente
 
@@ -239,6 +251,27 @@ Exibir uma visao geral da evolucao da startup.
 - criar uma doca de acoes rapidas entre hero e lista de startups
 - quebrar a grade simetrica com uma composicao mais intencional: startup principal, fila secundaria e painel de radar
 - manter a linguagem quente, premium e levemente gamer, sem parecer dashboard corporativo
+
+## 3A. Pagina de detalhe da startup (implementada em 2026-07-08)
+
+### Funcao
+
+Ser o espaco proprio de uma startup especifica: ver e refinar o mapa inicial e acompanhar a
+jornada.
+
+### Estado atual implementado
+
+- rota `/painel/startup/[id]` restrita ao dono
+- topo com retorno ao painel e marca
+- chips de etapa atual e data de fundacao
+- nome com renomeacao inline (mesmo padrao do painel)
+- bloco `Proximo passo` derivado do estado real (dar nome ou proposta de valor)
+- mapa inicial em quatro cards editaveis: ideia, segmento, problema e publico
+- mapa da jornada com as 8 etapas do TCC, barra de progresso e marcacao `Voce esta aqui`
+- jornada jogavel (2026-07-08): etapa atual abre editor com pergunta, dica e exemplo;
+  concluir abre a proxima porta; etapas concluidas podem ser refinadas
+- celebracao curta ao concluir etapa (2026-07-09): anel e faiscas no marcador, glow no card
+- estados de carregamento, erro e startup nao encontrada
 
 ## 4. Tela de jornada
 

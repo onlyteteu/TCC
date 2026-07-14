@@ -1,0 +1,1490 @@
+.shell {
+  --color-bg: oklch(15% 0.015 260);
+  --color-sidebar: oklch(13% 0.014 260);
+  --color-surface: oklch(20% 0.025 255);
+  --color-surface-raised: oklch(25% 0.035 255);
+  --color-surface-active: oklch(23% 0.04 70);
+  --color-border: oklch(29% 0.03 255);
+  --color-border-strong: oklch(38% 0.04 255);
+  --color-text: oklch(97% 0.006 255);
+  --color-muted: oklch(76% 0.025 255);
+  --color-subtle: oklch(63% 0.025 255);
+  --color-amber: oklch(79% 0.16 73);
+  --color-amber-strong: oklch(70% 0.17 65);
+  --color-orange: oklch(68% 0.22 40);
+  --color-success: oklch(78% 0.15 170);
+  --color-info: oklch(72% 0.13 255);
+  --color-error: oklch(69% 0.2 20);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --text-caption: 0.75rem;
+  --text-secondary: 0.875rem;
+  --text-body: 1rem;
+  --text-subheading: 1.125rem;
+  --text-section: 1.375rem;
+  --text-title: 2rem;
+  --z-base: 0;
+  --z-sticky: 20;
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  color: var(--color-text);
+  background: var(--color-bg);
+  font-family: var(--font-product), "Segoe UI", sans-serif;
+  font-size: var(--text-body);
+  font-kerning: normal;
+  font-optical-sizing: auto;
+}
+
+.shell *,
+.shell *::before,
+.shell *::after {
+  box-sizing: border-box;
+}
+
+.shell :is(h1, h2, h3) {
+  max-width: none;
+  font-family: inherit;
+}
+
+.skipLink {
+  position: fixed;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: calc(var(--z-sticky) + 1);
+  padding: var(--space-3) var(--space-4);
+  border-radius: 10px;
+  color: var(--color-bg);
+  background: var(--color-amber);
+  font-weight: 700;
+  transform: translateY(-150%);
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.skipLink:focus {
+  transform: translateY(0);
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6) var(--space-3) var(--space-4);
+  border-right: 1px solid var(--color-border);
+  background: var(--color-sidebar);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 52px;
+  padding: 0 var(--space-3);
+  border-radius: 12px;
+}
+
+.brandMark {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+}
+
+.brandMark > * {
+  width: 100%;
+  height: 100%;
+}
+
+.brandName {
+  max-width: 9ch;
+  color: var(--color-text);
+  font-size: var(--text-secondary);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-8);
+}
+
+.navItem,
+.navItemActive,
+.navItemDisabled {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--color-muted);
+  font-size: var(--text-secondary);
+  font-weight: 500;
+}
+
+.navItem svg,
+.navItemActive svg,
+.navItemDisabled svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+.navItem {
+  transition:
+    color 180ms ease,
+    background-color 180ms ease;
+}
+
+.navItem:hover {
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.navItemActive {
+  color: var(--color-amber);
+  border-color: oklch(79% 0.16 73 / 0.24);
+  background: var(--color-surface-active);
+}
+
+.navItemDisabled {
+  color: var(--color-subtle);
+  cursor: not-allowed;
+  opacity: 0.66;
+}
+
+.navItemDisabled small {
+  margin-left: auto;
+  color: var(--color-subtle);
+  font-size: 0.6875rem;
+}
+
+.backToPanel {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: auto;
+  padding: var(--space-2) var(--space-3);
+  border-radius: 10px;
+  color: var(--color-muted);
+  font-size: var(--text-secondary);
+}
+
+.backToPanel:hover {
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.workspace {
+  min-width: 0;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding: var(--space-3) var(--space-8);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.startupSwitcher {
+  min-height: 44px;
+  max-width: 340px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 10px;
+  color: var(--color-text);
+  background: var(--color-surface);
+  font-size: var(--text-secondary);
+  font-weight: 600;
+}
+
+.startupSwitcher > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.startupSwitcher svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+.startupSwitcher .switcherChevron {
+  width: 16px;
+  height: 16px;
+  margin-left: auto;
+  transform: rotate(90deg);
+}
+
+.topbarProgress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.topbarStat {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-muted);
+  font-size: var(--text-secondary);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.topbarStat svg {
+  width: 20px;
+  height: 20px;
+}
+
+.fireIcon {
+  color: var(--color-orange);
+}
+
+.levelIcon {
+  color: var(--color-amber);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 50%;
+  color: var(--color-muted);
+  background: var(--color-surface);
+  font-size: var(--text-caption);
+  font-weight: 700;
+}
+
+.main {
+  width: min(1320px, 100%);
+  margin: 0 auto;
+  padding: var(--space-8);
+}
+
+.pageHeader h1,
+.pageHeader p,
+.missionHeader h2,
+.missionHeader p,
+.formHeading h3,
+.formHeading p,
+.statusPanel p,
+.secondarySection h2,
+.secondarySection p,
+.celebration p,
+.errorPanel h1,
+.errorPanel p {
+  margin: 0;
+}
+
+.pageHeader h1 {
+  color: var(--color-text);
+  font-size: var(--text-title);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.pageHeader p {
+  max-width: 64ch;
+  margin-top: var(--space-2);
+  color: var(--color-muted);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.successMessage,
+.celebration {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid oklch(78% 0.15 170 / 0.38);
+  border-radius: 12px;
+  color: var(--color-success);
+  background: oklch(23% 0.04 170);
+}
+
+.successMessage svg {
+  width: 20px;
+  height: 20px;
+}
+
+.celebration {
+  justify-content: center;
+  padding: var(--space-4) var(--space-6);
+  border-color: oklch(79% 0.16 73 / 0.5);
+  color: var(--color-text);
+  background: var(--color-surface-active);
+  animation: celebrationEnter 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.celebrationMark {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--color-orange);
+  background: oklch(68% 0.22 40 / 0.12);
+}
+
+.celebration strong {
+  font-size: var(--text-subheading);
+}
+
+.celebration p {
+  margin-top: var(--space-1);
+  color: var(--color-muted);
+  font-size: var(--text-secondary);
+}
+
+.primaryGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 0.9fr);
+  gap: var(--space-6);
+  margin-top: var(--space-8);
+  align-items: start;
+}
+
+.missionPanel,
+.statusPanel,
+.secondarySection {
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface);
+}
+
+.missionPanel {
+  min-width: 0;
+  padding: var(--space-6);
+  border-color: oklch(79% 0.16 73 / 0.52);
+}
+
+.missionHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.missionType {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-amber);
+  font-size: var(--text-secondary);
+  font-weight: 700;
+}
+
+.missionType svg {
+  width: 18px;
+  height: 18px;
+}
+
+.missionHeader h2 {
+  max-width: 26ch;
+  margin-top: var(--space-3);
+  color: var(--color-text);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.missionObjective {
+  max-width: 64ch;
+  margin-top: var(--space-3) !important;
+  color: var(--color-muted);
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+.reward {
+  height: fit-content;
+  flex: 0 0 auto;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid oklch(79% 0.16 73 / 0.4);
+  border-radius: 999px;
+  color: var(--color-amber);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.missionProgressLabel {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  color: var(--color-muted);
+  font-size: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.missionProgressLabel strong {
+  color: var(--color-amber);
+  font-size: var(--text-subheading);
+}
+
+.progressTrack,
+.levelTrack {
+  height: 6px;
+  overflow: hidden;
+  margin-top: var(--space-2);
+  border-radius: 999px;
+  background: var(--color-surface-raised);
+}
+
+.progressTrack > span,
+.levelTrack > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-amber);
+  transition: width 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.missionSteps {
+  display: flex;
+  flex-direction: column;
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.missionSteps li {
+  min-height: 68px;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.missionSteps li:first-child {
+  padding-top: 0;
+}
+
+.missionSteps li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.stepMarker {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 50%;
+  color: var(--color-muted);
+  font-size: var(--text-secondary);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.stepMarker svg {
+  width: 17px;
+  height: 17px;
+}
+
+.missionSteps li > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.missionSteps li strong {
+  color: var(--color-text);
+  font-size: var(--text-body);
+  font-weight: 600;
+}
+
+.missionSteps li span:not(.stepMarker) {
+  color: var(--color-muted);
+  font-size: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.missionSteps li small {
+  color: var(--color-subtle);
+  font-size: var(--text-caption);
+  font-weight: 600;
+}
+
+.step_completed .stepMarker {
+  color: var(--color-bg);
+  border-color: var(--color-success);
+  background: var(--color-success);
+}
+
+.step_completed small {
+  color: var(--color-success) !important;
+}
+
+.step_current .stepMarker,
+.step_available .stepMarker {
+  color: var(--color-amber);
+  border-color: var(--color-amber);
+}
+
+.step_current small,
+.step_available small {
+  color: var(--color-amber) !important;
+}
+
+.step_locked {
+  opacity: 0.62;
+}
+
+.tip {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-info);
+}
+
+.tip svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.tip p {
+  max-width: 52ch;
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.missionActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.primaryButton,
+.secondaryButton {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: 10px;
+  font: inherit;
+  font-size: var(--text-secondary);
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 120ms ease;
+}
+
+.primaryButton {
+  border: 1px solid var(--color-amber);
+  color: var(--color-bg);
+  background: var(--color-amber);
+}
+
+.primaryButton:hover:not(:disabled) {
+  border-color: var(--color-amber-strong);
+  background: var(--color-amber-strong);
+}
+
+.secondaryButton {
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text);
+  background: transparent;
+}
+
+.secondaryButton:hover:not(:disabled) {
+  border-color: var(--color-muted);
+  background: var(--color-surface-raised);
+}
+
+.primaryButton:active:not(:disabled),
+.secondaryButton:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.primaryButton:disabled,
+.secondaryButton:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.primaryButton svg,
+.secondaryButton svg {
+  width: 18px;
+  height: 18px;
+}
+
+.missionDetails {
+  min-width: 220px;
+  color: var(--color-muted);
+  font-size: var(--text-secondary);
+}
+
+.missionDetails summary {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-amber);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.missionDetails > div {
+  margin-top: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-bg);
+}
+
+.missionDetails strong {
+  display: block;
+  color: var(--color-text);
+  font-size: var(--text-secondary);
+}
+
+.missionDetails p,
+.missionDetails ol {
+  max-width: 64ch;
+  margin: var(--space-2) 0 var(--space-4);
+  line-height: 1.65;
+}
+
+.missionDetails ol {
+  padding-left: var(--space-6);
+}
+
+.missionDetails li + li {
+  margin-top: var(--space-2);
+}
+
+.workForm {
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.formHeading {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.formHeading h3 {
+  font-size: var(--text-section);
+  line-height: 1.25;
+}
+
+.formHeading p {
+  max-width: 64ch;
+  margin-top: var(--space-2);
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+.formHeading > span {
+  color: var(--color-amber);
+  font-size: var(--text-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.formGrid,
+.formGridLearning {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.formGridLearning {
+  margin-top: var(--space-4);
+}
+
+.workForm label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.workForm label > span {
+  color: var(--color-text);
+  font-size: var(--text-secondary);
+  font-weight: 600;
+}
+
+.workForm input,
+.workForm textarea,
+.workForm select {
+  width: 100%;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 10px;
+  color: var(--color-text);
+  background: var(--color-bg);
+  font: inherit;
+  font-size: var(--text-body);
+  line-height: 1.55;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.workForm input,
+.workForm select {
+  min-height: 44px;
+  padding: 0 var(--space-3);
+}
+
+.workForm textarea {
+  min-height: 120px;
+  padding: var(--space-3);
+  resize: vertical;
+}
+
+.workForm input::placeholder,
+.workForm textarea::placeholder {
+  color: var(--color-subtle);
+  opacity: 1;
+}
+
+.workForm input:hover:not(:disabled),
+.workForm textarea:hover:not(:disabled),
+.workForm select:hover:not(:disabled) {
+  border-color: var(--color-muted);
+}
+
+.workForm input:disabled,
+.workForm textarea:disabled,
+.workForm select:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.fullField,
+.confidenceField {
+  margin-top: var(--space-4);
+}
+
+.confidenceField {
+  max-width: 520px;
+}
+
+.formActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.formError {
+  margin: var(--space-4) 0 0;
+  color: var(--color-error);
+  font-size: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.statusRail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.statusPanel {
+  padding: var(--space-6);
+}
+
+.streakRow,
+.levelRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.streakMark {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--color-orange);
+  background: oklch(68% 0.22 40 / 0.1);
+}
+
+.streakMark svg {
+  width: 30px;
+  height: 30px;
+}
+
+.streakRow strong,
+.levelRow strong {
+  display: block;
+  color: var(--color-text);
+  font-size: var(--text-section);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.streakRow p {
+  margin-top: var(--space-1);
+  color: var(--color-muted);
+  font-size: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.levelRow > svg {
+  width: 44px;
+  height: 44px;
+  color: var(--color-amber);
+}
+
+.levelRow span {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--color-muted);
+  font-size: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.levelTrack {
+  margin-top: var(--space-4);
+}
+
+.phaseHeader > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.phaseHeader strong {
+  color: var(--color-text);
+  font-size: var(--text-section);
+}
+
+.phaseHeader span {
+  color: var(--color-amber);
+  font-size: var(--text-section);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.phaseHeader p {
+  margin-top: var(--space-2);
+  color: var(--color-muted);
+  font-size: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.phaseDots {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.phaseDots span {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-border-strong);
+}
+
+.phaseDots .phaseDotDone {
+  background: var(--color-amber);
+}
+
+.healthCue {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-success);
+}
+
+.healthCue svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.healthCue p {
+  color: var(--color-muted);
+  font-size: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.secondaryGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.2fr);
+  gap: var(--space-6);
+  margin-top: var(--space-6);
+}
+
+.secondarySection {
+  padding: var(--space-6);
+}
+
+.sectionTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.sectionTitleRow h2 {
+  font-size: var(--text-subheading);
+  font-weight: 700;
+}
+
+.sectionTitleRow a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-info);
+  font-size: var(--text-secondary);
+  font-weight: 600;
+}
+
+.nextStepRow {
+  min-height: 84px;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.nextStepRow:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.nextStepLocked,
+.nextStepAvailable {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 10px;
+  color: var(--color-subtle);
+  background: var(--color-bg);
+}
+
+.nextStepAvailable {
+  color: var(--color-success);
+  border-color: oklch(78% 0.15 170 / 0.45);
+}
+
+.nextStepLocked svg,
+.nextStepAvailable svg {
+  width: 20px;
+  height: 20px;
+}
+
+.nextStepRow strong {
+  color: var(--color-text);
+  font-size: var(--text-secondary);
+  font-weight: 600;
+}
+
+.nextStepRow p {
+  margin-top: var(--space-1);
+  color: var(--color-muted);
+  font-size: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.nextStepRow small {
+  color: var(--color-subtle);
+  font-size: var(--text-caption);
+}
+
+.nextStepRow button {
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-amber);
+  border-radius: 10px;
+  color: var(--color-amber);
+  background: transparent;
+  font: inherit;
+  font-size: var(--text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nextStepRow button:hover {
+  color: var(--color-bg);
+  background: var(--color-amber);
+}
+
+.activityList {
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.activityList li {
+  min-height: 64px;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+}
+
+.activityIcon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid oklch(78% 0.15 170 / 0.38);
+  border-radius: 50%;
+  color: var(--color-success);
+}
+
+.activityIcon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.activityList strong {
+  color: var(--color-text);
+  font-size: var(--text-secondary);
+  font-weight: 600;
+}
+
+.activityList p {
+  margin-top: var(--space-1);
+  overflow: hidden;
+  color: var(--color-muted);
+  font-size: var(--text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activityList time {
+  color: var(--color-subtle);
+  font-size: var(--text-caption);
+  font-variant-numeric: tabular-nums;
+}
+
+.emptyActivity,
+.emptyMission {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 112px;
+  margin-top: var(--space-3);
+  color: var(--color-info);
+}
+
+.emptyActivity > svg,
+.emptyMission > svg {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+}
+
+.emptyActivity strong,
+.emptyMission h2 {
+  color: var(--color-text);
+  font-size: var(--text-body);
+}
+
+.emptyActivity p,
+.emptyMission p {
+  margin-top: var(--space-1);
+  color: var(--color-muted);
+  line-height: 1.55;
+}
+
+.emptyMission {
+  min-height: 420px;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.emptyMission p {
+  max-width: 52ch;
+}
+
+.loadingPage,
+.errorPage {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6, 24px);
+  color: oklch(97% 0.006 255);
+  background: oklch(15% 0.015 260);
+  font-family: var(--font-product), "Segoe UI", sans-serif;
+}
+
+.loadingShell {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.loadingMark {
+  width: 44px;
+  height: 44px;
+  border: 1px solid oklch(79% 0.16 73);
+  border-radius: 50%;
+  animation: loadingPulse 900ms ease-in-out infinite alternate;
+}
+
+.loadingLines {
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.loadingLines span {
+  height: 12px;
+  border-radius: 999px;
+  background: oklch(29% 0.03 255);
+  animation: loadingPulse 900ms ease-in-out infinite alternate;
+}
+
+.loadingLines span:last-child {
+  width: 70%;
+  animation-delay: 120ms;
+}
+
+.errorPanel {
+  width: min(520px, 100%);
+  padding: 32px;
+  border: 1px solid oklch(29% 0.03 255);
+  border-radius: 14px;
+  background: oklch(20% 0.025 255);
+}
+
+.errorPanel > svg {
+  width: 32px;
+  height: 32px;
+  color: oklch(69% 0.2 20);
+}
+
+.errorPanel h1 {
+  margin-top: 16px;
+  font-size: 1.375rem;
+  line-height: 1.25;
+}
+
+.errorPanel p {
+  margin-top: 8px;
+  color: oklch(76% 0.025 255);
+  line-height: 1.6;
+}
+
+.errorActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.shell :is(a, button, input, textarea, select, summary):focus-visible,
+.errorPage :is(a, button):focus-visible {
+  outline: 2px solid var(--color-amber, oklch(79% 0.16 73));
+  outline-offset: 3px;
+}
+
+@keyframes loadingPulse {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes celebrationEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@media (max-width: 1180px) {
+  .shell {
+    grid-template-columns: 84px minmax(0, 1fr);
+  }
+
+  .sidebar {
+    padding-inline: var(--space-2);
+  }
+
+  .brand {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .brandName,
+  .navItem span,
+  .navItemActive span,
+  .navItemDisabled span,
+  .navItemDisabled small,
+  .backToPanel span:last-child {
+    display: none;
+  }
+
+  .navItem,
+  .navItemActive,
+  .navItemDisabled,
+  .backToPanel {
+    justify-content: center;
+  }
+
+  .primaryGrid {
+    grid-template-columns: minmax(0, 1fr) 280px;
+  }
+}
+
+@media (min-width: 921px) and (max-height: 760px) {
+  .topbar {
+    min-height: 64px;
+  }
+
+  .main {
+    padding-block: var(--space-6);
+  }
+
+  .pageHeader p {
+    margin-top: var(--space-1);
+  }
+
+  .primaryGrid {
+    margin-top: var(--space-6);
+  }
+
+  .missionPanel {
+    padding: var(--space-4) var(--space-6);
+  }
+
+  .missionHeader h2 {
+    margin-top: var(--space-2);
+    font-size: 1.5rem;
+  }
+
+  .missionObjective {
+    margin-top: var(--space-2) !important;
+  }
+
+  .missionProgressLabel,
+  .missionSteps,
+  .tip,
+  .missionActions {
+    margin-top: var(--space-4);
+  }
+
+  .missionSteps li {
+    min-height: 56px;
+    padding-block: var(--space-2);
+  }
+
+  .tip {
+    padding-top: var(--space-3);
+  }
+
+  .statusPanel {
+    padding: var(--space-4);
+  }
+
+  .statusRail {
+    gap: var(--space-3);
+  }
+
+  .healthCue {
+    margin-top: var(--space-4);
+    padding-top: var(--space-3);
+  }
+}
+
+@media (max-width: 920px) {
+  .topbar {
+    padding-inline: var(--space-4);
+  }
+
+  .main {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .primaryGrid,
+  .secondaryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .statusRail {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .statusPanel:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .shell {
+    display: block;
+  }
+
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    padding: var(--space-2) var(--space-3);
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .brandMark {
+    width: 36px;
+    height: 36px;
+  }
+
+  .navigation {
+    flex-direction: row;
+    margin: 0 0 0 auto;
+  }
+
+  .navigation > :not(.navItemActive):not(.navItem) {
+    display: none;
+  }
+
+  .backToPanel {
+    display: none;
+  }
+
+  .topbarProgress .topbarStat {
+    display: none;
+  }
+
+  .startupSwitcher {
+    max-width: 240px;
+  }
+
+  .missionPanel,
+  .statusPanel,
+  .secondarySection {
+    padding: var(--space-4);
+  }
+
+  .missionHeader,
+  .formHeading,
+  .missionActions {
+    flex-direction: column;
+  }
+
+  .reward {
+    align-self: flex-start;
+  }
+
+  .formGrid,
+  .formGridLearning,
+  .statusRail {
+    grid-template-columns: 1fr;
+  }
+
+  .statusPanel:last-child {
+    grid-column: auto;
+  }
+
+  .missionSteps li,
+  .nextStepRow,
+  .activityList li {
+    grid-template-columns: 36px minmax(0, 1fr);
+  }
+
+  .missionSteps li small,
+  .nextStepRow > small,
+  .nextStepRow > button,
+  .activityList time {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell *,
+  .shell *::before,
+  .shell *::after,
+  .loadingPage *,
+  .loadingPage *::before,
+  .loadingPage *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

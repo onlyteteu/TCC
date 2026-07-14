@@ -294,6 +294,58 @@
   font-size: clamp(2rem, 4vw, 3rem);
 }
 
+.metricDetail {
+  display: block;
+  margin-top: 4px;
+  color: #a18c74;
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+  font-size: 0.82rem;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.achievements {
+  margin-top: 20px;
+}
+
+.achievementsTitle {
+  display: block;
+  color: #d7a14a;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.achievementsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.achievementChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid rgba(197, 133, 49, 0.16);
+  border-radius: 999px;
+  background: rgba(17, 14, 12, 0.6);
+  color: #8d7b66;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.achievementUnlocked {
+  border-color: rgba(236, 191, 92, 0.4);
+  background: rgba(212, 154, 53, 0.12);
+  color: #f3d7a3;
+  box-shadow: 0 0 20px rgba(236, 191, 92, 0.08);
+}
+
 .section {
   margin-top: 32px;
 }
@@ -385,10 +437,157 @@
 }
 
 .card h3 {
-  margin: 18px 0 0;
+  margin: 0;
   font-family: var(--font-heading), "Segoe UI", sans-serif;
   font-size: 1.7rem;
   line-height: 1.08;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.renameButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid rgba(197, 133, 49, 0.24);
+  border-radius: 999px;
+  background: rgba(17, 14, 12, 0.72);
+  color: #d7a14a;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    transform 180ms ease,
+    filter 180ms ease,
+    border-color 180ms ease;
+}
+
+.renameButton:hover {
+  border-color: rgba(229, 173, 65, 0.45);
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.renameButtonCallout {
+  border-color: rgba(229, 173, 65, 0.5);
+  background: rgba(212, 154, 53, 0.14);
+  color: #f3d7a3;
+}
+
+.renameForm {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.renameInput {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 16px;
+  border: 1px solid rgba(197, 133, 49, 0.35);
+  border-radius: 14px;
+  background: rgba(10, 8, 7, 0.85);
+  color: #f4e1bf;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.renameInput:focus {
+  outline: 2px solid rgba(229, 173, 65, 0.55);
+  outline-offset: 1px;
+}
+
+.renameError {
+  color: #efb2a4;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.renameActions {
+  display: flex;
+  gap: 10px;
+}
+
+.renameSave,
+.renameCancel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    filter 180ms ease,
+    opacity 180ms ease;
+}
+
+.renameSave {
+  border: 1px solid rgba(197, 133, 49, 0.32);
+  background: linear-gradient(180deg, #e4ad41 0%, #bf7920 100%);
+  color: #2b1807;
+}
+
+.renameCancel {
+  border: 1px solid rgba(197, 133, 49, 0.24);
+  background: rgba(17, 14, 12, 0.78);
+  color: #f1ddbb;
+}
+
+.renameSave:hover,
+.renameCancel:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+}
+
+.renameSave:disabled,
+.renameCancel:disabled {
+  opacity: 0.68;
+  cursor: wait;
+  transform: none;
+}
+
+.journeyRow {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.journeyTrack {
+  position: relative;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 240, 208, 0.08);
+  overflow: hidden;
+}
+
+.journeyFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #bf7920, #e4ad41);
+}
+
+.journeyLabel {
+  color: #a18c74;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .details {
@@ -419,8 +618,55 @@
 
 .cardFooter {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   margin-top: 18px;
+}
+
+.nameLink {
+  color: inherit;
+  transition: color 180ms ease;
+}
+
+.nameLink:hover {
+  color: #f3d7a3;
+  text-decoration: underline;
+  text-decoration-color: rgba(229, 173, 65, 0.5);
+  text-underline-offset: 6px;
+}
+
+.nameLink:focus-visible {
+  outline: 2px solid rgba(229, 173, 65, 0.6);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.enterButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(197, 133, 49, 0.32);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #e4ad41 0%, #bf7920 100%);
+  color: #2b1807;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition:
+    transform 180ms ease,
+    filter 180ms ease;
+}
+
+.enterButton:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.enterButton:focus-visible {
+  outline: 2px solid rgba(229, 173, 65, 0.6);
+  outline-offset: 2px;
 }
 
 .dangerButton {
@@ -456,6 +702,105 @@
   opacity: 0.68;
   cursor: wait;
   transform: none;
+}
+
+.dialogOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(6, 4, 3, 0.72);
+  backdrop-filter: blur(6px);
+  animation: overviewFlashIn 260ms ease both;
+}
+
+.dialogCard {
+  width: min(440px, 100%);
+  padding: 28px;
+  border: 1px solid rgba(206, 110, 85, 0.3);
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgba(26, 18, 15, 0.98), rgba(15, 11, 10, 0.99));
+  box-shadow: 0 30px 80px rgba(4, 2, 1, 0.6);
+}
+
+.dialogEyebrow {
+  display: inline-flex;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(214, 120, 98, 0.12);
+  color: #efb2a4;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.dialogTitle {
+  display: block;
+  margin-top: 14px;
+  font-family: var(--font-heading), "Segoe UI", sans-serif;
+  font-size: 1.5rem;
+  line-height: 1.15;
+  color: #f4e1bf;
+}
+
+.dialogText {
+  margin: 12px 0 0;
+  color: #ae9a81;
+  line-height: 1.65;
+}
+
+.dialogActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.dialogCancel,
+.dialogConfirm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    filter 180ms ease;
+}
+
+.dialogCancel {
+  border: 1px solid rgba(197, 133, 49, 0.32);
+  background: rgba(17, 14, 12, 0.78);
+  color: #f1ddbb;
+}
+
+.dialogConfirm {
+  border: 1px solid rgba(206, 110, 85, 0.38);
+  background: rgba(58, 24, 20, 0.92);
+  color: #efb2a4;
+}
+
+.dialogCancel:hover,
+.dialogConfirm:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.dialogCancel:focus-visible,
+.dialogConfirm:focus-visible,
+.renameButton:focus-visible,
+.renameSave:focus-visible,
+.renameCancel:focus-visible,
+.dangerButton:focus-visible {
+  outline: 2px solid rgba(229, 173, 65, 0.6);
+  outline-offset: 2px;
 }
 
 @keyframes overviewFlashIn {
@@ -505,6 +850,28 @@
   100% {
     opacity: 0;
     transform: translateX(168%) rotate(18deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flashFresh,
+  .cardFresh,
+  .cardFresh::before,
+  .dialogOverlay {
+    animation: none;
+  }
+
+  .secondaryButton,
+  .primaryButton,
+  .dangerButton,
+  .renameButton,
+  .renameSave,
+  .renameCancel,
+  .dialogCancel,
+  .dialogConfirm,
+  .enterButton,
+  .nameLink {
+    transition: none;
   }
 }
 

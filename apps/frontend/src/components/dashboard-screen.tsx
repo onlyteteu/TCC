@@ -5,7 +5,13 @@ import { useCallback, useEffect, useState, useTransition } from "react";
 
 import type { AuthUser, AuthenticatedUserPayload } from "@/lib/auth-types";
 import type { AuthErrorPayload } from "@/lib/auth-types";
-import type { StartupDeletePayload, StartupListPayload, StartupSummary } from "@/lib/startup-types";
+import type {
+  AccountProgress,
+  StartupDeletePayload,
+  StartupListPayload,
+  StartupSummary,
+  StartupUpdatePayload,
+} from "@/lib/startup-types";
 
 import { StartupCreationScreen } from "./startup-creation-screen";
 import { StartupOverviewScreen } from "./startup-overview-screen";
@@ -15,6 +21,7 @@ export function DashboardScreen() {
   const router = useRouter();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [startups, setStartups] = useState<StartupSummary[]>([]);
+  const [accountProgress, setAccountProgress] = useState<AccountProgress | null>(null);
   const [flashMessage, setFlashMessage] = useState<string | null>(null);
   const [flashTone, setFlashTone] = useState<"error" | "success">("success");
   const [highlightStartupId, setHighlightStartupId] = useState<number | null>(null);
@@ -49,6 +56,7 @@ export function DashboardScreen() {
 
       setUser(userPayload.user);
       setStartups(startupPayload.startups);
+      setAccountProgress(startupPayload.accountProgress ?? null);
       setHighlightStartupId(null);
       setIsCreatingStartup(false);
     } catch {
@@ -61,6 +69,22 @@ export function DashboardScreen() {
   useEffect(() => {
     void loadDashboard();
   }, [loadDashboard]);
+
+  const refreshStartupsQuietly = useCallback(async () => {
+    try {
+      const response = await fetch("/api/startups", { cache: "no-store" });
+
+      if (!response.ok) {
+        return;
+      }
+
+      const payload = (await response.json()) as StartupListPayload;
+      setStartups(payload.startups);
+      setAccountProgress(payload.accountProgress ?? null);
+    } catch {
+      // atualizacao silenciosa; a proxima carga completa corrige
+    }
+  }, []);
 
   async function handleLogout() {
     await fetch("/api/auth/logout", {
@@ -78,6 +102,51 @@ export function DashboardScreen() {
     setFlashTone("success");
     setHighlightStartupId(startup.id);
     setIsCreatingStartup(false);
+    void refreshStartupsQuietly();
+  }
+
+  async function handleRenameStartup(
+    startup: StartupSummary,
+    name: string
+  ): Promise<{ ok: boolean; message?: string }> {
+    try {
+      const response = await fetch(`/api/startups/${startup.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name }),
+      });
+
+      const payload = (await response.json()) as AuthErrorPayload | StartupUpdatePayload;
+
+      if (response.status === 401) {
+        router.replace("/");
+        return { ok: false };
+      }
+
+      if (!response.ok) {
+        const errorPayload = payload as AuthErrorPayload;
+        return {
+          ok: false,
+          message:
+            errorPayload.fieldErrors?.name?.[0] ??
+            errorPayload.message ??
+            "Nao foi possivel renomear a startup agora.",
+        };
+      }
+
+      const successPayload = payload as StartupUpdatePayload;
+      setStartups((current) =>
+        current.map((item) => (item.id === startup.id ? successPayload.startup : item))
+      );
+      setFlashMessage(successPayload.message);
+      setFlashTone("success");
+      setHighlightStartupId(startup.id);
+      return { ok: true };
+    } catch {
+      return { ok: false, message: "Nao foi possivel renomear a startup agora." };
+    }
   }
 
   async function handleDeleteStartup(startup: StartupSummary) {
@@ -106,6 +175,7 @@ export function DashboardScreen() {
       setFlashMessage(successPayload.message);
       setFlashTone("success");
       setHighlightStartupId((current) => (current === startup.id ? null : current));
+      void refreshStartupsQuietly();
     } catch {
       setFlashMessage("Nao foi possivel excluir a startup agora.");
       setFlashTone("error");
@@ -150,6 +220,7 @@ export function DashboardScreen() {
 
   return (
     <StartupOverviewScreen
+      accountProgress={accountProgress}
       flashMessage={flashMessage}
       flashTone={flashTone}
       highlightStartupId={highlightStartupId}
@@ -163,6 +234,7 @@ export function DashboardScreen() {
       }}
       onDeleteStartup={handleDeleteStartup}
       onLogout={handleLogout}
+      onRenameStartup={handleRenameStartup}
       startups={startups}
       user={user}
     />

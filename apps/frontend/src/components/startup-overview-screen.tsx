@@ -1,12 +1,18 @@
 "use client";
 
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
 import { QuestMark } from "@/components/quest-mark";
 import type { AuthUser } from "@/lib/auth-types";
-import type { StartupSummary } from "@/lib/startup-types";
+import type { AccountProgress, StartupSummary } from "@/lib/startup-types";
 
 import styles from "./startup-overview-screen.module.css";
 
+type RenameResult = { ok: boolean; message?: string };
+
 type StartupOverviewScreenProps = {
+  accountProgress?: AccountProgress | null;
   flashMessage?: string | null;
   flashTone?: "error" | "success";
   highlightStartupId?: number | null;
@@ -15,6 +21,7 @@ type StartupOverviewScreenProps = {
   onCreateAnother: () => void;
   onDeleteStartup: (startup: StartupSummary) => void;
   onLogout: () => void;
+  onRenameStartup: (startup: StartupSummary, name: string) => Promise<RenameResult>;
   startups: StartupSummary[];
   user: AuthUser;
 };
@@ -32,6 +39,7 @@ function formatCreatedAt(value: string) {
 }
 
 export function StartupOverviewScreen({
+  accountProgress = null,
   flashMessage,
   flashTone = "success",
   highlightStartupId = null,
@@ -40,11 +48,71 @@ export function StartupOverviewScreen({
   onCreateAnother,
   onDeleteStartup,
   onLogout,
+  onRenameStartup,
   startups,
   user,
 }: StartupOverviewScreenProps) {
-  const namedStartups = startups.filter((startup) => !isDeferredName(startup)).length;
-  const deferredStartups = startups.length - namedStartups;
+  const startupsWithProgress = startups.filter(
+    (startup) => typeof startup.journeyProgress === "number"
+  );
+  const averageProgress =
+    startupsWithProgress.length > 0
+      ? Math.round(
+          startupsWithProgress.reduce(
+            (total, startup) => total + (startup.journeyProgress ?? 0),
+            0
+          ) / startupsWithProgress.length
+        )
+      : 0;
+
+  const [renameTargetId, setRenameTargetId] = useState<number | null>(null);
+  const [renameDraft, setRenameDraft] = useState("");
+  const [renameError, setRenameError] = useState<string | null>(null);
+  const [isSavingRename, setIsSavingRename] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<StartupSummary | null>(null);
+
+  function openRename(startup: StartupSummary) {
+    setRenameTargetId(startup.id);
+    setRenameDraft(isDeferredName(startup) ? "" : startup.name);
+    setRenameError(null);
+  }
+
+  function closeRename() {
+    setRenameTargetId(null);
+    setRenameDraft("");
+    setRenameError(null);
+  }
+
+  async function submitRename(startup: StartupSummary) {
+    const nextName = renameDraft.trim();
+
+    if (!nextName) {
+      setRenameError("Informe um nome para a startup.");
+      return;
+    }
+
+    if (nextName === startup.name) {
+      closeRename();
+      return;
+    }
+
+    setIsSavingRename(true);
+
+    try {
+      const result = await onRenameStartup(startup, nextName);
+
+      if (result.ok) {
+        closeRename();
+        return;
+      }
+
+      if (result.message) {
+        setRenameError(result.message);
+      }
+    } finally {
+      setIsSavingRename(false);
+    }
+  }
 
   return (
     <main className={styles.page}>
@@ -99,15 +167,45 @@ export function StartupOverviewScreen({
           </article>
 
           <article className={styles.metricCard}>
-            <span>Com nome definido</span>
-            <strong>{namedStartups.toString().padStart(2, "0")}</strong>
+            <span>Nivel</span>
+            <strong>
+              {(accountProgress?.level ?? 1).toString().padStart(2, "0")}
+              {accountProgress ? (
+                <em className={styles.metricDetail}>{accountProgress.xp} XP</em>
+              ) : null}
+            </strong>
           </article>
 
           <article className={styles.metricCard}>
-            <span>A definir depois</span>
-            <strong>{deferredStartups.toString().padStart(2, "0")}</strong>
+            <span>Progresso medio</span>
+            <strong>{averageProgress}%</strong>
           </article>
         </section>
+
+        {accountProgress ? (
+          <section className={styles.achievements} aria-label="Conquistas">
+            <span className={styles.achievementsTitle}>
+              Conquistas · {accountProgress.unlockedCount} de {accountProgress.achievements.length}
+            </span>
+
+            <div className={styles.achievementsRow}>
+              {accountProgress.achievements.map((achievement) => (
+                <span
+                  className={[
+                    styles.achievementChip,
+                    achievement.unlocked ? styles.achievementUnlocked : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  key={achievement.key}
+                  title={achievement.description}
+                >
+                  {achievement.unlocked ? "★" : "☆"} {achievement.title}
+                </span>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <section className={styles.section}>
           <div className={styles.sectionHeading}>
@@ -141,7 +239,89 @@ export function StartupOverviewScreen({
                   <span className={styles.dateChip}>{formatCreatedAt(startup.createdAt)}</span>
                 </div>
 
-                <h3>{startup.name}</h3>
+                {renameTargetId === startup.id ? (
+                  <form
+                    className={styles.renameForm}
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      void submitRename(startup);
+                    }}
+                  >
+                    <input
+                      autoFocus
+                      className={styles.renameInput}
+                      disabled={isSavingRename}
+                      maxLength={120}
+                      onChange={(event) => {
+                        setRenameDraft(event.target.value);
+                        setRenameError(null);
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === "Escape") {
+                          closeRename();
+                        }
+                      }}
+                      placeholder="Nome da startup"
+                      type="text"
+                      value={renameDraft}
+                    />
+
+                    {renameError ? <span className={styles.renameError}>{renameError}</span> : null}
+
+                    <div className={styles.renameActions}>
+                      <button
+                        className={styles.renameSave}
+                        disabled={isSavingRename}
+                        type="submit"
+                      >
+                        {isSavingRename ? "Salvando..." : "Salvar nome"}
+                      </button>
+                      <button
+                        className={styles.renameCancel}
+                        disabled={isSavingRename}
+                        onClick={closeRename}
+                        type="button"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className={styles.nameRow}>
+                    <h3>
+                      <Link className={styles.nameLink} href={`/painel/startup/${startup.id}`}>
+                        {startup.name}
+                      </Link>
+                    </h3>
+                    <button
+                      className={[
+                        styles.renameButton,
+                        isDeferredName(startup) ? styles.renameButtonCallout : "",
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                      onClick={() => openRename(startup)}
+                      type="button"
+                    >
+                      {isDeferredName(startup) ? "Dar nome agora" : "Renomear"}
+                    </button>
+                  </div>
+                )}
+
+                {typeof startup.journeyProgress === "number" ? (
+                  <div className={styles.journeyRow}>
+                    <div className={styles.journeyTrack} aria-hidden="true">
+                      <span
+                        className={styles.journeyFill}
+                        style={{ width: `${startup.journeyProgress}%` }}
+                      />
+                    </div>
+                    <span className={styles.journeyLabel}>
+                      {startup.journeyProgress}%
+                      {startup.nextStepLabel ? ` · Proxima: ${startup.nextStepLabel}` : " · Jornada completa"}
+                    </span>
+                  </div>
+                ) : null}
 
                 <dl className={styles.details}>
                   {startup.description ? (
@@ -184,20 +364,14 @@ export function StartupOverviewScreen({
                 </dl>
 
                 <div className={styles.cardFooter}>
+                  <Link className={styles.enterButton} href={`/painel/startup/${startup.id}`}>
+                    Entrar na startup
+                  </Link>
+
                   <button
                     className={styles.dangerButton}
                     disabled={isDeleting}
-                    onClick={() => {
-                      const shouldDelete = window.confirm(
-                        `Excluir a startup ${startup.name}? Essa acao remove apenas esse teste.`
-                      );
-
-                      if (!shouldDelete) {
-                        return;
-                      }
-
-                      onDeleteStartup(startup);
-                    }}
+                    onClick={() => setDeleteTarget(startup)}
                     type="button"
                   >
                     {isDeleting ? "Excluindo..." : "Excluir startup"}
@@ -209,6 +383,67 @@ export function StartupOverviewScreen({
           </div>
         </section>
       </div>
+
+      {deleteTarget ? (
+        <DeleteConfirmationDialog
+          startup={deleteTarget}
+          onCancel={() => setDeleteTarget(null)}
+          onConfirm={() => {
+            onDeleteStartup(deleteTarget);
+            setDeleteTarget(null);
+          }}
+        />
+      ) : null}
     </main>
+  );
+}
+
+function DeleteConfirmationDialog({
+  onCancel,
+  onConfirm,
+  startup,
+}: {
+  onCancel: () => void;
+  onConfirm: () => void;
+  startup: StartupSummary;
+}) {
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        onCancel();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onCancel]);
+
+  return (
+    <div
+      aria-labelledby="delete-dialog-title"
+      aria-modal="true"
+      className={styles.dialogOverlay}
+      onClick={onCancel}
+      role="dialog"
+    >
+      <div className={styles.dialogCard} onClick={(event) => event.stopPropagation()}>
+        <span className={styles.dialogEyebrow}>Decisao importante</span>
+        <strong className={styles.dialogTitle} id="delete-dialog-title">
+          Excluir {startup.name}?
+        </strong>
+        <p className={styles.dialogText}>
+          O mapa inicial dessa startup sera apagado da sua conta. Essa acao nao pode ser desfeita.
+        </p>
+
+        <div className={styles.dialogActions}>
+          <button autoFocus className={styles.dialogCancel} onClick={onCancel} type="button">
+            Manter startup
+          </button>
+          <button className={styles.dialogConfirm} onClick={onConfirm} type="button">
+            Excluir de vez
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

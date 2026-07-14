@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 
 class Startup(models.Model):
@@ -7,8 +8,11 @@ class Startup(models.Model):
         PROBLEM = "problem", "Definicao do problema"
         AUDIENCE = "audience", "Publico-alvo"
         VALUE = "value", "Proposta de valor"
+        DIFFERENTIATORS = "differentiators", "Diferenciais"
         VALIDATION = "validation", "Validacao inicial"
+        BUSINESS_MODEL = "business_model", "Modelo de negocio"
         MVP = "mvp", "Planejamento do MVP"
+        GOALS = "goals", "Metas iniciais"
 
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -38,3 +42,338 @@ class Startup(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+JOURNEY_SEQUENCE = [
+    Startup.Stage.PROBLEM,
+    Startup.Stage.AUDIENCE,
+    Startup.Stage.VALUE,
+    Startup.Stage.DIFFERENTIATORS,
+    Startup.Stage.VALIDATION,
+    Startup.Stage.BUSINESS_MODEL,
+    Startup.Stage.MVP,
+    Startup.Stage.GOALS,
+]
+
+
+class JourneyStep(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pendente"
+        CURRENT = "current", "Etapa atual"
+        DONE = "done", "Concluida"
+
+    startup = models.ForeignKey(
+        Startup,
+        on_delete=models.CASCADE,
+        related_name="journey_steps",
+    )
+    key = models.CharField(max_length=20, choices=Startup.Stage.choices)
+    answer = models.TextField(blank=True)
+    status = models.CharField(
+        max_length=10,
+        choices=Status.choices,
+        default=Status.PENDING,
+    )
+    order = models.PositiveSmallIntegerField()
+    completed_at = models.DateTimeField(null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["order"]
+        constraints = [
+            models.UniqueConstraint(fields=["startup", "key"], name="unique_step_per_startup"),
+        ]
+        verbose_name = "Etapa da jornada"
+        verbose_name_plural = "Etapas da jornada"
+
+    def __str__(self) -> str:
+        return f"{self.startup.name} - {self.get_key_display()}"
+
+
+class Mission(models.Model):
+    class Status(models.TextChoices):
+        LOCKED = "locked", "Bloqueada"
+        AVAILABLE = "available", "Disponivel"
+        IN_PROGRESS = "in_progress", "Em andamento"
+        COMPLETED = "completed", "Concluida"
+
+    class Type(models.TextChoices):
+        MAIN = "main", "Missao principal"
+        WEEKLY = "weekly", "Missao semanal"
+        QUICK = "quick", "Tarefa rapida"
+        EXPERIMENT = "experiment", "Experimento"
+        LEARNING = "learning", "Aprendizado"
+        MANAGEMENT = "management", "Gestao recorrente"
+
+    startup = models.ForeignKey(
+        Startup,
+        on_delete=models.CASCADE,
+        related_name="missions",
+    )
+    key = models.CharField(max_length=60)
+    mission_type = models.CharField(max_length=20, choices=Type.choices, default=Type.MAIN)
+    phase = models.CharField(max_length=60)
+    title = models.CharField(max_length=180)
+    objective = models.TextField()
+    why_it_matters = models.TextField()
+    instructions = models.JSONField(default=list)
+    completion_criteria = models.TextField()
+    contextual_tip = models.TextField(blank=True)
+    required_evidence_count = models.PositiveSmallIntegerField(default=0)
+    xp_reward = models.PositiveIntegerField(default=0)
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.LOCKED,
+    )
+    order = models.PositiveSmallIntegerField(default=0)
+    started_at = models.DateTimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["order", "created_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["startup", "key"],
+                name="unique_mission_per_startup",
+            ),
+        ]
+        verbose_name = "Missao"
+        verbose_name_plural = "Missoes"
+
+    def __str__(self) -> str:
+        return f"{self.startup.name} - {self.title}"
+
+
+class MissionEvidence(models.Model):
+    class Type(models.TextChoices):
+        INTERVIEW = "interview", "Entrevista"
+        EXPERIMENT = "experiment", "Resultado de experimento"
+        DOCUMENT = "document", "Documento"
+        METRIC = "metric", "Metrica"
+        OTHER = "other", "Outra evidencia"
+
+    mission = models.ForeignKey(
+        Mission,
+        on_delete=models.CASCADE,
+        related_name="evidences",
+    )
+    evidence_type = models.CharField(
+        max_length=20,
+        choices=Type.choices,
+        default=Type.INTERVIEW,
+    )
+    interviewee_name = models.CharField(max_length=120)
+    interviewee_profile = models.CharField(max_length=180, blank=True)
+    context = models.CharField(max_length=300, blank=True)
+    notes = models.TextField()
+    occurred_on = models.DateField(default=timezone.localdate)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-occurred_on", "-created_at"]
+        verbose_name = "Evidencia de missao"
+        verbose_name_plural = "Evidencias de missao"
+
+    def __str__(self) -> str:
+        return f"{self.mission.title} - {self.interviewee_name}"
+
+
+class Learning(models.Model):
+    class Confidence(models.TextChoices):
+        LOW = "low", "Baixa"
+        MEDIUM = "medium", "Media"
+        HIGH = "high", "Alta"
+
+    startup = models.ForeignKey(
+        Startup,
+        on_delete=models.CASCADE,
+        related_name="learnings",
+    )
+    mission = models.ForeignKey(
+        Mission,
+        on_delete=models.SET_NULL,
+        related_name="learnings",
+        null=True,
+        blank=True,
+    )
+    content = models.TextField()
+    impact = models.TextField()
+    next_action = models.TextField()
+    confidence = models.CharField(
+        max_length=10,
+        choices=Confidence.choices,
+        default=Confidence.MEDIUM,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["startup", "mission"],
+                name="unique_learning_per_mission",
+            ),
+        ]
+        verbose_name = "Aprendizado"
+        verbose_name_plural = "Aprendizados"
+
+    def __str__(self) -> str:
+        return self.content[:80]
+
+
+class ActivityEvent(models.Model):
+    class Kind(models.TextChoices):
+        INTERVIEW_RECORDED = "interview_recorded", "Entrevista registrada"
+        LEARNING_RECORDED = "learning_recorded", "Aprendizado registrado"
+        MISSION_COMPLETED = "mission_completed", "Missao concluida"
+        JOURNEY_STEP_COMPLETED = "journey_step_completed", "Etapa concluida"
+        DECISION_RECORDED = "decision_recorded", "Decisao registrada"
+        GOAL_COMPLETED = "goal_completed", "Meta concluida"
+
+    startup = models.ForeignKey(
+        Startup,
+        on_delete=models.CASCADE,
+        related_name="activity_events",
+    )
+    kind = models.CharField(max_length=30, choices=Kind.choices)
+    description = models.CharField(max_length=255)
+    xp_awarded = models.PositiveIntegerField(default=0)
+    dedupe_key = models.CharField(max_length=120)
+    metadata = models.JSONField(default=dict, blank=True)
+    occurred_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-occurred_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["startup", "dedupe_key"],
+                name="unique_activity_event_per_startup",
+            ),
+        ]
+        verbose_name = "Atividade significativa"
+        verbose_name_plural = "Atividades significativas"
+
+    def __str__(self) -> str:
+        return self.description
+
+
+MISSION_BLUEPRINTS = [
+    {
+        "key": "customer_interviews_5",
+        "mission_type": Mission.Type.MAIN,
+        "phase": "Descoberta",
+        "title": "Converse com 5 potenciais clientes",
+        "objective": "Entender como o problema acontece na vida real antes de definir a solução.",
+        "why_it_matters": (
+            "Conversas reais substituem suposições por evidências e ajudam a descobrir se a dor "
+            "é frequente, importante e compartilhada pelo público inicial."
+        ),
+        "instructions": [
+            "Prepare um roteiro curto com perguntas sobre situações reais do passado.",
+            "Converse com cinco pessoas do público inicial sem apresentar sua solução.",
+            "Registre cada entrevista e depois resuma os padrões encontrados.",
+        ],
+        "completion_criteria": (
+            "Registrar cinco entrevistas e uma síntese de aprendizado baseada nos padrões."
+        ),
+        "contextual_tip": (
+            "Evite apresentar sua solução. Pergunte sobre situações reais do passado."
+        ),
+        "required_evidence_count": 5,
+        "xp_reward": 150,
+        "status": Mission.Status.AVAILABLE,
+        "order": 0,
+    },
+]
+
+
+def ensure_missions(startup: Startup) -> None:
+    """Cria as missoes-base sem duplicar instancias existentes."""
+    for blueprint in MISSION_BLUEPRINTS:
+        key = blueprint["key"]
+        defaults = {name: value for name, value in blueprint.items() if name != "key"}
+        mission, created = Mission.objects.get_or_create(
+            startup=startup,
+            key=key,
+            defaults=defaults,
+        )
+
+        if not created:
+            content_fields = (
+                "mission_type",
+                "phase",
+                "title",
+                "objective",
+                "why_it_matters",
+                "instructions",
+                "completion_criteria",
+                "contextual_tip",
+                "required_evidence_count",
+                "xp_reward",
+                "order",
+            )
+            changed_fields = []
+            for field in content_fields:
+                value = defaults[field]
+                if getattr(mission, field) != value:
+                    setattr(mission, field, value)
+                    changed_fields.append(field)
+
+            if changed_fields:
+                mission.save(update_fields=[*changed_fields, "updated_at"])
+
+
+def ensure_journey(startup: Startup) -> None:
+    """Garante que a startup tenha as 8 etapas da jornada.
+
+    Startups criadas antes da jornada existir recebem as etapas na primeira leitura.
+    Problema e publico ja chegam concluidos porque foram respondidos na fundacao.
+    """
+    if startup.journey_steps.exists():
+        return
+
+    from django.utils import timezone
+
+    now = timezone.now()
+    seeded_answers = {
+        Startup.Stage.PROBLEM: startup.problem,
+        Startup.Stage.AUDIENCE: startup.audience,
+    }
+
+    steps = []
+    for order, key in enumerate(JOURNEY_SEQUENCE):
+        if key in seeded_answers and seeded_answers[key].strip():
+            status = JourneyStep.Status.DONE
+            answer = seeded_answers[key]
+            completed_at = now
+        elif key == Startup.Stage.VALUE:
+            status = JourneyStep.Status.CURRENT
+            answer = ""
+            completed_at = None
+        else:
+            status = JourneyStep.Status.PENDING
+            answer = ""
+            completed_at = None
+
+        steps.append(
+            JourneyStep(
+                startup=startup,
+                key=key,
+                answer=answer,
+                status=status,
+                order=order,
+                completed_at=completed_at,
+            )
+        )
+
+    JourneyStep.objects.bulk_create(steps)
+
+    current_step = startup.journey_steps.filter(status=JourneyStep.Status.CURRENT).first()
+    if current_step and startup.current_stage != current_step.key:
+        startup.current_stage = current_step.key
+        startup.save(update_fields=["current_stage", "updated_at"])
