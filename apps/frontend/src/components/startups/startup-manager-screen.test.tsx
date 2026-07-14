@@ -101,10 +101,53 @@ describe("StartupManagerScreen", () => {
   it("closes the deletion dialog with Escape", () => {
     renderManager();
 
-    fireEvent.click(screen.getByRole("button", { name: "Excluir Aurora" }));
+    const trigger = screen.getByRole("button", { name: "Excluir Aurora" });
+    fireEvent.click(trigger);
     fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
+  });
+
+  it("traps focus inside the deletion dialog and makes the manager background inert", async () => {
+    renderManager();
+
+    fireEvent.click(screen.getByRole("button", { name: "Excluir Aurora" }));
+
+    const dialog = screen.getByRole("dialog");
+    const confirmation = screen.getByLabelText("Digite Aurora para confirmar");
+    const background = document.querySelector("[inert]");
+    expect(background).toContainElement(screen.getByRole("heading", { name: "Suas startups", hidden: true }));
+    expect(background).toHaveAttribute("aria-hidden", "true");
+
+    fireEvent.change(confirmation, { target: { value: "Aurora" } });
+    const confirmButton = screen.getByRole("button", { name: "Excluir definitivamente" });
+    confirmButton.focus();
+    fireEvent.keyDown(dialog, { key: "Tab" });
+    expect(confirmation).toHaveFocus();
+
+    confirmation.focus();
+    fireEvent.keyDown(dialog, { key: "Tab", shiftKey: true });
+    expect(confirmButton).toHaveFocus();
+  });
+
+  it("restores focus to the deletion trigger after cancel and confirmation", async () => {
+    const onDelete = vi.fn().mockResolvedValue(undefined);
+    renderManager({ onDelete });
+    const trigger = screen.getByRole("button", { name: "Excluir Aurora" });
+
+    fireEvent.click(trigger);
+    fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
+    await waitFor(() => expect(trigger).toHaveFocus());
+
+    fireEvent.click(trigger);
+    fireEvent.change(screen.getByLabelText("Digite Aurora para confirmar"), {
+      target: { value: "Aurora" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Excluir definitivamente" }));
+
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(trigger).toHaveFocus();
   });
 
   it("keeps a deletion failure in the dialog that originated it", async () => {

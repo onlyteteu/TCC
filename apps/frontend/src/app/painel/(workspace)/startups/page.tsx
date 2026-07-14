@@ -55,7 +55,10 @@ export default function StartupManagerPage() {
         );
       }
 
-      await refreshWorkspace();
+      const refreshed = await refreshWorkspace({ silent: true });
+      if (!refreshed) {
+        return "Nome alterado, mas nao foi possivel atualizar a lista.";
+      }
       return null;
     } catch {
       return "Nao foi possivel renomear a startup agora.";
@@ -90,7 +93,10 @@ export default function StartupManagerPage() {
     }
 
     const successPayload = payload as StartupDeletePayload;
-    await refreshWorkspace();
+    const refreshed = await refreshWorkspace({ silent: true });
+    if (!refreshed) {
+      throw new Error("Startup excluida, mas nao foi possivel atualizar a lista.");
+    }
 
     if (startup.id === activeStartup?.id) {
       router.replace(

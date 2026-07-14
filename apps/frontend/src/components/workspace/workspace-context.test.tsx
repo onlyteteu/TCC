@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { useState } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { WorkspaceProvider, useWorkspace } from "./workspace-context";
@@ -44,6 +45,28 @@ function Probe() {
     <button disabled={isLoading} onClick={() => void openStartup(7)} type="button">
       Abrir
     </button>
+  );
+}
+
+function RefreshProbe() {
+  const { error, isLoading, refreshWorkspace } = useWorkspace();
+  const [result, setResult] = useState("aguardando");
+
+  return (
+    <>
+      <button
+        disabled={isLoading}
+        onClick={async () => {
+          const refreshed = await refreshWorkspace({ silent: true });
+          setResult(refreshed ? "atualizado" : "falhou");
+        }}
+        type="button"
+      >
+        Atualizar silenciosamente
+      </button>
+      <span>{result}</span>
+      {error ? <p role="alert">{error}</p> : null}
+    </>
   );
 }
 
@@ -113,5 +136,33 @@ describe("WorkspaceProvider", () => {
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
     expect(navigation.push).not.toHaveBeenCalled();
+  });
+
+  it("returns false from a silent refresh without exposing a global workspace error", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(() =>
+        response({ authenticated: true, user: { email: "ana@example.com", id: 1, name: "Ana" } })
+      )
+      .mockImplementationOnce(() => response({ accountProgress: null, startups: [startup] }))
+      .mockImplementationOnce(() => response({ message: "erro" }, 503))
+      .mockImplementationOnce(() => response({ message: "erro" }, 503));
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      <WorkspaceProvider activeStartupId={null}>
+        <RefreshProbe />
+      </WorkspaceProvider>
+    );
+
+    const refreshButton = await screen.findByRole("button", {
+      name: "Atualizar silenciosamente",
+    });
+    await waitFor(() => expect(refreshButton).toBeEnabled());
+    fireEvent.click(refreshButton);
+
+    expect(await screen.findByText("falhou")).toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(refreshButton).toBeEnabled();
   });
 });

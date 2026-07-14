@@ -27,7 +27,11 @@ export type WorkspaceState = {
 
 type WorkspaceContextValue = WorkspaceState & {
   openStartup: (startupId: number) => Promise<boolean>;
-  refreshWorkspace: () => Promise<void>;
+  refreshWorkspace: (options?: RefreshWorkspaceOptions) => Promise<boolean>;
+};
+
+export type RefreshWorkspaceOptions = {
+  silent?: boolean;
 };
 
 const WorkspaceContext = createContext<WorkspaceContextValue | null>(null);
@@ -46,9 +50,11 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
   const [user, setUser] = useState<AuthUser | null>(null);
   const lastMarkedStartupId = useRef<number | null>(null);
 
-  const refreshWorkspace = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
+  const refreshWorkspace = useCallback(async ({ silent = false }: RefreshWorkspaceOptions = {}) => {
+    if (!silent) {
+      setIsLoading(true);
+      setError(null);
+    }
 
     try {
       const [userResponse, startupsResponse] = await Promise.all([
@@ -58,12 +64,14 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
 
       if (userResponse.status === 401 || startupsResponse.status === 401) {
         router.replace("/");
-        return;
+        return false;
       }
 
       if (!userResponse.ok || !startupsResponse.ok) {
-        setError("Nao foi possivel carregar seu workspace agora.");
-        return;
+        if (!silent) {
+          setError("Nao foi possivel carregar seu workspace agora.");
+        }
+        return false;
       }
 
       const userPayload = (await userResponse.json()) as AuthenticatedUserPayload;
@@ -72,10 +80,16 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
       setUser(userPayload.user);
       setStartups(startupPayload.startups);
       setAccountProgress(startupPayload.accountProgress ?? null);
+      return true;
     } catch {
-      setError("Nao foi possivel carregar seu workspace agora.");
+      if (!silent) {
+        setError("Nao foi possivel carregar seu workspace agora.");
+      }
+      return false;
     } finally {
-      setIsLoading(false);
+      if (!silent) {
+        setIsLoading(false);
+      }
     }
   }, [router]);
 

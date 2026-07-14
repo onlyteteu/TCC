@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { type KeyboardEvent as ReactKeyboardEvent, useEffect, useRef, useState } from "react";
 
 import { ProductIcon } from "@/components/product-icon";
 import type { StartupSummary } from "@/lib/startup-types";
@@ -27,6 +27,13 @@ const activityFormatter = new Intl.DateTimeFormat("pt-BR", {
   timeZone: "UTC",
   year: "numeric",
 });
+
+const dialogFocusableSelector = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  '[tabindex]:not([tabindex="-1"])',
+].join(",");
 
 function progressValue(startup: StartupSummary) {
   return Math.min(100, Math.max(0, startup.journeyProgress ?? 0));
@@ -63,10 +70,29 @@ export function StartupManagerScreen({
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const deleteInputRef = useRef<HTMLInputElement>(null);
+  const deleteTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const managerRef = useRef<HTMLElement>(null);
+  const shouldRestoreDeleteFocusRef = useRef(false);
 
   useEffect(() => {
     if (deleteTarget) {
       deleteInputRef.current?.focus();
+    }
+  }, [deleteTarget]);
+
+  useEffect(() => {
+    if (deleteTarget || !shouldRestoreDeleteFocusRef.current) {
+      return;
+    }
+
+    shouldRestoreDeleteFocusRef.current = false;
+    const trigger = deleteTriggerRef.current;
+
+    if (trigger?.isConnected) {
+      trigger.focus();
+    } else {
+      managerRef.current?.focus();
     }
   }, [deleteTarget]);
 
@@ -139,7 +165,8 @@ export function StartupManagerScreen({
     }
   }
 
-  function openDeleteDialog(startup: StartupSummary) {
+  function openDeleteDialog(startup: StartupSummary, trigger: HTMLButtonElement) {
+    deleteTriggerRef.current = trigger;
     setDeleteTarget(startup);
     setDeleteConfirmation("");
     setDeleteError(null);
@@ -150,6 +177,7 @@ export function StartupManagerScreen({
       return;
     }
 
+    shouldRestoreDeleteFocusRef.current = true;
     setDeleteTarget(null);
     setDeleteConfirmation("");
     setDeleteError(null);
@@ -165,6 +193,7 @@ export function StartupManagerScreen({
 
     try {
       await onDelete(deleteTarget);
+      shouldRestoreDeleteFocusRef.current = true;
       setDeleteTarget(null);
       setDeleteConfirmation("");
     } catch (error) {
@@ -174,36 +203,87 @@ export function StartupManagerScreen({
     }
   }
 
-  return (
-    <section className={styles.page} aria-labelledby="startup-manager-title">
-      <header className={styles.header}>
-        <div>
-          <span className={styles.eyebrow}>Portfólio</span>
-          <h1 id="startup-manager-title">Suas startups</h1>
-          <p>Abra uma jornada ou organize as startups vinculadas à sua conta.</p>
-        </div>
-        {startups.length > 0 ? (
-          <Link className={styles.primaryAction} href="/painel/startups/nova">
-            <ProductIcon name="plus" />
-            Criar nova startup
-          </Link>
-        ) : null}
-      </header>
+  function handleDialogKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeDeleteDialog();
+      return;
+    }
 
-      {startups.length === 0 ? (
-        <div className={styles.emptyState}>
-          <span className={styles.emptyIcon} aria-hidden="true">
-            <ProductIcon name="building" />
-          </span>
-          <h2>Crie sua primeira startup</h2>
-          <p>Comece pelo onboarding para transformar sua ideia em uma jornada prática.</p>
-          <Link className={styles.primaryAction} href="/painel/startups/nova">
-            <ProductIcon name="plus" />
-            Criar nova startup
-          </Link>
-        </div>
-      ) : (
-        <ul className={styles.list} aria-label="Startups da conta">
+    if (event.key !== "Tab") {
+      return;
+    }
+
+    const dialog = dialogRef.current;
+    if (!dialog) {
+      return;
+    }
+
+    const focusableElements = Array.from(
+      dialog.querySelectorAll<HTMLElement>(dialogFocusableSelector)
+    );
+    const firstFocusable = focusableElements[0];
+    const lastFocusable = focusableElements.at(-1);
+
+    if (!firstFocusable || !lastFocusable) {
+      event.preventDefault();
+      dialog.focus();
+      return;
+    }
+
+    const activeElement = document.activeElement;
+    if (event.shiftKey && (activeElement === firstFocusable || !dialog.contains(activeElement))) {
+      event.preventDefault();
+      lastFocusable.focus();
+      return;
+    }
+
+    if (!event.shiftKey && (activeElement === lastFocusable || !dialog.contains(activeElement))) {
+      event.preventDefault();
+      firstFocusable.focus();
+    }
+  }
+
+  return (
+    <section
+      aria-labelledby="startup-manager-title"
+      className={styles.page}
+      ref={managerRef}
+      tabIndex={-1}
+    >
+      <div
+        aria-hidden={deleteTarget ? "true" : undefined}
+        className={styles.managerContent}
+        inert={deleteTarget ? true : undefined}
+      >
+        <header className={styles.header}>
+          <div>
+            <span className={styles.eyebrow}>Portfólio</span>
+            <h1 id="startup-manager-title">Suas startups</h1>
+            <p>Abra uma jornada ou organize as startups vinculadas à sua conta.</p>
+          </div>
+          {startups.length > 0 ? (
+            <Link className={styles.primaryAction} href="/painel/startups/nova">
+              <ProductIcon name="plus" />
+              Criar nova startup
+            </Link>
+          ) : null}
+        </header>
+
+        {startups.length === 0 ? (
+          <div className={styles.emptyState}>
+            <span className={styles.emptyIcon} aria-hidden="true">
+              <ProductIcon name="building" />
+            </span>
+            <h2>Crie sua primeira startup</h2>
+            <p>Comece pelo onboarding para transformar sua ideia em uma jornada prática.</p>
+            <Link className={styles.primaryAction} href="/painel/startups/nova">
+              <ProductIcon name="plus" />
+              Criar nova startup
+            </Link>
+          </div>
+        ) : (
+          <ul className={styles.list} aria-label="Startups da conta">
           {startups.map((startup) => {
             const isActive = startup.id === activeStartupId;
             const isEditing = editingStartupId === startup.id;
@@ -322,7 +402,7 @@ export function StartupManagerScreen({
                   <button
                     className={[styles.iconButton, styles.dangerButton].join(" ")}
                     disabled={pendingAction !== null}
-                    onClick={() => openDeleteDialog(startup)}
+                    onClick={(event) => openDeleteDialog(startup, event.currentTarget)}
                     type="button"
                   >
                     Excluir {startup.name}
@@ -331,8 +411,9 @@ export function StartupManagerScreen({
               </li>
             );
           })}
-        </ul>
-      )}
+          </ul>
+        )}
+      </div>
 
       {deleteTarget ? (
         <div className={styles.modalBackdrop}>
@@ -340,12 +421,10 @@ export function StartupManagerScreen({
             aria-labelledby="delete-startup-title"
             aria-modal="true"
             className={styles.dialog}
-            onKeyDown={(event) => {
-              if (event.key === "Escape") {
-                closeDeleteDialog();
-              }
-            }}
+            onKeyDown={handleDialogKeyDown}
+            ref={dialogRef}
             role="dialog"
+            tabIndex={-1}
           >
             <span className={styles.dangerIcon} aria-hidden="true">
               !
