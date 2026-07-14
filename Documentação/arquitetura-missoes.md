@@ -82,7 +82,8 @@ token ao componente de interface.
 
 ## Decisões de interface
 
-- a página Hoje concentra a próxima ação e evita exigir que o usuário descubra sozinho o que fazer
+- a Home da startup, chamada `Hoje` no primeiro ciclo, concentra a próxima ação e evita exigir que
+  o usuário descubra sozinho o que fazer
 - a missão ocupa a área dominante; XP, fogo e saúde ficam em uma coluna lateral secundária
 - o registro de entrevista acontece no contexto da missão, sem navegação desnecessária
 - módulos futuros permanecem visíveis para comunicar a arquitetura, mas marcados como `em breve`

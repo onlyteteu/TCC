@@ -24,15 +24,14 @@ ser tratados como implementados antes de seus dados, regras, estados vazios e te
 
 ## Nota tecnica importante
 
-O projeto deve ser acessado por `http://127.0.0.1:3000` (nao `localhost:3000`) com
-`allowedDevOrigins` configurado em `next.config.ts` — sem isso, o Next.js bloqueia o hot-reload
-nessa origem e a pagina fica sem interatividade (renderiza, mas nenhum clique funciona). Corrigido
-em 2026-07-09; ver `progresso.md`.
+Os scripts do projeto usam `http://127.0.0.1:3000`. O `allowedDevOrigins` de `next.config.ts`
+autoriza `127.0.0.1` e `localhost`; a configuracao evita que a origem escolhida bloqueie o
+hot-reload e deixe a pagina renderizada sem interatividade. Corrigido em 2026-07-09; ver
+`progresso.md`.
 
-Nota de direcao registrada em 2026-07-08: o visual atual do painel `Suas startups` foi preferido
-em relacao aos mockups do hub (`hub-inicial-v1/v2`, `painel-startups-v1`). Os mockups seguem como
-referencia de conteudo (saude, proximo passo, acessos rapidos), mas a composicao implementada e a
-direcao valida.
+Nota historica de 2026-07-08: naquela data, o painel `Suas startups` foi preferido aos mockups do
+hub. Essa decisao foi superada em 2026-07-14, quando o painel e as telas de detalhe foram removidos
+e substituidos por Home, Jornada e Gerenciador. Os mockups continuam somente como arquivo historico.
 
 ## Itens que devem acompanhar cada ciclo
 
@@ -42,9 +41,9 @@ direcao valida.
 
 ## Evolucoes apos o nucleo inicial
 
-- adicionar gamificacao leve ao fluxo principal
-- refinar recomendacoes de proximos passos
-- aprofundar indicadores de progresso
+- ampliar a gamificacao existente com a pagina de Conquistas e novos marcos verificaveis;
+- refinar recomendacoes de proximos passos com base em fase, evidencias e aprendizados;
+- aprofundar indicadores por meio do futuro modulo de Metricas.
 
 ## Cuidados de escopo
 

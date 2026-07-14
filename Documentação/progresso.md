@@ -1,5 +1,9 @@
 # Progresso
 
+Cada entrada abaixo e um retrato do projeto na data indicada. Quando uma entrada antiga menciona
+`painel`, `Suas startups`, `pagina de detalhe`, `Hoje` ou criacao direta em `/painel`, ela registra
+uma etapa superada; o estado vigente e o ciclo mais recente, de 2026-07-14.
+
 ## 2026-07-14 (workspace principal concluido)
 
 ### Resultado do ciclo
@@ -27,18 +31,24 @@
 - `npm test`: 46 testes Vitest em 14 arquivos passando;
 - `npm run lint`, `npx tsc --noEmit` e `npm run build`: concluidos sem erro;
 - build confirmou as rotas de Home, Jornada, gerenciador, criacao e APIs do workspace;
-- smoke test nos servidores locais confirmou conta vazia, criacao de duas startups, ordenacao pela
-  ultima abertura, Home com missao, Jornada com oito etapas, edicao do Mapa, isolamento 404 entre
-  contas, exclusao ativa com `nextStartupId` e logout com 401; os usuarios temporarios foram removidos;
-- os contratos automatizados de CSS confirmaram sidebar de `272px/240px`, marca de `52px`, topbar
-  de `72px`, conteudo como area rolavel, grids responsivos e reducao global de movimento.
+- smoke HTTP nos servidores locais confirmou conta vazia, criacao de duas startups, ordenacao pela
+  ultima abertura, payload `today` com missao, payload da Jornada com oito etapas, `PATCH` do campo
+  `initialGoal`, isolamento 404 entre contas, exclusao ativa com `nextStartupId` e logout com 401;
+  os usuarios temporarios foram removidos;
+- os testes de contrato CSS confirmaram os valores de sidebar `272px/240px`, ausencia de uma regra
+  de overflow propria na navegacao, reducao da transicao do skip link e reflow do gerenciador sem
+  ocultar fase, progresso ou atividade;
+- a leitura estatica do CSS e JSX confirmou declaracoes para simbolo `52x52px`, nome em duas linhas,
+  topbar `72px`, shell com overflow bloqueado, conteudo com `overflow-y: auto` e regra global de
+  reduced-motion. Esses valores nao equivalem a medicao do layout renderizado.
 
 ### Validacao visual
 
 O navegador integrado nao estava disponivel nesta execucao, portanto nao foi possivel repetir a
-inspecao visual em `1920 x 900`, `1536 x 864`, `1366 x 768` e `1280 x 720`. A geometria foi
-verificada por contratos de CSS e pelo build, mas a passagem visual final nesses quatro viewports
-permanece como checagem manual de aceite, sem representar falha automatizada do codigo.
+inspecao visual em `1920 x 900`, `1536 x 864`, `1366 x 768` e `1280 x 720`, medir a geometria
+renderizada, confirmar a distribuicao real da rolagem ou percorrer a interface com teclado real.
+Build, testes de componentes, contratos CSS, leitura estatica e smoke HTTP sao evidencias distintas;
+a passagem visual e de teclado nesses quatro viewports permanece como checagem manual de aceite.
 
 ## 2026-07-13 (marca no canto e formulário centralizado)
 
