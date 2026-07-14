@@ -429,9 +429,14 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
             <div>
               <h2 id="work-dialog-title">{title}</h2>
               {workMode === "interview" ? (
-                <p>Registre o que aconteceu. A qualidade da evidência importa mais que a quantidade de texto.</p>
+                <>
+                  <p>Registre o que aconteceu. A qualidade da evidência importa mais que a quantidade de texto.</p>
+                  <span className={styles.dialogContext}>
+                    {mission.evidenceCount + 1}ª entrevista
+                  </span>
+                </>
               ) : workMode === "learning" ? (
-                <p>Transforme as conversas em uma conclusão que oriente a próxima decisão.</p>
+                <p>Transforme as cinco conversas em uma conclusão que oriente a próxima decisão.</p>
               ) : (
                 <p>{mission.objective}</p>
               )}

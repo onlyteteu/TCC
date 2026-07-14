@@ -214,6 +214,31 @@ describe("StartupHomeScreen", () => {
     expect(lastButton).toHaveFocus();
   });
 
+  it("shows the contextual ordinal for the next interview", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockImplementation(() => jsonResponse(payload)));
+    render(<StartupHomeScreen startupId={7} />);
+
+    fireEvent.click(await screen.findByText("Registre 5 entrevistas"));
+
+    expect(screen.getByText("2ª entrevista")).toBeInTheDocument();
+  });
+
+  it("preserves the original five-conversation learning guidance", async () => {
+    const learningPayload = withMission({ canAddLearning: true });
+    vi.stubGlobal("fetch", vi.fn().mockImplementation(() => jsonResponse(learningPayload)));
+    render(<StartupHomeScreen startupId={7} />);
+
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Registrar aprendizado" })
+    );
+
+    expect(
+      screen.getByText(
+        "Transforme as cinco conversas em uma conclusão que oriente a próxima decisão."
+      )
+    ).toBeInTheDocument();
+  });
+
   it("preserves accented loading, error and celebration copy", async () => {
     let resolveLoad!: (value: Response) => void;
     const pendingLoad = new Promise<Response>((resolve) => {
