@@ -33,6 +33,8 @@ conclusao, nao premia login isolado e nao cria progresso apenas visual.
 - Jornada com oito etapas, bloqueios honestos e Mapa inicial editavel;
 - gerenciador com abertura, renomeacao, exclusao confirmada e fallback;
 - estados de carregamento, erro, sessao e conteudo ausente nas rotas principais.
+- sessao rejeitada pelo backend limpa o cookie antes de retornar ao login;
+- mutacoes de Home, Jornada e Mapa reconciliam topbar e gerenciador sem recarga manual;
 
 ## Funcionalidades implementadas
 
@@ -47,7 +49,7 @@ conclusao, nao premia login isolado e nao cria progresso apenas visual.
 
 - criacao dedicada em `/painel/startups/nova` com nome opcional, ideia, segmento, problema e publico;
 - listagem, abertura, leitura, atualizacao parcial e exclusao no backend;
-- `last_opened_at` registra a startup usada por ultimo;
+- `last_opened_at` registra a startup usada por ultimo, com ordenacao deterministica e nulos por ultimo;
 - `nextStartupId` fornece fallback depois da exclusao da startup ativa.
 
 ### 3. Workspace principal

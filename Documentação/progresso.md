@@ -27,9 +27,13 @@ uma etapa superada; o estado vigente e o ciclo mais recente, de 2026-07-14.
 
 - auditoria com `rg`: nenhum import ou uso das quatro telas removidas permaneceu no frontend;
 - `manage.py makemigrations --check`: nenhuma migration pendente;
-- `manage.py test -v 2 --keepdb`: 40 testes Django passando;
-- `npm test`: 46 testes Vitest em 14 arquivos passando;
+- `manage.py test -v 2 --keepdb`: 45 testes Django passando;
+- `npm test`: 62 testes Vitest em 18 arquivos passando;
 - `npm run lint`, `npx tsc --noEmit` e `npm run build`: concluidos sem erro;
+- Next.js e `eslint-config-next` foram atualizados, sem salto de major, para `16.2.10`;
+- `npm audit --json` registrou 5 findings transitivos restantes: 2 moderados de producao
+  (`next`/`postcss`) e, nas ferramentas de desenvolvimento, 1 baixo e 2 moderados. Nao foi usado
+  `npm audit fix --force`;
 - build confirmou as rotas de Home, Jornada, gerenciador, criacao e APIs do workspace;
 - smoke HTTP nos servidores locais confirmou conta vazia, criacao de duas startups, ordenacao pela
   ultima abertura, payload `today` com missao, payload da Jornada com oito etapas, `PATCH` do campo
@@ -44,11 +48,14 @@ uma etapa superada; o estado vigente e o ciclo mais recente, de 2026-07-14.
 
 ### Validacao visual
 
-O navegador integrado nao estava disponivel nesta execucao, portanto nao foi possivel repetir a
-inspecao visual em `1920 x 900`, `1536 x 864`, `1366 x 768` e `1280 x 720`, medir a geometria
-renderizada, confirmar a distribuicao real da rolagem ou percorrer a interface com teclado real.
-Build, testes de componentes, contratos CSS, leitura estatica e smoke HTTP sao evidencias distintas;
-a passagem visual e de teclado nesses quatro viewports permanece como checagem manual de aceite.
+A inspecao renderizada deste ciclo cobriu Home, Jornada e o dialogo de exclusao nos viewports
+`1920 x 900`, `1536 x 864`, `1366 x 768` e `1280 x 720`. Foram conferidos enquadramento, rolagem da
+area de conteudo, distribuicao mestre-detalhe e sobreposicao do dialogo. Os testes automatizados
+tambem cobrem foco, Escape, trap de foco, tabs e estado `inert`, mas nao foi executado um percurso
+manual completo de ponta a ponta usando somente teclado; essa checagem permanece como aceite manual.
+
+Na nomenclatura vigente, `Jornada` e o nome da area do produto; `etapa` e cada unidade do percurso.
+O detalhe de uma etapa vive dentro da Jornada, sem rota ou tela independente.
 
 ## 2026-07-13 (marca no canto e formulário centralizado)
 
