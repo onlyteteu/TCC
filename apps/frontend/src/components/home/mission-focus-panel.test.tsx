@@ -96,7 +96,7 @@ describe("MissionFocusPanel", () => {
     const css = readFileSync(cssPath, "utf8");
 
     expect(css).toMatch(
-      /\.stepAction:focus-visible\s*\{[\s\S]*?outline:\s*3px solid #9a6700;[\s\S]*?outline-offset:\s*3px;/
+      /\.stepAction:focus-visible\s*\{[\s\S]*?outline:\s*2px solid #f2a51a;[\s\S]*?outline-offset:\s*3px;/
     );
   });
 });
