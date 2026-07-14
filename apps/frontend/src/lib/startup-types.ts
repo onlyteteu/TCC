@@ -10,6 +10,8 @@ export interface StartupSummary {
   initialGoal: string;
   createdAt: string;
   updatedAt: string;
+  lastOpenedAt: string | null;
+  lastActivityAt?: string;
   /** Presentes apenas na listagem do painel. */
   journeyProgress?: number;
   nextStepLabel?: string | null;
@@ -47,9 +49,15 @@ export interface StartupCreatePayload {
   startup: StartupSummary;
 }
 
+export interface StartupOpenPayload {
+  message: string;
+  startup: StartupSummary;
+}
+
 export interface StartupDeletePayload {
   deletedStartupId: number;
   message: string;
+  nextStartupId: number | null;
 }
 
 export interface StartupUpdatePayload {
