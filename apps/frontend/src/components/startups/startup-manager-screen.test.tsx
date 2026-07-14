@@ -25,7 +25,7 @@ const startups = [
 function renderManager(overrides: Partial<React.ComponentProps<typeof StartupManagerScreen>> = {}) {
   const props: React.ComponentProps<typeof StartupManagerScreen> = {
     activeStartupId: 1,
-    onDelete: vi.fn().mockResolvedValue(undefined),
+    onDelete: vi.fn().mockResolvedValue(null),
     onOpen: vi.fn().mockResolvedValue(undefined),
     onRename: vi.fn().mockResolvedValue(null),
     startups,
@@ -131,8 +131,8 @@ describe("StartupManagerScreen", () => {
     expect(confirmButton).toHaveFocus();
   });
 
-  it("restores focus to the deletion trigger after cancel and confirmation", async () => {
-    const onDelete = vi.fn().mockResolvedValue(undefined);
+  it("restores focus after cancel and moves it to the manager after confirmed deletion", async () => {
+    const onDelete = vi.fn().mockResolvedValue(null);
     renderManager({ onDelete });
     const trigger = screen.getByRole("button", { name: "Excluir Aurora" });
 
@@ -147,7 +147,7 @@ describe("StartupManagerScreen", () => {
     fireEvent.click(screen.getByRole("button", { name: "Excluir definitivamente" }));
 
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
-    expect(trigger).toHaveFocus();
+    expect(screen.getByRole("region", { name: "Suas startups" })).toHaveFocus();
   });
 
   it("keeps a deletion failure in the dialog that originated it", async () => {

@@ -46,6 +46,17 @@
   line-height: 1.55;
 }
 
+.pageWarning {
+  margin: 0 0 14px;
+  padding: 11px 13px;
+  border: 1px solid rgba(242, 165, 26, 0.28);
+  border-radius: 10px;
+  color: #e9c98f;
+  background: rgba(242, 165, 26, 0.08);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
 .primaryAction,
 .openButton,
 .saveButton,

@@ -93,9 +93,12 @@ export default function StartupManagerPage() {
     }
 
     const successPayload = payload as StartupDeletePayload;
-    const refreshed = await refreshWorkspace({ silent: true });
-    if (!refreshed) {
-      throw new Error("Startup excluida, mas nao foi possivel atualizar a lista.");
+    let refreshed = false;
+
+    try {
+      refreshed = await refreshWorkspace({ silent: true });
+    } catch {
+      refreshed = false;
     }
 
     if (startup.id === activeStartup?.id) {
@@ -104,7 +107,12 @@ export default function StartupManagerPage() {
           ? startupHomeHref(successPayload.nextStartupId)
           : "/painel/startups/nova"
       );
+      return null;
     }
+
+    return refreshed
+      ? null
+      : "Startup excluida. Recarregue a pagina para atualizar a lista.";
   }
 
   return (

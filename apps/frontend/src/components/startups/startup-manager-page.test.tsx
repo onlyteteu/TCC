@@ -117,7 +117,10 @@ describe("StartupManagerPage", () => {
   it.each([
     [2, "/painel/startup/2"],
     [null, "/painel/startups/nova"],
-  ])("routes active deletion with nextStartupId %s", async (nextStartupId, destination) => {
+  ])(
+    "routes and closes active deletion with nextStartupId %s when refresh fails",
+    async (nextStartupId, destination) => {
+    workspace.current.refreshWorkspace.mockResolvedValue(false);
     vi.stubGlobal(
       "fetch",
       vi.fn(() =>
@@ -130,25 +133,32 @@ describe("StartupManagerPage", () => {
 
     await waitFor(() => expect(navigation.replace).toHaveBeenCalledWith(destination));
     expect(workspace.current.refreshWorkspace).toHaveBeenCalledWith({ silent: true });
-  });
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(screen.queryByText("Workspace indisponivel")).not.toBeInTheDocument();
+    }
+  );
 
-  it("keeps a silent delete refresh failure in its dialog", async () => {
+  it("closes a non-active deletion and shows a reload warning when refresh fails", async () => {
     workspace.current.activeStartup = startups[1];
     workspace.current.refreshWorkspace.mockResolvedValue(false);
+    const fetchMock = vi.fn(() =>
+      jsonResponse({ deletedStartupId: 1, message: "excluida", nextStartupId: 2 })
+    );
     vi.stubGlobal(
       "fetch",
-      vi.fn(() =>
-        jsonResponse({ deletedStartupId: 1, message: "excluida", nextStartupId: 2 })
-      )
+      fetchMock
     );
     render(<StartupManagerPage />);
 
     openDeleteDialog();
 
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      "Startup excluida, mas nao foi possivel atualizar a lista."
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Startup excluida. Recarregue a pagina para atualizar a lista."
     );
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Excluir Aurora" })).not.toBeInTheDocument();
     expect(workspace.current.refreshWorkspace).toHaveBeenCalledWith({ silent: true });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText("Workspace indisponivel")).not.toBeInTheDocument();
   });
 });

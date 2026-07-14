@@ -10,7 +10,7 @@ import styles from "./startup-manager-screen.module.css";
 
 export type StartupManagerScreenProps = {
   activeStartupId: number | null;
-  onDelete: (startup: StartupSummary) => Promise<void>;
+  onDelete: (startup: StartupSummary) => Promise<string | null>;
   onOpen: (startupId: number) => Promise<void>;
   onRename: (startup: StartupSummary, name: string) => Promise<string | null>;
   startups: StartupSummary[];
@@ -68,12 +68,17 @@ export function StartupManagerScreen({
   const [deleteTarget, setDeleteTarget] = useState<StartupSummary | null>(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteWarning, setDeleteWarning] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [locallyDeletedStartupIds, setLocallyDeletedStartupIds] = useState<number[]>([]);
   const deleteInputRef = useRef<HTMLInputElement>(null);
   const deleteTriggerRef = useRef<HTMLButtonElement | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const managerRef = useRef<HTMLElement>(null);
   const shouldRestoreDeleteFocusRef = useRef(false);
+  const visibleStartups = startups.filter(
+    (startup) => !locallyDeletedStartupIds.includes(startup.id)
+  );
 
   useEffect(() => {
     if (deleteTarget) {
@@ -192,7 +197,12 @@ export function StartupManagerScreen({
     setIsDeleting(true);
 
     try {
-      await onDelete(deleteTarget);
+      const deletedStartupId = deleteTarget.id;
+      const warning = (await onDelete(deleteTarget)) ?? null;
+      setLocallyDeletedStartupIds((current) =>
+        current.includes(deletedStartupId) ? current : [...current, deletedStartupId]
+      );
+      setDeleteWarning(warning);
       shouldRestoreDeleteFocusRef.current = true;
       setDeleteTarget(null);
       setDeleteConfirmation("");
@@ -262,7 +272,7 @@ export function StartupManagerScreen({
             <h1 id="startup-manager-title">Suas startups</h1>
             <p>Abra uma jornada ou organize as startups vinculadas à sua conta.</p>
           </div>
-          {startups.length > 0 ? (
+          {visibleStartups.length > 0 ? (
             <Link className={styles.primaryAction} href="/painel/startups/nova">
               <ProductIcon name="plus" />
               Criar nova startup
@@ -270,7 +280,13 @@ export function StartupManagerScreen({
           ) : null}
         </header>
 
-        {startups.length === 0 ? (
+        {deleteWarning ? (
+          <p className={styles.pageWarning} role="status">
+            {deleteWarning}
+          </p>
+        ) : null}
+
+        {visibleStartups.length === 0 ? (
           <div className={styles.emptyState}>
             <span className={styles.emptyIcon} aria-hidden="true">
               <ProductIcon name="building" />
@@ -284,7 +300,7 @@ export function StartupManagerScreen({
           </div>
         ) : (
           <ul className={styles.list} aria-label="Startups da conta">
-          {startups.map((startup) => {
+          {visibleStartups.map((startup) => {
             const isActive = startup.id === activeStartupId;
             const isEditing = editingStartupId === startup.id;
             const isOpening =
