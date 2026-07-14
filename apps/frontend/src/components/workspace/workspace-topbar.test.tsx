@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { WorkspaceTopbar } from "./workspace-topbar";
 
@@ -23,6 +23,8 @@ describe("WorkspaceTopbar menus", () => {
     replace.mockReset();
   });
 
+  afterEach(() => vi.unstubAllGlobals());
+
   it("closes the startup selector and restores summary focus after opening another startup", async () => {
     render(<WorkspaceTopbar />);
     const summary = screen.getByLabelText("Selecionar startup");
@@ -32,6 +34,20 @@ describe("WorkspaceTopbar menus", () => {
     fireEvent.click(screen.getByRole("button", { name: /Boreal/ }));
 
     await waitFor(() => expect(openStartup).toHaveBeenCalledWith(8));
+    expect(details).not.toHaveAttribute("open");
+    expect(summary).toHaveFocus();
+  });
+
+  it("closes the profile menu and restores summary focus before logout navigation", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 200 })));
+    render(<WorkspaceTopbar />);
+    const summary = screen.getByLabelText("Abrir menu do perfil");
+    const details = summary.closest("details")!;
+    details.open = true;
+
+    fireEvent.click(screen.getByRole("button", { name: "Sair" }));
+
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/"));
     expect(details).not.toHaveAttribute("open");
     expect(summary).toHaveFocus();
   });

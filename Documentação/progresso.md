@@ -28,7 +28,7 @@ uma etapa superada; o estado vigente e o ciclo mais recente, de 2026-07-14.
 - auditoria com `rg`: nenhum import ou uso das quatro telas removidas permaneceu no frontend;
 - `manage.py makemigrations --check`: nenhuma migration pendente;
 - `manage.py test -v 2 --keepdb`: 45 testes Django passando;
-- `npm test`: 62 testes Vitest em 18 arquivos passando;
+- `npm test`: 63 testes Vitest em 18 arquivos passando;
 - `npm run lint`, `npx tsc --noEmit` e `npm run build`: concluidos sem erro;
 - Next.js e `eslint-config-next` foram atualizados, sem salto de major, para `16.2.10`;
 - `npm audit --json` registrou 5 findings transitivos restantes: 2 moderados de producao
