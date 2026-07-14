@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import type { StartupSummary } from "@/lib/startup-types";
@@ -30,6 +30,16 @@ describe("StartupMapSummary", () => {
 
     fireEvent.keyDown(screen.getByRole("textbox", { name: "Ideia" }), { key: "Escape" });
     expect(screen.queryByRole("textbox", { name: "Ideia" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Editar Ideia" })).toHaveFocus();
+  });
+
+  it("restores focus after cancelling an edit", () => {
+    render(<StartupMapSummary isSaving={false} onSaveField={vi.fn()} startup={startup} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Editar Territorio" }));
+    fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
+
+    expect(screen.getByRole("button", { name: "Editar Territorio" })).toHaveFocus();
   });
 
   it("saves the selected field", async () => {
@@ -45,5 +55,8 @@ describe("StartupMapSummary", () => {
     fireEvent.click(screen.getByRole("button", { name: "Salvar Objetivo inicial" }));
 
     expect(onSaveField).toHaveBeenCalledWith("initialGoal", "Conseguir dez entrevistas");
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Editar Objetivo inicial" })).toHaveFocus()
+    );
   });
 });

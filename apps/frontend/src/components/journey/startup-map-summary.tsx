@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 import type { StartupSummary } from "@/lib/startup-types";
 
@@ -72,6 +72,17 @@ export function StartupMapSummary({
   const [editingField, setEditingField] = useState<StartupMapField | null>(null);
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const editButtonRefs = useRef<
+    Partial<Record<StartupMapField, HTMLButtonElement | null>>
+  >({});
+  const focusReturnFieldRef = useRef<StartupMapField | null>(null);
+
+  useLayoutEffect(() => {
+    if (!editingField && focusReturnFieldRef.current) {
+      editButtonRefs.current[focusReturnFieldRef.current]?.focus();
+      focusReturnFieldRef.current = null;
+    }
+  }, [editingField]);
 
   function openEditor(field: StartupMapField) {
     setEditingField(field);
@@ -80,6 +91,7 @@ export function StartupMapSummary({
   }
 
   function closeEditor() {
+    focusReturnFieldRef.current = editingField;
     setEditingField(null);
     setDraft("");
     setError(null);
@@ -136,6 +148,9 @@ export function StartupMapSummary({
                     className={styles.editButton}
                     disabled={isSaving}
                     onClick={() => openEditor(field.key)}
+                    ref={(node) => {
+                      editButtonRefs.current[field.key] = node;
+                    }}
                     type="button"
                   >
                     Editar

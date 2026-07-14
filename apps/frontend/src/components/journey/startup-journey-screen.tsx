@@ -250,18 +250,18 @@ export function StartupJourneyScreen({ startupId }: StartupJourneyScreenProps) {
 
   if (isLoading) {
     return (
-      <main className={styles.page}>
+      <div className={styles.page}>
         <div aria-busy="true" aria-live="polite" className={styles.statePanel}>
           <span className={styles.loadingMark} aria-hidden="true" />
           <strong>Preparando a jornada da startup...</strong>
         </div>
-      </main>
+      </div>
     );
   }
 
   if (loadError || !startup) {
     return (
-      <main className={styles.page}>
+      <div className={styles.page}>
         <div className={styles.statePanel}>
           <h1>Jornada indisponivel</h1>
           <p>{loadError ?? "Nao foi possivel carregar essa startup agora."}</p>
@@ -269,14 +269,14 @@ export function StartupJourneyScreen({ startupId }: StartupJourneyScreenProps) {
             Tentar novamente
           </button>
         </div>
-      </main>
+      </div>
     );
   }
 
   const completedCount = journey.filter((step) => step.status === "done").length;
 
   return (
-    <main className={styles.page}>
+    <div className={styles.page}>
       <header className={styles.header}>
         <div>
           <span>Jornada da startup</span>
@@ -348,6 +348,6 @@ export function StartupJourneyScreen({ startupId }: StartupJourneyScreenProps) {
           />
         )}
       </section>
-    </main>
+    </div>
   );
 }

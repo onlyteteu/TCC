@@ -60,6 +60,7 @@ describe("StartupJourneyScreen", () => {
     render(<StartupJourneyScreen startupId={1} />);
 
     expect(await screen.findByRole("heading", { name: "Publico inicial" })).toBeInTheDocument();
+    expect(screen.queryByRole("main")).not.toBeInTheDocument();
 
     const journeyTab = screen.getByRole("tab", { name: "Jornada" });
     const mapTab = screen.getByRole("tab", { name: "Mapa inicial" });
@@ -78,6 +79,27 @@ describe("StartupJourneyScreen", () => {
     fireEvent.keyDown(journeyTab, { key: "End" });
     expect(mapTab).toHaveAttribute("aria-selected", "true");
     expect(mapTab).toHaveFocus();
+  });
+
+  it("does not create a nested main landmark while loading", () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise(() => undefined)));
+
+    render(<StartupJourneyScreen startupId={1} />);
+
+    expect(screen.getByText("Preparando a jornada da startup...")).toBeInTheDocument();
+    expect(screen.queryByRole("main")).not.toBeInTheDocument();
+  });
+
+  it("does not create a nested main landmark in the error state", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({ ok: false, status: 500, json: async () => ({}) })
+    );
+
+    render(<StartupJourneyScreen startupId={1} />);
+
+    expect(await screen.findByRole("heading", { name: "Jornada indisponivel" })).toBeInTheDocument();
+    expect(screen.queryByRole("main")).not.toBeInTheDocument();
   });
 
   it("shows a friendly error when a map update loses the connection", async () => {
