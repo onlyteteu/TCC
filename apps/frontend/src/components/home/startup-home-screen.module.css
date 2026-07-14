@@ -319,8 +319,11 @@
   flex: 0 0 auto;
   place-items: center;
   border-radius: 12px;
+}
+
+.streakMark {
   background: #241b0c;
-  color: #f2a51a;
+  color: #ff7a1a;
 }
 
 .streakMark svg,
@@ -553,7 +556,7 @@
   width: 36px;
   height: 36px;
   flex: 0 0 auto;
-  border: 1px solid #38506c;
+  border: 1px solid #526e8d;
   border-radius: 9px;
   background: #111927;
   color: #f7efe3;
@@ -591,7 +594,7 @@
 .workForm select {
   width: 100%;
   padding: 11px 12px;
-  border: 1px solid #38506c;
+  border: 1px solid #526e8d;
   border-radius: 9px;
   background: #070b13;
   color: #f7efe3;
@@ -609,6 +612,16 @@
 
 .workForm textarea::placeholder {
   color: #7f8da0;
+}
+
+.workForm input:disabled,
+.workForm textarea:disabled,
+.workForm select:disabled {
+  border-color: #2b3d52;
+  background: #0a1019;
+  color: #9aa8b8;
+  cursor: wait;
+  opacity: 1;
 }
 
 .workForm input:focus,
@@ -631,7 +644,7 @@
   align-items: center;
   justify-content: center;
   padding: 0 18px;
-  border: 1px solid #38506c;
+  border: 1px solid #526e8d;
   border-radius: 10px;
   background: transparent;
   color: #cbd4df;
@@ -645,6 +658,13 @@
 .closeButton:hover:not(:disabled) {
   color: #f7efe3;
   background: #152033;
+}
+
+.secondaryButton:disabled {
+  border-color: #2b3d52;
+  background: #0a1019;
+  color: #7f8da0;
+  cursor: not-allowed;
 }
 
 .formError {

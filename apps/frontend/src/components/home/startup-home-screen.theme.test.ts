@@ -6,23 +6,35 @@ const css = readFileSync(
   resolve(process.cwd(), "src/components/home/startup-home-screen.module.css"),
   "utf8"
 );
+const workspaceCss = readFileSync(
+  resolve(process.cwd(), "src/components/workspace/workspace-shell.module.css"),
+  "utf8"
+);
 
 function rule(selector: string) {
-  const match = Array.from(css.matchAll(/([^{}]+)\{([^{}]*)\}/g)).find((candidate) =>
-    candidate[1]
-      .split(",")
-      .map((item) => item.trim())
-      .includes(selector)
+  const matches = Array.from(css.matchAll(/([^{}]+)\{([^{}]*)\}/g)).filter(
+    (candidate) =>
+      candidate[1]
+        .split(",")
+        .map((item) => item.trim())
+        .includes(selector)
   );
 
-  expect(match, `regra CSS ausente: ${selector}`).not.toBeNull();
-  return match?.[2] ?? "";
+  expect(matches.length, `regra CSS ausente: ${selector}`).toBeGreaterThan(0);
+  return matches.map((match) => match[2]).join("\n");
 }
 
 function hexColor(selector: string, property: string) {
   const match = rule(selector).match(new RegExp(`${property}:\\s*(#[0-9a-f]{6})`, "i"));
 
   expect(match, `${property} hexadecimal ausente em ${selector}`).not.toBeNull();
+  return match?.[1] ?? "#000000";
+}
+
+function borderHex(selector: string) {
+  const match = rule(selector).match(/border:\s*1px solid (#[0-9a-f]{6})/i);
+
+  expect(match, `borda hexadecimal ausente em ${selector}`).not.toBeNull();
   return match?.[1] ?? "#000000";
 }
 
@@ -74,5 +86,47 @@ describe("contrato visual da Home", () => {
     for (const [foreground, background] of pairs) {
       expect(contrastRatio(foreground, background)).toBeGreaterThanOrEqual(4.5);
     }
+  });
+
+  it("mantém contraste não textual nas bordas de campos e controles", () => {
+    const fieldBorder = borderHex(".workForm input");
+    const secondaryBorder = borderHex(".secondaryButton");
+    const closeBorder = borderHex(".closeButton");
+
+    expect(contrastRatio(fieldBorder, "#070b13")).toBeGreaterThanOrEqual(3);
+    expect(contrastRatio(fieldBorder, "#0b111c")).toBeGreaterThanOrEqual(3);
+    expect(contrastRatio(secondaryBorder, "#0b111c")).toBeGreaterThanOrEqual(3);
+    expect(contrastRatio(closeBorder, "#111927")).toBeGreaterThanOrEqual(3);
+    expect(contrastRatio(closeBorder, "#0b111c")).toBeGreaterThanOrEqual(3);
+  });
+
+  it("diferencia os controles desabilitados sem perder legibilidade", () => {
+    expect(rule(".secondaryButton:disabled")).toMatch(/cursor:\s*not-allowed;/i);
+    expect(rule(".secondaryButton:disabled")).toMatch(/background:\s*#0a1019;/i);
+    expect(rule(".secondaryButton:disabled")).toMatch(/color:\s*#7f8da0;/i);
+
+    expect(rule(".workForm input:disabled")).toMatch(/cursor:\s*wait;/i);
+    expect(rule(".workForm input:disabled")).toMatch(/background:\s*#0a1019;/i);
+    expect(rule(".workForm input:disabled")).toMatch(/color:\s*#9aa8b8;/i);
+    expect(contrastRatio("#9aa8b8", "#0a1019")).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it("separa teal de conclusão, laranja de sequência e âmbar de progresso", () => {
+    expect(rule(".step_completed .stepMarker")).toMatch(/color:\s*#bfe8ce;/i);
+    expect(rule(".activityIcon")).toMatch(/color:\s*#bfe8ce;/i);
+
+    const streakColor = hexColor(".streakMark", "color");
+    expect(streakColor).toBe("#ff7a1a");
+    expect(streakColor).not.toBe("#f2a51a");
+    expect(contrastRatio(streakColor, "#241b0c")).toBeGreaterThanOrEqual(3);
+
+    expect(rule(".levelTrack span")).toMatch(/background:\s*#f2a51a;/i);
+  });
+
+  it("herda a redução de movimento do contrato global do workspace", () => {
+    expect(workspaceCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)/i);
+    expect(workspaceCss).toMatch(
+      /\.shell \*,[\s\S]*?animation-duration:\s*0\.01ms !important;[\s\S]*?transition-duration:\s*0\.01ms !important;/i
+    );
   });
 });
