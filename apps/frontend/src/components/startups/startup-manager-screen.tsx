@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { createPortal } from "react-dom";
 import { type KeyboardEvent as ReactKeyboardEvent, useEffect, useRef, useState } from "react";
 
 import { ProductIcon } from "@/components/product-icon";
@@ -11,6 +12,7 @@ import styles from "./startup-manager-screen.module.css";
 export type StartupManagerScreenProps = {
   activeStartupId: number | null;
   onDelete: (startup: StartupSummary) => Promise<string | null>;
+  onModalChange?: (open: boolean) => void;
   onOpen: (startupId: number) => Promise<void>;
   onRename: (startup: StartupSummary, name: string) => Promise<string | null>;
   startups: StartupSummary[];
@@ -57,6 +59,7 @@ function errorMessage(error: unknown, fallback: string) {
 export function StartupManagerScreen({
   activeStartupId,
   onDelete,
+  onModalChange,
   onOpen,
   onRename,
   startups,
@@ -78,6 +81,13 @@ export function StartupManagerScreen({
   const shouldRestoreDeleteFocusRef = useRef(false);
   const visibleStartups = startups.filter(
     (startup) => !locallyDeletedStartupIds.includes(startup.id)
+  );
+
+  useEffect(
+    () => () => {
+      onModalChange?.(false);
+    },
+    [onModalChange]
   );
 
   useEffect(() => {
@@ -175,6 +185,7 @@ export function StartupManagerScreen({
     setDeleteTarget(startup);
     setDeleteConfirmation("");
     setDeleteError(null);
+    onModalChange?.(true);
   }
 
   function closeDeleteDialog() {
@@ -183,6 +194,7 @@ export function StartupManagerScreen({
     }
 
     shouldRestoreDeleteFocusRef.current = true;
+    onModalChange?.(false);
     setDeleteTarget(null);
     setDeleteConfirmation("");
     setDeleteError(null);
@@ -203,6 +215,7 @@ export function StartupManagerScreen({
         current.includes(deletedStartupId) ? current : [...current, deletedStartupId]
       );
       setDeleteWarning(warning);
+      onModalChange?.(false);
       shouldRestoreDeleteFocusRef.current = true;
       setDeleteTarget(null);
       setDeleteConfirmation("");
@@ -431,7 +444,7 @@ export function StartupManagerScreen({
         )}
       </div>
 
-      {deleteTarget ? (
+      {deleteTarget ? createPortal(
         <div className={styles.modalBackdrop}>
           <div
             aria-labelledby="delete-startup-title"
@@ -486,7 +499,8 @@ export function StartupManagerScreen({
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       ) : null}
     </section>
   );

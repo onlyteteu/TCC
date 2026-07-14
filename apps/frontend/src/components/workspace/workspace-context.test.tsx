@@ -70,6 +70,19 @@ function RefreshProbe() {
   );
 }
 
+function ActiveStartupProbe() {
+  const { activeStartup, isLoading, openStartup } = useWorkspace();
+
+  return (
+    <>
+      <span>{isLoading ? "carregando" : activeStartup?.name ?? "nenhuma"}</span>
+      <button disabled={isLoading} onClick={() => void openStartup(8)} type="button">
+        Abrir Boreal
+      </button>
+    </>
+  );
+}
+
 describe("WorkspaceProvider", () => {
   beforeEach(() => {
     navigation.push.mockReset();
@@ -164,5 +177,47 @@ describe("WorkspaceProvider", () => {
     expect(await screen.findByText("falhou")).toBeInTheDocument();
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     expect(refreshButton).toBeEnabled();
+  });
+
+  it("keeps one active startup across navigation and does not post open twice", async () => {
+    const boreal = { ...startup, id: 8, name: "Boreal", lastOpenedAt: null };
+    const openedBoreal = { ...boreal, lastOpenedAt: "2026-07-14T12:00:00Z" };
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(() =>
+        response({ authenticated: true, user: { email: "ana@example.com", id: 1, name: "Ana" } })
+      )
+      .mockImplementationOnce(() => response({ accountProgress: null, startups: [startup, boreal] }))
+      .mockImplementationOnce(() => response({ message: "ok", startup }))
+      .mockImplementationOnce(() => response({ message: "ok", startup: openedBoreal }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const view = render(
+      <WorkspaceProvider activeStartupId={7}>
+        <ActiveStartupProbe />
+      </WorkspaceProvider>
+    );
+
+    await waitFor(() => expect(screen.getByText("Aurora")).toBeInTheDocument());
+    fireEvent.click(screen.getByRole("button", { name: "Abrir Boreal" }));
+    await waitFor(() => expect(navigation.push).toHaveBeenCalledWith("/painel/startup/8"));
+    expect(screen.getByText("Boreal")).toBeInTheDocument();
+
+    view.rerender(
+      <WorkspaceProvider activeStartupId={8}>
+        <ActiveStartupProbe />
+      </WorkspaceProvider>
+    );
+    await waitFor(() => expect(screen.getByText("Boreal")).toBeInTheDocument());
+
+    view.rerender(
+      <WorkspaceProvider activeStartupId={null}>
+        <ActiveStartupProbe />
+      </WorkspaceProvider>
+    );
+    expect(screen.getByText("Boreal")).toBeInTheDocument();
+    expect(
+      fetchMock.mock.calls.filter(([url]) => url === "/api/startups/8/open")
+    ).toHaveLength(1);
   });
 });

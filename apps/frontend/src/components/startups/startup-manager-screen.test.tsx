@@ -131,6 +131,28 @@ describe("StartupManagerScreen", () => {
     expect(confirmButton).toHaveFocus();
   });
 
+  it("coordinates opening and closing the deletion dialog with the workspace shell", async () => {
+    const onModalChange = vi.fn();
+    const CoordinatedManager = StartupManagerScreen as unknown as React.ComponentType<
+      React.ComponentProps<typeof StartupManagerScreen> & { onModalChange: (open: boolean) => void }
+    >;
+    render(
+      <CoordinatedManager
+        activeStartupId={1}
+        onDelete={vi.fn().mockResolvedValue(null)}
+        onModalChange={onModalChange}
+        onOpen={vi.fn().mockResolvedValue(undefined)}
+        onRename={vi.fn().mockResolvedValue(null)}
+        startups={startups}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Excluir Aurora" }));
+    expect(onModalChange).toHaveBeenLastCalledWith(true);
+    fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
+    expect(onModalChange).toHaveBeenLastCalledWith(false);
+  });
+
   it("restores focus after cancel and moves it to the manager after confirmed deletion", async () => {
     const onDelete = vi.fn().mockResolvedValue(null);
     renderManager({ onDelete });

@@ -44,7 +44,7 @@ const mission: MissionSummary = {
       status: "current",
     },
     {
-      key: "review",
+      key: "learning",
       title: "Resuma os padroes",
       description: "Disponivel depois das entrevistas.",
       status: "locked",
@@ -61,6 +61,7 @@ describe("MissionFocusPanel", () => {
         isPrimaryActionPending={false}
         onOpenStep={onOpenStep}
         onPrimaryAction={vi.fn()}
+        startupId={7}
       />
     );
 
@@ -82,6 +83,7 @@ describe("MissionFocusPanel", () => {
         isPrimaryActionPending
         onOpenStep={vi.fn()}
         onPrimaryAction={vi.fn()}
+        startupId={7}
       />
     );
 

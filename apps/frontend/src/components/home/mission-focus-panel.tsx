@@ -8,6 +8,7 @@ type MissionFocusPanelProps = {
   isPrimaryActionPending: boolean;
   onOpenStep: (stepKey: string) => void;
   onPrimaryAction: () => void;
+  startupId: number;
 };
 
 const statusLabels = {
@@ -22,7 +23,9 @@ export function MissionFocusPanel({
   isPrimaryActionPending,
   onOpenStep,
   onPrimaryAction,
+  startupId,
 }: MissionFocusPanelProps) {
+  const isCompleted = mission.status === "completed";
   const primaryLabel = isPrimaryActionPending
     ? "Concluindo missão..."
     : mission.canComplete
@@ -89,7 +92,7 @@ export function MissionFocusPanel({
               className={styles[`step_${step.status}`]}
               key={step.key}
             >
-              {step.status === "locked" ? (
+              {step.status === "locked" || isCompleted ? (
                 <div className={styles.stepLocked}>{content}</div>
               ) : (
                 <button
@@ -110,17 +113,32 @@ export function MissionFocusPanel({
         <p>{mission.contextualTip}</p>
       </div>
 
-      <div className={styles.missionActions}>
-        <button
-          aria-busy={isPrimaryActionPending || undefined}
-          className={styles.primaryButton}
-          disabled={isPrimaryActionPending}
-          onClick={onPrimaryAction}
-          type="button"
-        >
-          {primaryLabel}
-        </button>
-      </div>
+      {isCompleted ? (
+        <div className={styles.missionActions}>
+          <div>
+            <strong>Missao concluida</strong>
+            <p>
+              {mission.evidenceCount} entrevistas e {mission.learning ? "1 aprendizado" : "nenhum aprendizado"} registrados.
+            </p>
+          </div>
+          <Link className={styles.primaryButton} href={`/painel/startup/${startupId}/jornada`}>
+            Ir para a Jornada
+          </Link>
+        </div>
+      ) : (
+        <div className={styles.missionActions}>
+          <button
+            aria-busy={isPrimaryActionPending || undefined}
+            className={styles.primaryButton}
+            disabled={isPrimaryActionPending}
+            onClick={onPrimaryAction}
+            type="button"
+          >
+            {primaryLabel}
+          </button>
+        </div>
+      )}
     </section>
   );
 }
+import Link from "next/link";

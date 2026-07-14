@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { StartupJourneyScreen } from "@/components/journey/startup-journey-screen";
+import { StartupJourneyRouteScreen } from "@/components/journey/startup-journey-route-screen";
 
 export default async function StartupJourneyPage({
   params,
@@ -14,5 +14,5 @@ export default async function StartupJourneyPage({
     notFound();
   }
 
-  return <StartupJourneyScreen startupId={numericId} />;
+  return <StartupJourneyRouteScreen startupId={numericId} />;
 }

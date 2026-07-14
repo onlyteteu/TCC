@@ -16,6 +16,7 @@ import { StartupMapSummary, type StartupMapField } from "./startup-map-summary";
 import styles from "./startup-journey-screen.module.css";
 
 type StartupJourneyScreenProps = {
+  onWorkspaceChanged?: () => Promise<boolean>;
   startupId: number;
 };
 
@@ -25,7 +26,7 @@ const tabOrder: JourneyTab[] = ["journey", "initial-map"];
 
 class JourneyRequestError extends Error {}
 
-export function StartupJourneyScreen({ startupId }: StartupJourneyScreenProps) {
+export function StartupJourneyScreen({ onWorkspaceChanged, startupId }: StartupJourneyScreenProps) {
   const router = useRouter();
   const [startup, setStartup] = useState<StartupSummary | null>(null);
   const [journey, setJourney] = useState<JourneyStepSummary[]>([]);
@@ -142,6 +143,7 @@ export function StartupJourneyScreen({ startupId }: StartupJourneyScreenProps) {
       const successPayload = payload as StartupUpdatePayload;
       setStartup(successPayload.startup);
       setFlashMessage(successPayload.message);
+      void onWorkspaceChanged?.();
 
       if (field === "problem" || field === "audience") {
         setJourney((current) =>
@@ -192,6 +194,7 @@ export function StartupJourneyScreen({ startupId }: StartupJourneyScreenProps) {
         ? successPayload.journey.find((item) => item.status === "current")?.key
         : step.key;
       applyJourneyPayload(successPayload, nextStepKey);
+      void onWorkspaceChanged?.();
 
       if (complete) {
         if (celebrationTimeoutRef.current !== null) {

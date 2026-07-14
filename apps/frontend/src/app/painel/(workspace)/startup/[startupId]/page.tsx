@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { StartupHomeScreen } from "@/components/home/startup-home-screen";
+import { StartupHomeRouteScreen } from "@/components/home/startup-home-route-screen";
 
 export default async function StartupDetailPage({
   params,
@@ -14,5 +14,5 @@ export default async function StartupDetailPage({
     notFound();
   }
 
-  return <StartupHomeScreen startupId={numericId} />;
+  return <StartupHomeRouteScreen startupId={numericId} />;
 }

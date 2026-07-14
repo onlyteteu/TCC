@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { ProductIcon } from "@/components/product-icon";
 
@@ -23,11 +23,17 @@ export function WorkspaceTopbar() {
   const { accountProgress, activeStartup, openStartup, startups, user } = useWorkspace();
   const [openingStartupId, setOpeningStartupId] = useState<number | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const startupPickerRef = useRef<HTMLDetailsElement>(null);
+  const profileMenuRef = useRef<HTMLDetailsElement>(null);
   const streak = accountProgress?.currentStreak ?? 0;
 
   async function handleOpenStartup(startupId: number) {
     setOpeningStartupId(startupId);
     await openStartup(startupId);
+    if (startupPickerRef.current) {
+      startupPickerRef.current.open = false;
+      startupPickerRef.current.querySelector("summary")?.focus();
+    }
     setOpeningStartupId(null);
   }
 
@@ -36,6 +42,10 @@ export function WorkspaceTopbar() {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
     } finally {
+      if (profileMenuRef.current) {
+        profileMenuRef.current.open = false;
+        profileMenuRef.current.querySelector("summary")?.focus();
+      }
       router.replace("/");
       setIsLoggingOut(false);
     }
@@ -43,7 +53,7 @@ export function WorkspaceTopbar() {
 
   return (
     <header className={styles.topbar}>
-      <details className={styles.startupPicker}>
+      <details className={styles.startupPicker} ref={startupPickerRef}>
         <summary aria-label="Selecionar startup" className={styles.startupPickerSummary}>
           <span className={styles.startupPickerMark} aria-hidden="true">
             {activeStartup?.name.slice(0, 1).toUpperCase() ?? "S"}
@@ -69,8 +79,8 @@ export function WorkspaceTopbar() {
             </button>
           ))}
           <div className={styles.startupMenuLinks}>
-            <Link href="/painel/startups">Ver todas as startups</Link>
-            <Link href="/painel/startups/nova">Criar nova startup</Link>
+            <Link onClick={() => { if (startupPickerRef.current) startupPickerRef.current.open = false; }} href="/painel/startups">Ver todas as startups</Link>
+            <Link onClick={() => { if (startupPickerRef.current) startupPickerRef.current.open = false; }} href="/painel/startups/nova">Criar nova startup</Link>
           </div>
         </div>
       </details>
@@ -84,7 +94,7 @@ export function WorkspaceTopbar() {
           <ProductIcon name="level" />
           <strong>Nivel {accountProgress?.level ?? 1}</strong>
         </span>
-        <details className={styles.profileMenu}>
+        <details className={styles.profileMenu} ref={profileMenuRef}>
           <summary aria-label="Abrir menu do perfil" className={styles.avatar}>
             {initials(user?.name ?? "Usuario") || "U"}
           </summary>

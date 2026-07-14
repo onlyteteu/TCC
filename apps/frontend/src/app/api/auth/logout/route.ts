@@ -7,3 +7,9 @@ export async function POST() {
   clearAuthCookie(response);
   return response;
 }
+
+export async function GET(request: Request) {
+  const response = NextResponse.redirect(new URL("/", request.url));
+  clearAuthCookie(response);
+  return response;
+}

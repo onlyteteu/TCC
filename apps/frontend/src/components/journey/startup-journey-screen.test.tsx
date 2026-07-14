@@ -1,4 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
+import type { ComponentType } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { JourneyPayload } from "@/lib/startup-types";
@@ -132,5 +134,27 @@ describe("StartupJourneyScreen", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "Nao foi possivel salvar a etapa agora."
     );
+  });
+
+  it("reconciles the workspace after completing a journey step", async () => {
+    const onWorkspaceChanged = vi.fn().mockResolvedValue(true);
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => payload })
+      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => payload });
+    vi.stubGlobal("fetch", fetchMock);
+    const ReconciledJourney = StartupJourneyScreen as unknown as ComponentType<{
+      onWorkspaceChanged: () => Promise<boolean>;
+      startupId: number;
+    }>;
+    render(<ReconciledJourney onWorkspaceChanged={onWorkspaceChanged} startupId={1} />);
+
+    await screen.findByRole("heading", { name: "Publico inicial" });
+    fireEvent.change(screen.getByRole("textbox", { name: "Sua resposta" }), {
+      target: { value: "Consultorios com agenda cheia" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Concluir etapa" }));
+
+    await waitFor(() => expect(onWorkspaceChanged).toHaveBeenCalledTimes(1));
   });
 });

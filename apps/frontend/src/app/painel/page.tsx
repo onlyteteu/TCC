@@ -27,7 +27,7 @@ export default async function DashboardPage() {
   }
 
   if (response.status === 401) {
-    redirect("/");
+    redirect("/api/auth/logout?returnTo=/");
   }
 
   if (!response.ok) {

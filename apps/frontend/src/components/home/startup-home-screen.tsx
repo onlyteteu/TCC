@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { createPortal } from "react-dom";
 import {
   type FormEvent,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -20,6 +21,8 @@ import { MissionFocusPanel } from "./mission-focus-panel";
 import styles from "./startup-home-screen.module.css";
 
 type StartupHomeScreenProps = {
+  onWorkspaceChanged?: () => Promise<boolean>;
+  onWorkspaceModalChange?: (open: boolean) => void;
   startupId: number;
 };
 
@@ -149,7 +152,11 @@ function NextUnlock({ unlock }: { unlock: TodayPayload["nextUnlock"] }) {
   );
 }
 
-export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
+export function StartupHomeScreen({
+  onWorkspaceChanged,
+  onWorkspaceModalChange,
+  startupId,
+}: StartupHomeScreenProps) {
   const router = useRouter();
   const [payload, setPayload] = useState<TodayPayload | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -163,6 +170,13 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
   const completionRequestRef = useRef(false);
   const dialogRef = useRef<HTMLElement>(null);
   const dialogTriggerRef = useRef<HTMLElement | null>(null);
+
+  useEffect(
+    () => () => {
+      onWorkspaceModalChange?.(false);
+    },
+    [onWorkspaceModalChange]
+  );
 
   const loadToday = useCallback(async () => {
     setIsLoading(true);
@@ -223,10 +237,12 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
     dialogTriggerRef.current =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setFormError(null);
+    onWorkspaceModalChange?.(true);
     setWorkMode(mode);
   }
 
   function closeWorkDialog() {
+    onWorkspaceModalChange?.(false);
     setWorkMode("overview");
     setFormError(null);
   }
@@ -234,6 +250,7 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
   function applySuccess(nextPayload: TodayPayload) {
     setPayload(nextPayload);
     closeWorkDialog();
+    void onWorkspaceChanged?.();
   }
 
   async function submitInterview(event: FormEvent<HTMLFormElement>) {
@@ -348,7 +365,7 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
 
   function handleOpenMissionStep(stepKey: string) {
     openWorkDialog(
-      stepKey === "interviews" ? "interview" : stepKey === "review" ? "learning" : "details"
+      stepKey === "interviews" ? "interview" : stepKey === "learning" ? "learning" : "details"
     );
   }
 
@@ -673,6 +690,7 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
             mission={payload.mission}
             onOpenStep={handleOpenMissionStep}
             onPrimaryAction={handlePrimaryMissionAction}
+            startupId={startupId}
           />
         ) : (
           <section className={styles.missionUnavailable}>
@@ -696,7 +714,7 @@ export function StartupHomeScreen({ startupId }: StartupHomeScreenProps) {
       ) : null}
       {isCompleting ? <p className={styles.srOnly}>Concluindo missão...</p> : null}
       </div>
-      {workMode !== "overview" ? renderWorkDialog() : null}
+      {workMode !== "overview" ? createPortal(renderWorkDialog(), document.body) : null}
     </>
   );
 }

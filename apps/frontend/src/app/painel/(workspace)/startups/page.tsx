@@ -22,7 +22,13 @@ async function readPayload<T>(response: Response): Promise<T | null> {
 
 export default function StartupManagerPage() {
   const router = useRouter();
-  const { activeStartup, openStartup, refreshWorkspace, startups } = useWorkspace();
+  const {
+    activeStartup,
+    openStartup,
+    refreshWorkspace,
+    setWorkspaceModalOpen,
+    startups,
+  } = useWorkspace();
 
   async function handleOpen(startupId: number) {
     const opened = await openStartup(startupId);
@@ -119,6 +125,7 @@ export default function StartupManagerPage() {
     <StartupManagerScreen
       activeStartupId={activeStartup?.id ?? null}
       onDelete={handleDelete}
+      onModalChange={setWorkspaceModalOpen}
       onOpen={handleOpen}
       onRename={handleRename}
       startups={startups}

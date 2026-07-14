@@ -26,15 +26,24 @@ type WorkspaceFrameProps = {
 };
 
 function WorkspaceFrame({ activeSection: section, children }: WorkspaceFrameProps) {
-  const { activeStartup, error, isLoading, refreshWorkspace } = useWorkspace();
+  const { activeStartup, error, isLoading, isWorkspaceModalOpen, refreshWorkspace } = useWorkspace();
   const activeStartupId = activeStartup?.id ?? null;
 
   return (
     <>
-      <a className={styles.skipLink} href="#workspace-content">
+      <a
+        aria-hidden={isWorkspaceModalOpen ? "true" : undefined}
+        className={styles.skipLink}
+        href="#workspace-content"
+        inert={isWorkspaceModalOpen ? true : undefined}
+      >
         Ir para o conteudo
       </a>
-      <div className={styles.shell}>
+      <div
+        aria-hidden={isWorkspaceModalOpen ? "true" : undefined}
+        className={styles.shell}
+        inert={isWorkspaceModalOpen ? true : undefined}
+      >
         <aside className={styles.sidebar}>
           <WorkspaceBrand
             href={activeStartupId ? startupHomeHref(activeStartupId) : "/painel/startups"}

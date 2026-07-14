@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import type { ComponentType } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { TodayPayload } from "@/lib/startup-types";
@@ -60,7 +61,7 @@ const payload: TodayPayload = {
     steps: [
       { key: "prepare", title: "Prepare o roteiro", description: "Use perguntas reais.", status: "completed" },
       { key: "interviews", title: "Registre 5 entrevistas", description: "1 de 5 concluidas.", status: "current" },
-      { key: "review", title: "Resuma os padroes", description: "Depois das entrevistas.", status: "locked" },
+      { key: "learning", title: "Resuma os padroes", description: "Depois das entrevistas.", status: "locked" },
     ],
   },
   gamification: {
@@ -237,6 +238,79 @@ describe("StartupHomeScreen", () => {
         "Transforme as cinco conversas em uma conclusão que oriente a próxima decisão."
       )
     ).toBeInTheDocument();
+  });
+
+  it("opens learning from the backend learning step key", async () => {
+    const learningPayload = withMission({
+      canAddLearning: true,
+      steps: payload.mission!.steps.map((step) =>
+        step.key === "learning" ? { ...step, status: "current" as const } : step
+      ),
+    });
+    vi.stubGlobal("fetch", vi.fn().mockImplementation(() => jsonResponse(learningPayload)));
+    render(<StartupHomeScreen startupId={7} />);
+
+    fireEvent.click(await screen.findByText("Resuma os padroes"));
+
+    expect(screen.getByRole("dialog", { name: "Resumir aprendizados" })).toBeInTheDocument();
+  });
+
+  it("keeps a completed mission read-only and points to the Journey", async () => {
+    const completedPayload = withMission({
+      canAddLearning: false,
+      canComplete: false,
+      completedAt: "2026-07-14T12:00:00Z",
+      evidenceCount: 5,
+      learning: {
+        id: 3,
+        content: "O problema e recorrente.",
+        impact: "Priorizar visibilidade.",
+        nextAction: "Refinar proposta.",
+        confidence: "high",
+        confidenceLabel: "Alta",
+        createdAt: "2026-07-14T11:00:00Z",
+        updatedAt: "2026-07-14T11:00:00Z",
+      },
+      progress: 100,
+      status: "completed",
+      statusLabel: "Concluida",
+      steps: payload.mission!.steps.map((step) => ({ ...step, status: "completed" as const })),
+    });
+    vi.stubGlobal("fetch", vi.fn().mockImplementation(() => jsonResponse(completedPayload)));
+    render(<StartupHomeScreen startupId={7} />);
+
+    expect(await screen.findByText("Missao concluida")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Registrar entrevista/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Registrar aprendizado/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Ir para a Jornada" })).toHaveAttribute(
+      "href",
+      "/painel/startup/7/jornada"
+    );
+  });
+
+  it("requests workspace reconciliation after recording evidence", async () => {
+    const onWorkspaceChanged = vi.fn().mockResolvedValue(true);
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(() => jsonResponse(payload))
+      .mockImplementationOnce(() => jsonResponse(payload, 201));
+    vi.stubGlobal("fetch", fetchMock);
+    const ReconciledHome = StartupHomeScreen as unknown as ComponentType<{
+      onWorkspaceChanged: () => Promise<boolean>;
+      startupId: number;
+    }>;
+    render(<ReconciledHome onWorkspaceChanged={onWorkspaceChanged} startupId={7} />);
+
+    fireEvent.click(await screen.findByText("Registre 5 entrevistas"));
+    fireEvent.change(screen.getByLabelText(/Nome ou identifica/), {
+      target: { value: "Cliente 02" },
+    });
+    fireEvent.change(screen.getByLabelText(/O que a pessoa contou/), {
+      target: { value: "Relatou o problema semanalmente." },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Registrar entrevista" }));
+
+    await waitFor(() => expect(onWorkspaceChanged).toHaveBeenCalledTimes(1));
   });
 
   it("preserves accented loading, error and celebration copy", async () => {

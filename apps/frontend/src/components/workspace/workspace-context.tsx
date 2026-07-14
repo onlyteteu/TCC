@@ -14,7 +14,12 @@ import {
 
 import type { AuthenticatedUserPayload, AuthUser } from "@/lib/auth-types";
 import { startupHomeHref } from "@/lib/startup-navigation";
-import type { AccountProgress, StartupListPayload, StartupSummary } from "@/lib/startup-types";
+import type {
+  AccountProgress,
+  StartupListPayload,
+  StartupOpenPayload,
+  StartupSummary,
+} from "@/lib/startup-types";
 
 export type WorkspaceState = {
   accountProgress: AccountProgress | null;
@@ -26,8 +31,10 @@ export type WorkspaceState = {
 };
 
 type WorkspaceContextValue = WorkspaceState & {
+  isWorkspaceModalOpen: boolean;
   openStartup: (startupId: number) => Promise<boolean>;
   refreshWorkspace: (options?: RefreshWorkspaceOptions) => Promise<boolean>;
+  setWorkspaceModalOpen: (open: boolean) => void;
 };
 
 export type RefreshWorkspaceOptions = {
@@ -46,8 +53,10 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
   const [accountProgress, setAccountProgress] = useState<AccountProgress | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isWorkspaceModalOpen, setWorkspaceModalOpen] = useState(false);
   const [startups, setStartups] = useState<StartupSummary[]>([]);
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [selectedStartupId, setSelectedStartupId] = useState<number | null>(activeStartupId);
   const lastMarkedStartupId = useRef<number | null>(null);
 
   const refreshWorkspace = useCallback(async ({ silent = false }: RefreshWorkspaceOptions = {}) => {
@@ -94,18 +103,23 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
   }, [router]);
 
   const markStartupOpened = useCallback(
-    async (startupId: number): Promise<boolean> => {
+    async (startupId: number): Promise<StartupSummary | null> => {
       try {
         const response = await fetch(`/api/startups/${startupId}/open`, { method: "POST" });
 
         if (response.status === 401) {
           router.replace("/");
-          return false;
+          return null;
         }
 
-        return response.ok;
+        if (!response.ok) {
+          return null;
+        }
+
+        const payload = (await response.json()) as StartupOpenPayload;
+        return payload.startup;
       } catch {
-        return false;
+        return null;
       }
     },
     [router]
@@ -113,11 +127,20 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
 
   const openStartup = useCallback(
     async (startupId: number) => {
-      const opened = await markStartupOpened(startupId);
-      if (!opened) {
+      const previousMarkedStartupId = lastMarkedStartupId.current;
+      lastMarkedStartupId.current = startupId;
+      const openedStartup = await markStartupOpened(startupId);
+      if (!openedStartup) {
+        lastMarkedStartupId.current = previousMarkedStartupId;
         return false;
       }
 
+      setSelectedStartupId(startupId);
+      setStartups((current) => {
+        const previous = current.find((startup) => startup.id === startupId);
+        const merged = { ...previous, ...openedStartup } as StartupSummary;
+        return [merged, ...current.filter((startup) => startup.id !== startupId)];
+      });
       router.push(startupHomeHref(startupId));
       return true;
     },
@@ -130,25 +153,36 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
 
   useEffect(() => {
     if (activeStartupId === null) {
-      lastMarkedStartupId.current = null;
       return;
     }
+
+    setSelectedStartupId(activeStartupId);
 
     if (lastMarkedStartupId.current === activeStartupId) {
       return;
     }
 
     lastMarkedStartupId.current = activeStartupId;
-    void markStartupOpened(activeStartupId);
+    void markStartupOpened(activeStartupId).then((openedStartup) => {
+      if (!openedStartup) {
+        lastMarkedStartupId.current = null;
+        return;
+      }
+      setStartups((current) => {
+        const previous = current.find((startup) => startup.id === activeStartupId);
+        const merged = { ...previous, ...openedStartup } as StartupSummary;
+        return [merged, ...current.filter((startup) => startup.id !== activeStartupId)];
+      });
+    });
   }, [activeStartupId, markStartupOpened]);
 
   const activeStartup = useMemo(() => {
-    if (activeStartupId === null) {
+    if (selectedStartupId === null) {
       return startups[0] ?? null;
     }
 
-    return startups.find((startup) => startup.id === activeStartupId) ?? null;
-  }, [activeStartupId, startups]);
+    return startups.find((startup) => startup.id === selectedStartupId) ?? startups[0] ?? null;
+  }, [selectedStartupId, startups]);
 
   const value = useMemo<WorkspaceContextValue>(
     () => ({
@@ -156,8 +190,10 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
       activeStartup,
       error,
       isLoading,
+      isWorkspaceModalOpen,
       openStartup,
       refreshWorkspace,
+      setWorkspaceModalOpen,
       startups,
       user,
     }),
@@ -166,6 +202,7 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
       activeStartup,
       error,
       isLoading,
+      isWorkspaceModalOpen,
       openStartup,
       refreshWorkspace,
       startups,
