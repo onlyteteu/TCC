@@ -5,7 +5,25 @@
 Este documento registra como o primeiro fluxo operacional da Startup Quest foi implementado.
 O recorte transforma a missão de entrevistas em um ciclo completo e verificável:
 
-`Missão -> Evidências -> Aprendizado -> Conclusão -> XP, sequência e atividade`
+`Missão -> Passos -> Evidências -> Aprendizado -> Conclusão -> XP, sequência e atividade`
+
+## Interacao entre os elementos
+
+1. A `Mission` define o objetivo, a explicacao, a recompensa e os criterios verificaveis.
+2. A API deriva os passos de interface do estado persistido: preparar, registrar evidencias,
+   sintetizar e concluir.
+3. Cada `MissionEvidence` avanca a contagem do criterio sem, por si so, encerrar a missao.
+4. Ao atingir a quantidade exigida, a sintese e liberada e vira um `Learning` ligado a mesma
+   startup e missao.
+5. A conclusao valida evidencias e aprendizado em uma transacao antes de mudar o status.
+6. Cada gesto relevante cria um `ActivityEvent` com chave de deduplicacao; esse evento alimenta
+   XP operacional, sequencia, atividade recente e conquistas.
+7. A Home recebe esse estado agregado pelo endpoint `today`, de modo que passos, bloqueios,
+   progresso e recompensa nunca dependem apenas do estado local da interface.
+
+O XP da Jornada e o XP operacional sao somados na conta, mas a missao, suas evidencias e seu
+aprendizado continuam locais a startup. Assim, trocar de startup preserva nivel e sequencia globais
+sem misturar o trabalho e as decisoes de cada negocio.
 
 ## Modelo de dados
 

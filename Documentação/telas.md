@@ -2,9 +2,44 @@
 
 ## Estado atual
 
-Na data de 2026-04-09, a tela principal de autenticacao, o fluxo real de criacao da startup e uma
-visao inicial das startups ja criadas foram implementados. As demais telas do fluxo principal
-continuam planejadas para os proximos ciclos.
+Em 2026-07-14, o workspace principal deixou de usar as telas provisorias. Depois da autenticacao,
+o produto resolve a startup mais recente e abre uma experiencia unica com sidebar fixa, topbar,
+seletor de startup e somente a area de conteudo rolavel. A prioridade desta versao e desktop.
+
+## Workspace principal implementado
+
+### Home da startup
+
+- rota `/painel/startup/<id>`;
+- concentra a missao principal, seus passos e o proximo gesto esperado;
+- registra entrevistas como evidencias e libera a sintese dos aprendizados no momento correto;
+- mostra XP, nivel global, sequencia de dias, fase, atividade recente e proximo desbloqueio;
+- usa estados explicitos de carregamento, erro, bloqueio, envio e celebracao.
+
+### Jornada
+
+- rota `/painel/startup/<id>/jornada`;
+- usa composicao mestre-detalhe: lista as oito etapas e abre uma por vez;
+- a etapa atual abre por padrao, etapas concluidas podem ser revisitadas e etapas futuras explicam
+  o pre-requisito sem oferecer uma acao falsa;
+- as abas `Etapa` e `Mapa inicial` preservam a mesma rota e possuem navegacao por teclado;
+- o Mapa inicial edita uma secao por vez: nome, ideia, segmento, problema, publico e objetivo.
+
+### Gerenciamento de startups
+
+- rota `/painel/startups`;
+- lista as startups com fase, progresso, ultima atividade e identificacao da startup ativa;
+- permite abrir, renomear e excluir uma startup;
+- a exclusao exige digitacao do nome e escolhe um fallback seguro quando a startup ativa e removida;
+- a criacao dedicada permanece em `/painel/startups/nova`.
+
+### Modulos visiveis, mas desabilitados
+
+Missoes completas, Experimentos, Aprendizados, Metricas, Documentos, Conquistas e Configuracoes
+continuam na navegacao como arquitetura futura. Eles aparecem como `em breve`, sem links falsos
+ou conteudo de demonstracao apresentado como funcional.
+
+## Referencias historicas de design
 
 Tambem foram criados mockups visuais de referencia para a futura tela de login/cadastro em:
 

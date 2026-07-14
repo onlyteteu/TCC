@@ -2,9 +2,47 @@
 
 ## Estado atual
 
-O fluxo de entrada deixou de ser apenas conceitual e agora possui autenticacao real com cadastro,
-login e acesso a um painel autenticado inicial. Os demais fluxos continuam definidos em nivel de
-produto e orientam as proximas implementacoes.
+O fluxo principal esta operacional de ponta a ponta: autenticacao, resolucao da startup mais
+recente, criacao, troca, trabalho guiado, gerenciamento e exclusao com fallback.
+
+## Fluxos atuais do workspace
+
+### Login e resolucao da entrada
+
+1. O usuario entra ou cria a conta.
+2. `/painel` consulta as startups da conta autenticada.
+3. Sem startup, o usuario segue para `/painel/startups/nova`.
+4. Com startups, abre aquela com `lastOpenedAt` mais recente em `/painel/startup/<id>`.
+5. Uma startup sem `lastOpenedAt` ainda participa do desempate pela atividade e pela ordem segura
+   do backend.
+
+### Troca de startup
+
+1. O usuario abre o seletor da topbar.
+2. Seleciona uma startup pertencente a sua conta.
+3. O frontend registra a abertura em `POST /api/startups/<id>/open`.
+4. A Home da escolhida abre e ela passa a ser a entrada preferida no proximo login.
+
+### Criacao de startup
+
+1. O usuario escolhe `Nova startup` no seletor ou `Criar nova startup` no gerenciador.
+2. O fluxo de fundacao coleta nome, ideia, segmento, problema e publico inicial.
+3. A criacao e persistida somente ao final do fluxo.
+4. A nova startup abre como contexto ativo do workspace.
+
+### Exclusao e fallback
+
+1. O usuario abre `/painel/startups` e solicita a exclusao.
+2. O dialogo descreve a perda de jornada, missoes e evidencias e exige a digitacao do nome.
+3. Ao excluir uma startup nao ativa, a lista e atualizada sem trocar o contexto atual.
+4. Ao excluir a ativa, `nextStartupId` define a proxima Home; sem outra startup, abre o gerenciador
+   vazio ou o fluxo de criacao.
+5. Falha ao atualizar a lista depois de uma exclusao confirmada nao desfaz a exclusao ja concluida.
+
+### Logout
+
+O menu da conta encerra a sessao e devolve o usuario a tela de login. Recursos de outro usuario
+continuam respondendo como nao encontrados, sem revelar a existencia dos dados.
 
 ## Fluxo 1. Entrada e autenticacao na plataforma
 

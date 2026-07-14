@@ -2,8 +2,37 @@
 
 ## Estado atual
 
-Na data de 2026-04-09, o projeto ja possui uma base funcional mais completa e ja entrega os
-primeiros fluxos reais de autenticacao e criacao da startup.
+Em 2026-07-14, a plataforma possui um workspace principal funcional: autenticacao, criacao e
+gerenciamento de startups, Home guiada por missao, Jornada mestre-detalhe e gamificacao ligada a
+atividades reais.
+
+## Escopo da gamificacao
+
+### Global da conta
+
+- XP total e nivel combinam as etapas concluidas em todas as startups com eventos operacionais;
+- a sequencia de dias usa atividades significativas, nunca apenas o login;
+- conquistas globais derivam de marcos reais, como fundacao, entrevistas, aprendizado e missao;
+- a topbar preserva nivel e sequencia ao trocar de startup.
+
+### Local da startup
+
+- a Home mostra a missao principal, seu progresso, recompensa e desbloqueio;
+- evidencias, aprendizado, etapa da jornada e atividade recente pertencem a startup ativa;
+- fase e progresso da Jornada refletem somente o percurso daquela startup;
+- concluir entrevistas, aprendizado e missao gera eventos deduplicados e evita XP repetido.
+
+A gamificacao informa e reforca o trabalho empreendedor. Ela nao substitui os criterios reais de
+conclusao, nao premia login isolado e nao cria progresso apenas visual.
+
+## Workspace principal implementado em 2026-07-14
+
+- shell compartilhado com marca, navegacao, seletor, nivel, sequencia e menu de conta;
+- entrada automatica pela startup usada por ultimo;
+- Home orientada pela primeira missao operacional;
+- Jornada com oito etapas, bloqueios honestos e Mapa inicial editavel;
+- gerenciador com abertura, renomeacao, exclusao confirmada e fallback;
+- estados de carregamento, erro, sessao e conteudo ausente nas rotas principais.
 
 ## Implementado neste ciclo
 

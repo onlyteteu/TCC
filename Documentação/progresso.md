@@ -1,5 +1,45 @@
 # Progresso
 
+## 2026-07-14 (workspace principal concluido)
+
+### Resultado do ciclo
+
+- `/painel` agora resolve a conta sem startup para `/painel/startups/nova` e a conta com startups
+  para a startup aberta mais recentemente;
+- criado o shell unico do workspace, com marca compacta, sidebar, topbar, seletor, nivel, sequencia
+  e somente a area de conteudo rolavel;
+- a Home da startup foi reconstruida em torno da missao principal, passos, evidencias, aprendizado,
+  XP, atividade e desbloqueio;
+- a Jornada passou a usar lista mestre-detalhe, bloqueios honestos, abas acessiveis e Mapa inicial
+  editavel uma secao por vez;
+- o gerenciador passou a abrir, renomear e excluir startups com confirmacao e fallback;
+- `last_opened_at` passou a persistir a startup usada por ultimo;
+- removidos oito arquivos das quatro telas provisorias: `dashboard-screen`, `startup-overview-screen`,
+  `startup-today-screen` e `startup-detail-screen`, cada uma com seu modulo CSS;
+- atualizados `telas.md`, `fluxos.md`, `funcionalidades.md`, `arquitetura-missoes.md`,
+  `progresso.md` e `proximos-passos.md` para refletir o produto real.
+
+### Verificacoes executadas
+
+- auditoria com `rg`: nenhum import ou uso das quatro telas removidas permaneceu no frontend;
+- `manage.py makemigrations --check`: nenhuma migration pendente;
+- `manage.py test -v 2 --keepdb`: 40 testes Django passando;
+- `npm test`: 46 testes Vitest em 14 arquivos passando;
+- `npm run lint`, `npx tsc --noEmit` e `npm run build`: concluidos sem erro;
+- build confirmou as rotas de Home, Jornada, gerenciador, criacao e APIs do workspace;
+- smoke test nos servidores locais confirmou conta vazia, criacao de duas startups, ordenacao pela
+  ultima abertura, Home com missao, Jornada com oito etapas, edicao do Mapa, isolamento 404 entre
+  contas, exclusao ativa com `nextStartupId` e logout com 401; os usuarios temporarios foram removidos;
+- os contratos automatizados de CSS confirmaram sidebar de `272px/240px`, marca de `52px`, topbar
+  de `72px`, conteudo como area rolavel, grids responsivos e reducao global de movimento.
+
+### Validacao visual
+
+O navegador integrado nao estava disponivel nesta execucao, portanto nao foi possivel repetir a
+inspecao visual em `1920 x 900`, `1536 x 864`, `1366 x 768` e `1280 x 720`. A geometria foi
+verificada por contratos de CSS e pelo build, mas a passagem visual final nesses quatro viewports
+permanece como checagem manual de aceite, sem representar falha automatizada do codigo.
+
 ## 2026-07-13 (marca no canto e formulário centralizado)
 
 ### Correção da composição da criação da startup

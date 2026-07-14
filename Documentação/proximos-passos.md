@@ -1,24 +1,26 @@
 # Proximos Passos
 
-## Prioridade imediata
+## Nucleo atual concluido
 
-1. ~~Permitir editar e renomear a startup depois da criacao inicial.~~ Concluido em 2026-07-08
-   (renomeacao inline no painel + `PATCH /api/startups/<id>/` com atualizacao parcial).
-2. ~~Criar a pagina de detalhe da startup: o card do painel vira porta de entrada.~~ Concluido em
-   2026-07-08 (`/painel/startup/[id]` com mapa inicial editavel e jornada com status honesto).
-3. ~~Estruturar a base inicial da jornada guiada (modelo `JourneyStep` com as 8 etapas e API).~~
-   Concluido em 2026-07-08: jornada jogavel de ponta a ponta na pagina de detalhe.
-4. ~~Evoluir o painel interno para um dashboard de progresso real.~~ Concluido em 2026-07-08:
-   cards com barra de progresso da jornada, proxima etapa e progresso medio da conta.
-5. ~~Definir a primeira camada de gamificacao leve.~~ Concluido em 2026-07-08: XP, nivel e
-   cinco conquistas calculados do estado real da jornada, exibidos no painel.
-6. ~~Celebracao curta ao concluir etapa.~~ Concluido em 2026-07-09: anel e faiscas no marcador
-   da etapa, reaproveitando o vocabulario visual da celebracao de fundacao.
-7. Proximas frentes sugeridas (ordem de valor):
-   - celebracao/toast ao desbloquear uma conquista (hoje so atualiza silenciosamente no painel)
-   - resumo/mapa exportavel da startup (bom para a banca do TCC)
-   - tarefas por etapa e recomendacoes mais inteligentes de proximo passo
-   - conquistas tambem na pagina de detalhe da startup
+- entrada pela startup usada por ultimo;
+- workspace compartilhado com Home, Jornada e gerenciador;
+- primeira missao real com evidencias, aprendizado, XP e sequencia;
+- Mapa inicial editavel e Jornada com oito etapas;
+- troca, renomeacao, criacao e exclusao segura de startups;
+- retirada das telas provisorias do frontend.
+
+## Ciclos posteriores
+
+1. **Missoes completas:** biblioteca por fase, recomendacao contextual, missoes semanais e tarefas
+   rapidas, sempre com criterios verificaveis.
+2. **Experimentos:** hipoteses, metodo, criterio de sucesso, execucao, evidencias e resultado.
+3. **Aprendizados:** biblioteca consultavel que preserve a origem em entrevistas e experimentos.
+4. **Metricas:** indicadores definidos pelo usuario e alimentados por atividades e experimentos.
+5. **Documentos:** artefatos vivos gerados a partir do mapa, evidencias, decisoes e metricas.
+6. **Conquistas:** pagina propria, celebracoes e novos marcos sem premiar atividade vazia.
+
+Esses modulos ja aparecem desabilitados na navegacao para comunicar a arquitetura, mas nao devem
+ser tratados como implementados antes de seus dados, regras, estados vazios e testes existirem.
 
 ## Nota tecnica importante
 
