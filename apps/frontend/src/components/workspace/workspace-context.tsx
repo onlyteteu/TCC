@@ -138,7 +138,7 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
       }
       return false;
     } finally {
-      if (!silent) {
+      if (requestId === refreshRequestSequence.current) {
         setIsLoading(false);
       }
     }

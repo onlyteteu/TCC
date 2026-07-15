@@ -68,7 +68,7 @@ route group autenticado e sem enfraquecer o isolamento por owner/404.
 
 - `manage.py makemigrations --check`: nenhuma mudanca detectada.
 - `manage.py test -v 2 --keepdb`: 45/45 testes passando.
-- `npm test`: 70/70 testes em 19 arquivos passando apos os complementos finais descritos abaixo.
+- `npm test`: 71/71 testes em 19 arquivos passando apos os complementos finais descritos abaixo.
 - `npm run lint`: passou.
 - `npx tsc --noEmit`: passou.
 - `npm run build`: passou em Next.js 16.2.10; 12 paginas geradas e rotas esperadas listadas.
@@ -187,6 +187,36 @@ mutacao permanece disponivel para o refresh mais recente, preservando o caso R1 
 - GREEN focado: 8/8 em `workspace-context.test.tsx`.
 - GREEN do conjunto workspace: 15/15 em 5 arquivos.
 - GREEN frontend serial: 70/70 em 19 arquivos com `npm test -- --maxWorkers=1`.
+
+### Verificacao fresca
+
+- `npm run lint`: passou.
+- `npx tsc --noEmit`: passou.
+- `npm run build`: passou; 12 paginas geradas e rotas esperadas listadas.
+- Backend nao foi alterado neste fechamento.
+- `git diff --check`: executado antes do commit.
+
+## Fechamento do ownership do loading
+
+Base deste fechamento: `3ce0d03`.
+
+### Causa e correcao
+
+Embora os dados ja fossem protegidos por `requestId`, o `finally` de qualquer refresh nao
+silencioso ainda podia executar `setIsLoading(false)`. Com R1 e R2 concorrentes, R1 encerrava o
+loading enquanto R2 permanecia pendente.
+
+Somente o request atual agora encerra `isLoading`. O request atual tambem encerra um loading
+herdado quando e silencioso, evitando prender o shell no caso em que um refresh silencioso supera
+o refresh inicial.
+
+### RED / GREEN
+
+- RED: `workspace-context.test.tsx` teve 1 falha e 8 testes passando; apos R1 retornar, a tela ja
+  mostrava ausencia de refresh pendente antes da resolucao de R2.
+- GREEN focado: 9/9 em `workspace-context.test.tsx`.
+- GREEN do conjunto workspace: 16/16 em 5 arquivos.
+- GREEN frontend serial: 71/71 em 19 arquivos com `npm test -- --maxWorkers=1`.
 
 ### Verificacao fresca
 

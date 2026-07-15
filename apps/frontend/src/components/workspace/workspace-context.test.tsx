@@ -176,6 +176,38 @@ function RefreshRequestOrderProbe() {
   );
 }
 
+function ConcurrentLoadingProbe() {
+  const { isLoading, refreshWorkspace } = useWorkspace();
+  const [r1Finished, setR1Finished] = useState(false);
+  const [r2Finished, setR2Finished] = useState(false);
+
+  return (
+    <>
+      <span>{isLoading ? "Carregando concorrentes" : "Sem refresh pendente"}</span>
+      <button
+        onClick={async () => {
+          await refreshWorkspace();
+          setR1Finished(true);
+        }}
+        type="button"
+      >
+        Iniciar refresh concorrente R1
+      </button>
+      <button
+        onClick={async () => {
+          await refreshWorkspace();
+          setR2Finished(true);
+        }}
+        type="button"
+      >
+        Iniciar refresh concorrente R2
+      </button>
+      {r1Finished ? <span>R1 concorrente retornou</span> : null}
+      {r2Finished ? <span>R2 concorrente retornou</span> : null}
+    </>
+  );
+}
+
 describe("WorkspaceProvider", () => {
   beforeEach(() => {
     navigation.push.mockReset();
@@ -552,5 +584,75 @@ describe("WorkspaceProvider", () => {
         url === "/api/startups/8/open" && init?.method === "POST"
       )
     ).toHaveLength(1);
+  });
+
+  it("keeps loading until the latest non-silent refresh resolves", async () => {
+    let authRequests = 0;
+    let startupRequests = 0;
+    let resolveR1User!: (value: Response) => void;
+    let resolveR1Startups!: (value: Response) => void;
+    let resolveR2User!: (value: Response) => void;
+    let resolveR2Startups!: (value: Response) => void;
+    const r1User = new Promise<Response>((resolve) => { resolveR1User = resolve; });
+    const r1Startups = new Promise<Response>((resolve) => { resolveR1Startups = resolve; });
+    const r2User = new Promise<Response>((resolve) => { resolveR2User = resolve; });
+    const r2Startups = new Promise<Response>((resolve) => { resolveR2Startups = resolve; });
+    const fetchMock = vi.fn((url: string) => {
+      if (url === "/api/auth/me") {
+        authRequests += 1;
+        if (authRequests === 1) {
+          return response({ authenticated: true, user: { email: "ana@example.com", id: 1, name: "Ana" } });
+        }
+        return authRequests === 2 ? r1User : r2User;
+      }
+      if (url === "/api/startups") {
+        startupRequests += 1;
+        if (startupRequests === 1) {
+          return response({ accountProgress: null, startups: [startup] });
+        }
+        return startupRequests === 2 ? r1Startups : r2Startups;
+      }
+      throw new Error(`Unexpected fetch: ${url}`);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      <WorkspaceProvider>
+        <ConcurrentLoadingProbe />
+      </WorkspaceProvider>
+    );
+
+    expect(await screen.findByText("Sem refresh pendente")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Iniciar refresh concorrente R1" }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(4));
+    fireEvent.click(screen.getByRole("button", { name: "Iniciar refresh concorrente R2" }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(6));
+    expect(screen.getByText("Carregando concorrentes")).toBeInTheDocument();
+
+    resolveR1User(
+      new Response(
+        JSON.stringify({ authenticated: true, user: { email: "ana@example.com", id: 1, name: "Ana" } }),
+        { status: 200 }
+      )
+    );
+    resolveR1Startups(
+      new Response(JSON.stringify({ accountProgress: null, startups: [startup] }), { status: 200 })
+    );
+
+    expect(await screen.findByText("R1 concorrente retornou")).toBeInTheDocument();
+    expect(screen.getByText("Carregando concorrentes")).toBeInTheDocument();
+
+    resolveR2User(
+      new Response(
+        JSON.stringify({ authenticated: true, user: { email: "ana@example.com", id: 1, name: "Ana" } }),
+        { status: 200 }
+      )
+    );
+    resolveR2Startups(
+      new Response(JSON.stringify({ accountProgress: null, startups: [startup] }), { status: 200 })
+    );
+
+    expect(await screen.findByText("R2 concorrente retornou")).toBeInTheDocument();
+    expect(screen.getByText("Sem refresh pendente")).toBeInTheDocument();
   });
 });
