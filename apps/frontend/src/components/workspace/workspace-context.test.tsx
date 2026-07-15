@@ -130,6 +130,23 @@ function WorkspaceRaceProbe() {
   );
 }
 
+function InitialRefreshRaceProbe() {
+  const { activeStartup, isLoading, openStartup, startups } = useWorkspace();
+
+  return (
+    <>
+      <span>{isLoading ? "Refresh inicial pendente" : "Refresh inicial concluido"}</span>
+      <span data-testid="initial-race-active">{activeStartup?.name ?? "nenhuma"}</span>
+      <span data-testid="initial-race-order">
+        {startups.map((item) => `${item.id}:${item.lastOpenedAt ?? "nunca"}`).join("|")}
+      </span>
+      <button onClick={() => void openStartup(8)} type="button">
+        Abrir Boreal antes da lista
+      </button>
+    </>
+  );
+}
+
 describe("WorkspaceProvider", () => {
   beforeEach(() => {
     navigation.push.mockReset();
@@ -362,5 +379,64 @@ describe("WorkspaceProvider", () => {
     expect(screen.getByTestId("startup-order")).toHaveTextContent(
       "8:2026-07-15T12:00:00Z|7:2026-07-12T00:00:00Z"
     );
+  });
+
+  it("incorporates the full initial list without overwriting a startup opened first", async () => {
+    const boreal = { ...startup, id: 8, name: "Boreal", lastOpenedAt: null };
+    const openedBoreal = { ...boreal, lastOpenedAt: "2026-07-15T15:00:00Z" };
+    let resolveInitialUser!: (value: Response) => void;
+    let resolveInitialStartups!: (value: Response) => void;
+    const initialUser = new Promise<Response>((resolve) => { resolveInitialUser = resolve; });
+    const initialStartups = new Promise<Response>((resolve) => { resolveInitialStartups = resolve; });
+    const fetchMock = vi.fn((url: string, init?: RequestInit) => {
+      if (url === "/api/auth/me") {
+        return initialUser;
+      }
+      if (url === "/api/startups") {
+        return initialStartups;
+      }
+      if (url === "/api/startups/8/open" && init?.method === "POST") {
+        return response({ message: "ok", startup: openedBoreal });
+      }
+      throw new Error(`Unexpected fetch: ${url}`);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      <WorkspaceProvider>
+        <InitialRefreshRaceProbe />
+      </WorkspaceProvider>
+    );
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    fireEvent.click(screen.getByRole("button", { name: "Abrir Boreal antes da lista" }));
+
+    await waitFor(() =>
+      expect(screen.getByTestId("initial-race-active")).toHaveTextContent("Boreal")
+    );
+    expect(screen.getByTestId("initial-race-order")).toHaveTextContent(
+      "8:2026-07-15T15:00:00Z"
+    );
+
+    resolveInitialUser(
+      new Response(
+        JSON.stringify({ authenticated: true, user: { email: "ana@example.com", id: 1, name: "Ana" } }),
+        { status: 200 }
+      )
+    );
+    resolveInitialStartups(
+      new Response(JSON.stringify({ accountProgress: null, startups: [startup, boreal] }), { status: 200 })
+    );
+
+    expect(await screen.findByText("Refresh inicial concluido")).toBeInTheDocument();
+    expect(screen.getByTestId("initial-race-active")).toHaveTextContent("Boreal");
+    expect(screen.getByTestId("initial-race-order")).toHaveTextContent(
+      "8:2026-07-15T15:00:00Z|7:2026-07-12T00:00:00Z"
+    );
+    expect(
+      fetchMock.mock.calls.filter(([url, init]) =>
+        url === "/api/startups/8/open" && init?.method === "POST"
+      )
+    ).toHaveLength(1);
   });
 });

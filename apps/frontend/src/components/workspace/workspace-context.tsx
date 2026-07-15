@@ -48,6 +48,24 @@ type WorkspaceProviderProps = {
   children: ReactNode;
 };
 
+function reconcileStartupList(
+  incoming: StartupSummary[],
+  current: StartupSummary[],
+  mutationVersions: Map<number, number>,
+  requestVersion: number
+) {
+  const preserved = current.filter(
+    (startup) => (mutationVersions.get(startup.id) ?? 0) > requestVersion
+  );
+  const preservedIds = new Set(preserved.map((startup) => startup.id));
+  const incomingById = new Map(incoming.map((startup) => [startup.id, startup]));
+
+  return [
+    ...preserved.map((startup) => ({ ...incomingById.get(startup.id), ...startup })),
+    ...incoming.filter((startup) => !preservedIds.has(startup.id)),
+  ];
+}
+
 export function WorkspaceProvider({ activeStartupId = null, children }: WorkspaceProviderProps) {
   const router = useRouter();
   const [accountProgress, setAccountProgress] = useState<AccountProgress | null>(null);
@@ -59,6 +77,7 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
   const [selectedStartupId, setSelectedStartupId] = useState<number | null>(activeStartupId);
   const lastMarkedStartupId = useRef<number | null>(null);
   const workspaceMutationVersion = useRef(0);
+  const startupMutationVersions = useRef(new Map<number, number>());
 
   const refreshWorkspace = useCallback(async ({ silent = false }: RefreshWorkspaceOptions = {}) => {
     const mutationVersionAtRequest = workspaceMutationVersion.current;
@@ -91,6 +110,15 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
       setUser(userPayload.user);
       if (mutationVersionAtRequest === workspaceMutationVersion.current) {
         setStartups(startupPayload.startups);
+      } else {
+        setStartups((current) =>
+          reconcileStartupList(
+            startupPayload.startups,
+            current,
+            startupMutationVersions.current,
+            mutationVersionAtRequest
+          )
+        );
       }
       setAccountProgress(startupPayload.accountProgress ?? null);
       return true;
@@ -140,6 +168,7 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
       }
 
       workspaceMutationVersion.current += 1;
+      startupMutationVersions.current.set(startupId, workspaceMutationVersion.current);
       setSelectedStartupId(startupId);
       setStartups((current) => {
         const previous = current.find((startup) => startup.id === startupId);
@@ -174,6 +203,7 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
         return;
       }
       workspaceMutationVersion.current += 1;
+      startupMutationVersions.current.set(activeStartupId, workspaceMutationVersion.current);
       setStartups((current) => {
         const previous = current.find((startup) => startup.id === activeStartupId);
         const merged = { ...previous, ...openedStartup } as StartupSummary;

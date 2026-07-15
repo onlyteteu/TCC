@@ -68,7 +68,7 @@ route group autenticado e sem enfraquecer o isolamento por owner/404.
 
 - `manage.py makemigrations --check`: nenhuma mudanca detectada.
 - `manage.py test -v 2 --keepdb`: 45/45 testes passando.
-- `npm test`: 68/68 testes em 19 arquivos passando apos o complemento final descrito abaixo.
+- `npm test`: 69/69 testes em 19 arquivos passando apos os complementos finais descritos abaixo.
 - `npm run lint`: passou.
 - `npx tsc --noEmit`: passou.
 - `npm run build`: passou em Next.js 16.2.10; 12 paginas geradas e rotas esperadas listadas.
@@ -134,3 +134,34 @@ Base deste complemento: `cedd5d1`.
 - `80d5c09 fix: preserva progresso e ordem do workspace`
 - `6ff5d14 fix: detalha missao concluida em modo leitura`
 - `eafcc9c test: cobre retorno de sessao invalida ao login`
+
+## Fechamento do refresh inicial pendente
+
+Base deste fechamento: `bdae16d`.
+
+### Causa e correcao
+
+O bloqueio integral de respostas iniciadas antes de uma mutacao evitava stale overwrite, mas
+tambem descartava a primeira listagem completa quando `/open` resolvia com o estado ainda vazio.
+O contexto agora registra a versao de mutacao por startup e, diante de uma resposta antiga,
+preserva apenas as startups abertas depois daquela requisicao. As demais entidades sao
+incorporadas a partir do payload completo do backend.
+
+Assim, Boreal permanece ativa no topo com o `lastOpenedAt` novo, Aurora e adicionada pela
+listagem inicial e nenhuma segunda chamada a `POST /open` e emitida.
+
+### RED / GREEN
+
+- RED: `workspace-context.test.tsx` teve 1 falha e 6 testes passando; depois da listagem inicial,
+  o estado continha somente Boreal e perdia Aurora.
+- GREEN focado: 7/7 em `workspace-context.test.tsx`.
+- GREEN do conjunto workspace: 14/14 em 5 arquivos.
+- GREEN frontend serial: 69/69 em 19 arquivos com `npm test -- --maxWorkers=1`.
+
+### Verificacao fresca
+
+- `npm run lint`: passou.
+- `npx tsc --noEmit`: passou.
+- `npm run build`: passou; 12 paginas geradas e rotas esperadas listadas.
+- Backend nao foi alterado neste fechamento.
+- `git diff --check`: executado antes do commit.
