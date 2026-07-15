@@ -104,6 +104,16 @@ conclusao, nao premia login isolado e nao cria progresso apenas visual.
 
 Eles permanecem desabilitados na sidebar e nao possuem links falsos.
 
+## Proximo ciclo especificado
+
+O `Motor de Missoes 2.0` foi definido em 2026-07-15, mas ainda nao esta implementado. A direcao
+aprovada inclui catalogo versionado, recomendacao deterministica, Central de missao e uma trilha
+inicial de 10 missoes. A entrega sera dividida em tres incrementos: descoberta, experimentos e
+decisoes, e por fim MVP com gestao semanal.
+
+A especificacao completa esta em `design/2026-07-15-motor-missoes-2.md`. Ate a implementacao ser
+validada, a lista acima continua sendo a fonte do estado funcional atual.
+
 ## Historico de implementacao
 
 - **2026-04-09:** autenticacao, fundacao em cinco etapas e uma primeira tela `Suas startups`;

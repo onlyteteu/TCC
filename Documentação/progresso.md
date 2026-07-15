@@ -521,3 +521,18 @@ clique surtia efeito.
 - execucao de `npm test -- --maxWorkers=1` com `75/75` testes aprovados
 - execucao de `npm run lint` com sucesso
 - execucao de `npm run build` com sucesso
+
+### Definicao do Motor de Missoes 2.0
+
+- pesquisa de referencias sobre progresso real, validacao, experimentos, aprendizado e continuidade
+- aprovacao de uma trilha inicial com 10 missoes, da descoberta ao recorte do MVP
+- escolha de catalogo versionado com recomendacao deterministica e origem preparada para missoes
+  dinamicas futuras
+- separacao conceitual entre Jornada, Missoes, Evidencias, Aprendizados, Experimentos e Decisoes
+- divisao da entrega em tres incrementos funcionais
+- comparacao visual entre Central de missao, Trilha primeiro e Quadro por status
+- escolha do usuario pela opcao `Central de missao`
+- consolidacao da especificacao em `design/2026-07-15-motor-missoes-2.md`
+
+Esta secao registra definicao e documentacao, nao implementacao. O codigo do Motor 2.0 so deve ser
+iniciado depois da revisao da especificacao e da criacao do plano tecnico.

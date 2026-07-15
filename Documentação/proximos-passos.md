@@ -11,8 +11,10 @@
 
 ## Ciclos posteriores
 
-1. **Missoes completas:** biblioteca por fase, recomendacao contextual, missoes semanais e tarefas
-   rapidas, sempre com criterios verificaveis.
+1. **Motor de Missoes 2.0:** catalogo versionado, recomendacao deterministica, dependencias reais e
+   Central de missao. O primeiro incremento ativa as missoes 1 a 5 da trilha de Descoberta; os dois
+   incrementos seguintes conectam experimentos, decisoes, MVP e gestao semanal. A especificacao
+   aprovada esta em `design/2026-07-15-motor-missoes-2.md`.
 2. **Experimentos:** hipoteses, metodo, criterio de sucesso, execucao, evidencias e resultado.
 3. **Aprendizados:** biblioteca consultavel que preserve a origem em entrevistas e experimentos.
 4. **Metricas:** indicadores definidos pelo usuario e alimentados por atividades e experimentos.

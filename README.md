@@ -1,99 +1,122 @@
-# Plataforma de Apoio a Criacao de Startups
+# Startup Quest
 
-Projeto de TCC do curso de Gestao da Informacao da UFG.
+Projeto de TCC do curso de Gestão da Informação da UFG.
 
-## Visao geral
+A Startup Quest é uma plataforma guiada e gamificada para ajudar empreendedores iniciantes a
+estruturar, validar e administrar a evolução de uma startup. O produto transforma a pergunta
+`o que eu faço agora?` em missões concretas, evidências, aprendizados, decisões e progresso visível.
 
-Este projeto propoe uma plataforma digital para apoiar a estruturacao inicial de startups.
-O foco nao esta na gestao empresarial completa, mas em ajudar o usuario a organizar a ideia,
-entender a etapa atual da jornada, visualizar progresso e receber direcionamento sobre os
-proximos passos.
+## Stack
 
-## Stack atual
-
-- frontend: Next.js 16 + React 19 + TypeScript
-- backend: Django 5.2 + Python 3.12+
-- banco de dados: PostgreSQL 17
-- versionamento: Git
+- frontend: Next.js 16.2, React 19 e TypeScript;
+- backend: Django 5.2 e Python 3.12+;
+- banco: PostgreSQL 17;
+- testes: Vitest, Testing Library e Django TestCase;
+- ambiente local: PowerShell e Docker Desktop.
 
 ## Estado atual
 
-Na data de 2026-04-09, o projeto ja possui uma base tecnica funcional para continuar o produto:
+Em 15 de julho de 2026, o projeto possui:
 
-- monorepo com `apps/frontend` e `apps/backend`
-- tela real de login/cadastro no frontend com visual inspirado nos mockups aprovados
-- fluxo real de criacao da startup em `/painel` para contas sem startup
-- visao interna inicial de startups ja criadas para contas autenticadas
-- backend Django com endpoint de saude em `/api/health/`
-- backend Django com autenticacao em `/api/auth/register/`, `/api/auth/login/` e `/api/auth/me/`
-- backend Django com API de startups em `/api/startups/`, `/api/startups/create/` e
-  `/api/startups/<id>/` (GET para detalhe, PATCH para editar/renomear, DELETE para excluir)
-- pagina de detalhe da startup em `/painel/startup/[id]` com mapa inicial editavel e jornada
-  guiada jogavel
-- backend Django com API da jornada em `/api/startups/<id>/journey/` (GET) e
-  `/api/startups/<id>/journey/<etapa>/` (PATCH para responder/concluir)
-- modelo `JourneyStep` com as 8 etapas da estruturacao inicial, semeado automaticamente
-- painel com progresso da jornada por card, progresso medio, nivel com XP e conquistas
-  calculadas do estado real da conta
-- modelo inicial `Startup`
-- startup vinculada ao usuario autenticado
-- migrations do modulo `startups` aplicadas
-- `docker-compose.yml` para PostgreSQL
-- PostgreSQL local em container com status saudavel
-- migrations aplicadas com sucesso no banco
-- documentacao do TCC organizada e atualizada
+- autenticação e sessão reais;
+- criação guiada da startup em cinco etapas;
+- workspace autenticado com sidebar e topbar compartilhadas;
+- abertura automática da startup usada mais recentemente;
+- Home orientada por missão;
+- missão de cinco entrevistas com evidências e aprendizado;
+- XP, nível, sequência e atividade baseados em ações significativas;
+- Jornada com oito etapas e Mapa inicial editável;
+- criação, troca, renomeação e exclusão de startups;
+- frontend e backend cobertos por testes automatizados;
+- documentação de produto, arquitetura, decisões, design e progresso.
 
-## Estrutura do repositorio
+A próxima evolução aprovada é o `Motor de Missões 2.0`, ainda não implementado. Ele adicionará uma
+trilha inicial de 10 missões, catálogo versionado, recomendação determinística e a tela
+`Central de missão`. Consulte a
+[especificação do Motor de Missões 2.0](Documentação/design/2026-07-15-motor-missoes-2.md).
 
-- `apps/frontend`: aplicacao web em Next.js
-- `apps/backend`: backend em Django
-- `Documentação`: base documental do TCC
-- `docker-compose.yml`: infraestrutura inicial do PostgreSQL
+## Estrutura do repositório
+
+- `apps/frontend`: aplicação web em Next.js;
+- `apps/backend`: API e domínio em Django;
+- `Documentação`: base documental do projeto e do TCC;
+- `docker-compose.yml`: PostgreSQL local;
+- `LIGAR-TUDO.cmd` e `start.ps1`: inicialização integrada do ambiente.
 
 ## Como executar
 
-### Frontend
+O caminho recomendado no Windows é executar, na raiz:
 
-1. Entrar em `apps/frontend`
-2. Executar `npm.cmd install`
-3. Executar `npm.cmd run dev`
-4. Acessar `http://127.0.0.1:3000`
+```powershell
+.\LIGAR-TUDO.cmd
+```
 
-### Backend
+O script sobe ou reutiliza os serviços e abre `http://127.0.0.1:3000`.
 
-1. Entrar em `apps/backend`
-2. Executar `py -3.13 -m venv .venv` se o ambiente virtual ainda nao existir
-3. Executar `.\.venv\Scripts\python.exe -m pip install -r requirements.txt`
-4. Executar `.\.venv\Scripts\python.exe manage.py runserver`
+### Execução manual
 
-### Banco de dados
+Banco:
 
-1. Subir o PostgreSQL com `docker compose up -d postgres`
-2. No backend, executar `.\.venv\Scripts\python.exe manage.py migrate`
+```powershell
+docker compose up -d postgres
+```
 
-### Variaveis de ambiente do frontend
+Backend:
 
-Use o exemplo em `apps/frontend/.env.local.example` quando quiser apontar o frontend para um
-backend diferente do padrao local:
+```powershell
+cd apps/backend
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe manage.py migrate
+.\.venv\Scripts\python.exe manage.py runserver
+```
 
-- `BACKEND_API_BASE_URL=http://127.0.0.1:8000/api`
+Frontend, em outro terminal:
 
-## Estrutura da documentacao
+```powershell
+cd apps/frontend
+npm.cmd install
+npm.cmd run dev
+```
 
-A documentacao do TCC fica concentrada na pasta [Documentação](C:\Users\mateu\OneDrive\Desktop\TCC-main\Documentação).
+Para apontar o frontend para outro backend, use `apps/frontend/.env.local.example` como referência.
 
-- [visao-geral.md](C:\Users\mateu\OneDrive\Desktop\TCC-main\Documentação\visao-geral.md)
-- [funcionalidades.md](C:\Users\mateu\OneDrive\Desktop\TCC-main\Documentação\funcionalidades.md)
-- [arquitetura.md](C:\Users\mateu\OneDrive\Desktop\TCC-main\Documentação\arquitetura.md)
-- [fluxos.md](C:\Users\mateu\OneDrive\Desktop\TCC-main\Documentação\fluxos.md)
-- [telas.md](C:\Users\mateu\OneDrive\Desktop\TCC-main\Documentação\telas.md)
-- [decisoes.md](C:\Users\mateu\OneDrive\Desktop\TCC-main\Documentação\decisoes.md)
-- [progresso.md](C:\Users\mateu\OneDrive\Desktop\TCC-main\Documentação\progresso.md)
-- [proximos-passos.md](C:\Users\mateu\OneDrive\Desktop\TCC-main\Documentação\proximos-passos.md)
-- [handoff.md](C:\Users\mateu\OneDrive\Desktop\TCC-main\Documentação\handoff.md)
+## Testes e verificações
+
+Backend:
+
+```powershell
+cd apps/backend
+.\.venv\Scripts\python.exe manage.py check
+.\.venv\Scripts\python.exe manage.py test accounts startups
+```
+
+Frontend:
+
+```powershell
+cd apps/frontend
+npm.cmd test -- --maxWorkers=1
+npm.cmd run lint
+npm.cmd run build
+```
+
+## Documentação
+
+Comece por:
+
+- [PRODUCT.md](PRODUCT.md): visão de produto e princípios;
+- [visão geral](Documentação/visao-geral.md);
+- [funcionalidades](Documentação/funcionalidades.md): estado implementado;
+- [arquitetura](Documentação/arquitetura.md);
+- [decisões](Documentação/decisoes.md);
+- [progresso](Documentação/progresso.md);
+- [próximos passos](Documentação/proximos-passos.md);
+- [handoff](Documentação/handoff.md).
+
+As especificações de design ficam em `Documentação/design`. Uma especificação aprovada só deve ser
+marcada como funcionalidade implementada depois de código, migrations, estados, testes e validação.
 
 ## Regra de desenvolvimento
 
-Nenhuma decisao importante de produto, arquitetura, fluxo, interface ou funcionalidade deve ficar
-apenas no codigo. Sempre que algo relevante for implementado ou alterado, a documentacao
-correspondente deve ser atualizada no mesmo ciclo de trabalho.
+Decisões importantes de produto, arquitetura, fluxo, interface e funcionalidade não devem ficar
+somente no código. A documentação correspondente deve ser atualizada no mesmo ciclo da mudança.

@@ -205,3 +205,44 @@ complexidade antes de o fluxo principal do produto amadurecer.
 - o backend passa a ter o modulo `accounts`
 - o frontend deixa de ser apenas estatico e passa a ter autenticacao funcional
 - os proximos fluxos podem assumir a existencia de um usuario autenticado
+
+## DEC-012: Adotar catalogo versionado e recomendacao deterministica de missoes
+
+### Decisao
+
+O proximo ciclo de Missoes usara um catalogo curado e versionado, com instancias persistidas por
+startup e um motor de regras deterministico para escolher uma unica missao recomendada.
+
+### Motivo
+
+Uma trilha fixa sem contexto seria rigida demais, enquanto gerar missoes por inteligencia artificial
+agora tornaria criterio, recompensa e progressao dificeis de validar. O catalogo versionado oferece
+orientacao confiavel e deixa o dominio preparado para recomendacoes dinamicas futuras.
+
+### Impacto
+
+- missoes iniciadas e concluidas preservam sua versao;
+- pre-requisitos e desbloqueios passam a ser verificaveis;
+- Home e Central de missao usam a mesma recomendacao do backend;
+- inteligencia artificial futura pode sugerir candidatas, mas nao decide conclusao ou XP sozinha.
+
+## DEC-013: Usar a Central de missao como tela de Missoes
+
+### Decisao
+
+A area de Missoes tera uma missao principal recomendada, poucas alternativas reais e a trilha logo
+abaixo. O usuario escolheu essa estrutura entre `Central de missao`, `Trilha primeiro` e `Quadro por
+status`.
+
+### Motivo
+
+A Central preserva a funcao de guia da plataforma sem transformar as missoes em um fluxo totalmente
+rigido ou em um quadro de tarefas livre. Ela tambem permite introduzir semanais e opcionais sem
+competir com a prioridade principal.
+
+### Impacto
+
+- a Home continua respondendo qual e a proxima acao;
+- a Central explica contexto, opcoes, dependencias e historico;
+- secoes sem conteudo real ficam ocultas;
+- a trilha inicial termina no recorte do MVP e sera seguida por ciclos de gestao recorrente.

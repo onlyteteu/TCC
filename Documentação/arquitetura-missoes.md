@@ -96,3 +96,20 @@ token ao componente de interface.
 3. Exibir aprendizados e evidências em áreas próprias, mantendo o vínculo com a origem.
 4. Atualizar métricas a partir das atividades e critérios de sucesso.
 5. Gerar documentos vivos a partir das evidências e decisões registradas.
+
+## Evolução aprovada em 2026-07-15
+
+O próximo ciclo amplia esta arquitetura para o `Motor de Missões 2.0`. A evolução preserva o fluxo
+operacional já implementado, mas adiciona:
+
+- catálogo curado e versionado;
+- instâncias persistidas que preservam a versão iniciada ou concluída;
+- pré-requisitos verificáveis e recomendação determinística;
+- evidências compatíveis com tipos além de entrevista;
+- trilha inicial de 10 missões, da descoberta ao recorte do MVP;
+- Central de missão com foco, alternativas reais, trilha, bloqueios e histórico;
+- preparação para experimentos, decisões, gestão semanal e missões dinâmicas futuras.
+
+A especificação completa e os critérios de aceite estão em
+`design/2026-07-15-motor-missoes-2.md`. Este documento continua descrevendo fielmente o primeiro
+ciclo já implementado; o novo documento descreve a evolução ainda não implementada.
