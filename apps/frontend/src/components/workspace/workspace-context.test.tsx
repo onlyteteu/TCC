@@ -3,6 +3,7 @@ import { useState } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { WorkspaceProvider, useWorkspace } from "./workspace-context";
+import { WorkspaceTopbar } from "./workspace-topbar";
 
 const navigation = vi.hoisted(() => ({
   push: vi.fn(),
@@ -10,6 +11,7 @@ const navigation = vi.hoisted(() => ({
 }));
 
 vi.mock("next/navigation", () => ({
+  usePathname: () => "/painel/startups",
   useRouter: () => navigation,
 }));
 
@@ -79,6 +81,51 @@ function ActiveStartupProbe() {
       <button disabled={isLoading} onClick={() => void openStartup(8)} type="button">
         Abrir Boreal
       </button>
+    </>
+  );
+}
+
+function TopbarRefreshProbe() {
+  const { isLoading, refreshWorkspace } = useWorkspace();
+
+  return (
+    <>
+      <WorkspaceTopbar />
+      <button
+        disabled={isLoading}
+        onClick={() => void refreshWorkspace({ silent: true })}
+        type="button"
+      >
+        Reconciliar progresso
+      </button>
+    </>
+  );
+}
+
+function WorkspaceRaceProbe() {
+  const { activeStartup, isLoading, openStartup, refreshWorkspace, startups } = useWorkspace();
+  const [refreshFinished, setRefreshFinished] = useState(false);
+
+  return (
+    <>
+      <span data-testid="active-startup">{activeStartup?.name ?? "nenhuma"}</span>
+      <span data-testid="startup-order">
+        {startups.map((item) => `${item.id}:${item.lastOpenedAt ?? "nunca"}`).join("|")}
+      </span>
+      <button
+        disabled={isLoading}
+        onClick={async () => {
+          await refreshWorkspace({ silent: true });
+          setRefreshFinished(true);
+        }}
+        type="button"
+      >
+        Atualizar antes de abrir
+      </button>
+      <button disabled={isLoading} onClick={() => void openStartup(8)} type="button">
+        Abrir Boreal durante refresh
+      </button>
+      {refreshFinished ? <span>Refresh antigo concluido</span> : null}
     </>
   );
 }
@@ -219,5 +266,101 @@ describe("WorkspaceProvider", () => {
     expect(
       fetchMock.mock.calls.filter(([url]) => url === "/api/startups/8/open")
     ).toHaveLength(1);
+  });
+
+  it("updates the XP rendered beside the level after workspace reconciliation", async () => {
+    const initialProgress = {
+      achievements: [],
+      currentStreak: 2,
+      level: 2,
+      unlockedCount: 0,
+      xp: 120,
+      xpIntoLevel: 20,
+      xpPerLevel: 100,
+    };
+    const updatedProgress = { ...initialProgress, level: 3, xp: 230, xpIntoLevel: 30 };
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(() =>
+        response({ authenticated: true, user: { email: "ana@example.com", id: 1, name: "Ana" } })
+      )
+      .mockImplementationOnce(() => response({ accountProgress: initialProgress, startups: [startup] }))
+      .mockImplementationOnce(() =>
+        response({ authenticated: true, user: { email: "ana@example.com", id: 1, name: "Ana" } })
+      )
+      .mockImplementationOnce(() => response({ accountProgress: updatedProgress, startups: [startup] }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      <WorkspaceProvider>
+        <TopbarRefreshProbe />
+      </WorkspaceProvider>
+    );
+
+    expect(await screen.findByText("Nivel 2 · 120 XP")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Reconciliar progresso" }));
+    expect(await screen.findByText("Nivel 3 · 230 XP")).toBeInTheDocument();
+  });
+
+  it("does not let an older refresh overwrite a startup opened while it was pending", async () => {
+    const boreal = { ...startup, id: 8, name: "Boreal", lastOpenedAt: null };
+    const openedBoreal = { ...boreal, lastOpenedAt: "2026-07-15T12:00:00Z" };
+    let authRequests = 0;
+    let startupRequests = 0;
+    let resolveStaleUser!: (value: Response) => void;
+    let resolveStaleStartups!: (value: Response) => void;
+    const staleUser = new Promise<Response>((resolve) => { resolveStaleUser = resolve; });
+    const staleStartups = new Promise<Response>((resolve) => { resolveStaleStartups = resolve; });
+    const fetchMock = vi.fn((url: string, init?: RequestInit) => {
+      if (url === "/api/auth/me") {
+        authRequests += 1;
+        return authRequests === 1
+          ? response({ authenticated: true, user: { email: "ana@example.com", id: 1, name: "Ana" } })
+          : staleUser;
+      }
+      if (url === "/api/startups") {
+        startupRequests += 1;
+        return startupRequests === 1
+          ? response({ accountProgress: null, startups: [startup, boreal] })
+          : staleStartups;
+      }
+      if (url === "/api/startups/8/open" && init?.method === "POST") {
+        return response({ message: "ok", startup: openedBoreal });
+      }
+      throw new Error(`Unexpected fetch: ${url}`);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      <WorkspaceProvider>
+        <WorkspaceRaceProbe />
+      </WorkspaceProvider>
+    );
+
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Atualizar antes de abrir" })).toBeEnabled()
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Atualizar antes de abrir" }));
+    fireEvent.click(screen.getByRole("button", { name: "Abrir Boreal durante refresh" }));
+
+    await waitFor(() => expect(screen.getByTestId("active-startup")).toHaveTextContent("Boreal"));
+    expect(screen.getByTestId("startup-order")).toHaveTextContent(
+      "8:2026-07-15T12:00:00Z|7:2026-07-12T00:00:00Z"
+    );
+
+    resolveStaleUser(
+      new Response(
+        JSON.stringify({ authenticated: true, user: { email: "ana@example.com", id: 1, name: "Ana" } }),
+        { status: 200 }
+      )
+    );
+    resolveStaleStartups(
+      new Response(JSON.stringify({ accountProgress: null, startups: [startup, boreal] }), { status: 200 })
+    );
+
+    expect(await screen.findByText("Refresh antigo concluido")).toBeInTheDocument();
+    expect(screen.getByTestId("startup-order")).toHaveTextContent(
+      "8:2026-07-15T12:00:00Z|7:2026-07-12T00:00:00Z"
+    );
   });
 });

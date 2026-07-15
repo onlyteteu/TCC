@@ -5,8 +5,12 @@ import { WorkspaceTopbar } from "./workspace-topbar";
 
 const openStartup = vi.fn();
 const replace = vi.fn();
+let pathname = "/painel/startups";
 
-vi.mock("next/navigation", () => ({ useRouter: () => ({ replace }) }));
+vi.mock("next/navigation", () => ({
+  usePathname: () => pathname,
+  useRouter: () => ({ replace }),
+}));
 vi.mock("./workspace-context", () => ({
   useWorkspace: () => ({
     accountProgress: null,
@@ -20,6 +24,7 @@ vi.mock("./workspace-context", () => ({
 describe("WorkspaceTopbar menus", () => {
   beforeEach(() => {
     openStartup.mockReset().mockResolvedValue(true);
+    pathname = "/painel/startups";
     replace.mockReset();
   });
 
@@ -48,6 +53,18 @@ describe("WorkspaceTopbar menus", () => {
     fireEvent.click(screen.getByRole("button", { name: "Sair" }));
 
     await waitFor(() => expect(replace).toHaveBeenCalledWith("/"));
+    expect(details).not.toHaveAttribute("open");
+    expect(summary).toHaveFocus();
+  });
+
+  it("closes the startup selector and restores focus when its link is a navigation no-op", () => {
+    render(<WorkspaceTopbar />);
+    const summary = screen.getByLabelText("Selecionar startup");
+    const details = summary.closest("details")!;
+    details.open = true;
+
+    fireEvent.click(screen.getByRole("link", { name: "Ver todas as startups" }));
+
     expect(details).not.toHaveAttribute("open");
     expect(summary).toHaveFocus();
   });

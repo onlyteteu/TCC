@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
 import { ProductIcon } from "@/components/product-icon";
 
 import { useWorkspace } from "./workspace-context";
+import { closeDetailsMenu } from "./details-menu";
 import styles from "./workspace-shell.module.css";
 
 function initials(name: string) {
@@ -19,6 +20,7 @@ function initials(name: string) {
 }
 
 export function WorkspaceTopbar() {
+  const pathname = usePathname();
   const router = useRouter();
   const { accountProgress, activeStartup, openStartup, startups, user } = useWorkspace();
   const [openingStartupId, setOpeningStartupId] = useState<number | null>(null);
@@ -30,10 +32,7 @@ export function WorkspaceTopbar() {
   async function handleOpenStartup(startupId: number) {
     setOpeningStartupId(startupId);
     await openStartup(startupId);
-    if (startupPickerRef.current) {
-      startupPickerRef.current.open = false;
-      startupPickerRef.current.querySelector("summary")?.focus();
-    }
+    closeDetailsMenu(startupPickerRef.current, { restoreFocus: true });
     setOpeningStartupId(null);
   }
 
@@ -42,10 +41,7 @@ export function WorkspaceTopbar() {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
     } finally {
-      if (profileMenuRef.current) {
-        profileMenuRef.current.open = false;
-        profileMenuRef.current.querySelector("summary")?.focus();
-      }
+      closeDetailsMenu(profileMenuRef.current, { restoreFocus: true });
       router.replace("/");
       setIsLoggingOut(false);
     }
@@ -79,8 +75,22 @@ export function WorkspaceTopbar() {
             </button>
           ))}
           <div className={styles.startupMenuLinks}>
-            <Link onClick={() => { if (startupPickerRef.current) startupPickerRef.current.open = false; }} href="/painel/startups">Ver todas as startups</Link>
-            <Link onClick={() => { if (startupPickerRef.current) startupPickerRef.current.open = false; }} href="/painel/startups/nova">Criar nova startup</Link>
+            <Link
+              onClick={() => closeDetailsMenu(startupPickerRef.current, {
+                restoreFocus: pathname === "/painel/startups",
+              })}
+              href="/painel/startups"
+            >
+              Ver todas as startups
+            </Link>
+            <Link
+              onClick={() => closeDetailsMenu(startupPickerRef.current, {
+                restoreFocus: pathname === "/painel/startups/nova",
+              })}
+              href="/painel/startups/nova"
+            >
+              Criar nova startup
+            </Link>
           </div>
         </div>
       </details>
@@ -92,7 +102,7 @@ export function WorkspaceTopbar() {
         </span>
         <span className={styles.progressPill} title="Nivel global">
           <ProductIcon name="level" />
-          <strong>Nivel {accountProgress?.level ?? 1}</strong>
+          <strong>Nivel {accountProgress?.level ?? 1} · {accountProgress?.xp ?? 0} XP</strong>
         </span>
         <details className={styles.profileMenu} ref={profileMenuRef}>
           <summary aria-label="Abrir menu do perfil" className={styles.avatar}>

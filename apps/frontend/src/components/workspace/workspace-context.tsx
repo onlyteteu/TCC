@@ -58,8 +58,10 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
   const [user, setUser] = useState<AuthUser | null>(null);
   const [selectedStartupId, setSelectedStartupId] = useState<number | null>(activeStartupId);
   const lastMarkedStartupId = useRef<number | null>(null);
+  const workspaceMutationVersion = useRef(0);
 
   const refreshWorkspace = useCallback(async ({ silent = false }: RefreshWorkspaceOptions = {}) => {
+    const mutationVersionAtRequest = workspaceMutationVersion.current;
     if (!silent) {
       setIsLoading(true);
       setError(null);
@@ -87,7 +89,9 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
       const startupPayload = (await startupsResponse.json()) as StartupListPayload;
 
       setUser(userPayload.user);
-      setStartups(startupPayload.startups);
+      if (mutationVersionAtRequest === workspaceMutationVersion.current) {
+        setStartups(startupPayload.startups);
+      }
       setAccountProgress(startupPayload.accountProgress ?? null);
       return true;
     } catch {
@@ -135,6 +139,7 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
         return false;
       }
 
+      workspaceMutationVersion.current += 1;
       setSelectedStartupId(startupId);
       setStartups((current) => {
         const previous = current.find((startup) => startup.id === startupId);
@@ -168,6 +173,7 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
         lastMarkedStartupId.current = null;
         return;
       }
+      workspaceMutationVersion.current += 1;
       setStartups((current) => {
         const previous = current.find((startup) => startup.id === activeStartupId);
         const merged = { ...previous, ...openedStartup } as StartupSummary;
