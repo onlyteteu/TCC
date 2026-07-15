@@ -76,10 +76,12 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
   const [user, setUser] = useState<AuthUser | null>(null);
   const [selectedStartupId, setSelectedStartupId] = useState<number | null>(activeStartupId);
   const lastMarkedStartupId = useRef<number | null>(null);
+  const refreshRequestSequence = useRef(0);
   const workspaceMutationVersion = useRef(0);
   const startupMutationVersions = useRef(new Map<number, number>());
 
   const refreshWorkspace = useCallback(async ({ silent = false }: RefreshWorkspaceOptions = {}) => {
+    const requestId = ++refreshRequestSequence.current;
     const mutationVersionAtRequest = workspaceMutationVersion.current;
     if (!silent) {
       setIsLoading(true);
@@ -91,6 +93,10 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
         fetch("/api/auth/me", { cache: "no-store" }),
         fetch("/api/startups", { cache: "no-store" }),
       ]);
+
+      if (requestId !== refreshRequestSequence.current) {
+        return false;
+      }
 
       if (userResponse.status === 401 || startupsResponse.status === 401) {
         router.replace("/");
@@ -106,6 +112,10 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
 
       const userPayload = (await userResponse.json()) as AuthenticatedUserPayload;
       const startupPayload = (await startupsResponse.json()) as StartupListPayload;
+
+      if (requestId !== refreshRequestSequence.current) {
+        return false;
+      }
 
       setUser(userPayload.user);
       if (mutationVersionAtRequest === workspaceMutationVersion.current) {
@@ -123,7 +133,7 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
       setAccountProgress(startupPayload.accountProgress ?? null);
       return true;
     } catch {
-      if (!silent) {
+      if (requestId === refreshRequestSequence.current && !silent) {
         setError("Nao foi possivel carregar seu workspace agora.");
       }
       return false;

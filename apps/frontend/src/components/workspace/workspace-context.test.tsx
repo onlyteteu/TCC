@@ -147,6 +147,35 @@ function InitialRefreshRaceProbe() {
   );
 }
 
+function RefreshRequestOrderProbe() {
+  const { accountProgress, isLoading, openStartup, refreshWorkspace, startups, user } = useWorkspace();
+  const [newerRefreshFinished, setNewerRefreshFinished] = useState(false);
+
+  return (
+    <>
+      <span>{isLoading ? "R1 pendente" : "R1 concluido"}</span>
+      <span data-testid="ordered-refresh-user">{user?.name ?? "sem usuario"}</span>
+      <span data-testid="ordered-refresh-xp">{accountProgress?.xp ?? 0} XP</span>
+      <span data-testid="ordered-refresh-startups">
+        {startups.map((item) => `${item.id}:${item.name}:${item.lastOpenedAt ?? "nunca"}`).join("|")}
+      </span>
+      <button onClick={() => void openStartup(8)} type="button">
+        Abrir B entre refreshes
+      </button>
+      <button
+        onClick={async () => {
+          await refreshWorkspace({ silent: true });
+          setNewerRefreshFinished(true);
+        }}
+        type="button"
+      >
+        Iniciar R2
+      </button>
+      {newerRefreshFinished ? <span>R2 concluido</span> : null}
+    </>
+  );
+}
+
 describe("WorkspaceProvider", () => {
   beforeEach(() => {
     navigation.push.mockReset();
@@ -433,6 +462,91 @@ describe("WorkspaceProvider", () => {
     expect(screen.getByTestId("initial-race-order")).toHaveTextContent(
       "8:2026-07-15T15:00:00Z|7:2026-07-12T00:00:00Z"
     );
+    expect(
+      fetchMock.mock.calls.filter(([url, init]) =>
+        url === "/api/startups/8/open" && init?.method === "POST"
+      )
+    ).toHaveLength(1);
+  });
+
+  it("ignores every stale field when an older refresh resolves after a newer refresh", async () => {
+    const boreal = { ...startup, id: 8, name: "Boreal", lastOpenedAt: null };
+    const openedBoreal = { ...boreal, lastOpenedAt: "2026-07-15T16:00:00Z" };
+    const renamedAurora = { ...startup, name: "Aurora Nova", updatedAt: "2026-07-15T16:05:00Z" };
+    const oldProgress = {
+      achievements: [],
+      level: 1,
+      unlockedCount: 0,
+      xp: 10,
+      xpIntoLevel: 10,
+      xpPerLevel: 100,
+    };
+    const newProgress = { ...oldProgress, level: 10, xp: 900, xpIntoLevel: 0 };
+    let authRequests = 0;
+    let startupRequests = 0;
+    let resolveR1User!: (value: Response) => void;
+    let resolveR1Startups!: (value: Response) => void;
+    const r1User = new Promise<Response>((resolve) => { resolveR1User = resolve; });
+    const r1Startups = new Promise<Response>((resolve) => { resolveR1Startups = resolve; });
+    const fetchMock = vi.fn((url: string, init?: RequestInit) => {
+      if (url === "/api/auth/me") {
+        authRequests += 1;
+        return authRequests === 1
+          ? r1User
+          : response({ authenticated: true, user: { email: "bia@example.com", id: 2, name: "Beatriz" } });
+      }
+      if (url === "/api/startups") {
+        startupRequests += 1;
+        return startupRequests === 1
+          ? r1Startups
+          : response({ accountProgress: newProgress, startups: [renamedAurora] });
+      }
+      if (url === "/api/startups/8/open" && init?.method === "POST") {
+        return response({ message: "ok", startup: openedBoreal });
+      }
+      throw new Error(`Unexpected fetch: ${url}`);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      <WorkspaceProvider>
+        <RefreshRequestOrderProbe />
+      </WorkspaceProvider>
+    );
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    fireEvent.click(screen.getByRole("button", { name: "Abrir B entre refreshes" }));
+    await waitFor(() =>
+      expect(screen.getByTestId("ordered-refresh-startups")).toHaveTextContent(
+        "8:Boreal:2026-07-15T16:00:00Z"
+      )
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Iniciar R2" }));
+    expect(await screen.findByText("R2 concluido")).toBeInTheDocument();
+    expect(screen.getByTestId("ordered-refresh-user")).toHaveTextContent("Beatriz");
+    expect(screen.getByTestId("ordered-refresh-xp")).toHaveTextContent("900 XP");
+    expect(screen.getByTestId("ordered-refresh-startups")).toHaveTextContent(
+      "7:Aurora Nova:2026-07-12T00:00:00Z"
+    );
+
+    resolveR1User(
+      new Response(
+        JSON.stringify({ authenticated: true, user: { email: "ana@example.com", id: 1, name: "Ana" } }),
+        { status: 200 }
+      )
+    );
+    resolveR1Startups(
+      new Response(JSON.stringify({ accountProgress: oldProgress, startups: [startup, boreal] }), { status: 200 })
+    );
+
+    expect(await screen.findByText("R1 concluido")).toBeInTheDocument();
+    expect(screen.getByTestId("ordered-refresh-user")).toHaveTextContent("Beatriz");
+    expect(screen.getByTestId("ordered-refresh-xp")).toHaveTextContent("900 XP");
+    expect(screen.getByTestId("ordered-refresh-startups")).toHaveTextContent(
+      "7:Aurora Nova:2026-07-12T00:00:00Z"
+    );
+    expect(screen.getByTestId("ordered-refresh-startups")).not.toHaveTextContent("Boreal");
     expect(
       fetchMock.mock.calls.filter(([url, init]) =>
         url === "/api/startups/8/open" && init?.method === "POST"

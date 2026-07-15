@@ -68,7 +68,7 @@ route group autenticado e sem enfraquecer o isolamento por owner/404.
 
 - `manage.py makemigrations --check`: nenhuma mudanca detectada.
 - `manage.py test -v 2 --keepdb`: 45/45 testes passando.
-- `npm test`: 69/69 testes em 19 arquivos passando apos os complementos finais descritos abaixo.
+- `npm test`: 70/70 testes em 19 arquivos passando apos os complementos finais descritos abaixo.
 - `npm run lint`: passou.
 - `npx tsc --noEmit`: passou.
 - `npm run build`: passou em Next.js 16.2.10; 12 paginas geradas e rotas esperadas listadas.
@@ -157,6 +157,36 @@ listagem inicial e nenhuma segunda chamada a `POST /open` e emitida.
 - GREEN focado: 7/7 em `workspace-context.test.tsx`.
 - GREEN do conjunto workspace: 14/14 em 5 arquivos.
 - GREEN frontend serial: 69/69 em 19 arquivos com `npm test -- --maxWorkers=1`.
+
+### Verificacao fresca
+
+- `npm run lint`: passou.
+- `npx tsc --noEmit`: passou.
+- `npm run build`: passou; 12 paginas geradas e rotas esperadas listadas.
+- Backend nao foi alterado neste fechamento.
+- `git diff --check`: executado antes do commit.
+
+## Fechamento da ordem monotona de refreshes
+
+Base deste fechamento: `9248f2d`.
+
+### Causa e correcao
+
+A versao de mutacao ordenava `/open` contra uma requisicao de refresh, mas nao estabelecia ordem
+entre dois refreshes concorrentes. R1 ainda podia aplicar usuario, progresso e startups antigos
+depois de R2 concluir.
+
+Cada refresh agora captura um `requestId` monotono proprio. Uma resposta so trata status, le
+payloads e atualiza estado se continuar sendo a requisicao mais recente. O merge por versao de
+mutacao permanece disponivel para o refresh mais recente, preservando o caso R1 + `/open` sem R2.
+
+### RED / GREEN
+
+- RED: `workspace-context.test.tsx` teve 1 falha e 7 testes passando; R1 revertia Beatriz para Ana
+  depois de R2 e tambem podia reverter XP e ressuscitar Boreal.
+- GREEN focado: 8/8 em `workspace-context.test.tsx`.
+- GREEN do conjunto workspace: 15/15 em 5 arquivos.
+- GREEN frontend serial: 70/70 em 19 arquivos com `npm test -- --maxWorkers=1`.
 
 ### Verificacao fresca
 
