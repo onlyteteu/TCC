@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { ProductIcon } from "@/components/product-icon";
 import type { MissionSummary } from "@/lib/startup-types";
 
@@ -114,17 +116,58 @@ export function MissionFocusPanel({
       </div>
 
       {isCompleted ? (
-        <div className={styles.missionActions}>
-          <div>
-            <strong>Missao concluida</strong>
-            <p>
-              {mission.evidenceCount} entrevistas e {mission.learning ? "1 aprendizado" : "nenhum aprendizado"} registrados.
-            </p>
+        <>
+          <div className={styles.completedMissionDetails}>
+            <section aria-labelledby="completed-evidences-title">
+              <h3 id="completed-evidences-title">Evidencias registradas</h3>
+              <ul className={styles.completedEvidenceList}>
+                {mission.evidences.map((evidence) => (
+                  <li key={evidence.id}>
+                    <article>
+                      <strong>{evidence.intervieweeName}</strong>
+                      <span>{evidence.intervieweeProfile}</span>
+                      <p>{evidence.context}</p>
+                      <p>{evidence.notes}</p>
+                      <time dateTime={evidence.occurredOn}>{evidence.occurredOn}</time>
+                    </article>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            {mission.learning ? (
+              <section aria-labelledby="completed-learning-title">
+                <h3 id="completed-learning-title">Aprendizado registrado</h3>
+                <p>{mission.learning.content}</p>
+                <dl className={styles.completedLearningSummary}>
+                  <div>
+                    <dt>Impacto</dt>
+                    <dd>{mission.learning.impact}</dd>
+                  </div>
+                  <div>
+                    <dt>Proxima acao</dt>
+                    <dd>{mission.learning.nextAction}</dd>
+                  </div>
+                  <div>
+                    <dt>Confianca</dt>
+                    <dd>{mission.learning.confidenceLabel}</dd>
+                  </div>
+                </dl>
+              </section>
+            ) : null}
           </div>
-          <Link className={styles.primaryButton} href={`/painel/startup/${startupId}/jornada`}>
-            Ir para a Jornada
-          </Link>
-        </div>
+          <div className={styles.missionActions}>
+            <div>
+              <strong>Missao concluida</strong>
+              <p>
+                {mission.evidenceCount} entrevistas e {mission.learning ? "1 aprendizado" : "nenhum aprendizado"} registrados.
+              </p>
+            </div>
+            <Link className={styles.primaryButton} href={`/painel/startup/${startupId}/jornada`}>
+              Ir para a Jornada
+            </Link>
+          </div>
+        </>
       ) : (
         <div className={styles.missionActions}>
           <button
@@ -141,4 +184,3 @@ export function MissionFocusPanel({
     </section>
   );
 }
-import Link from "next/link";

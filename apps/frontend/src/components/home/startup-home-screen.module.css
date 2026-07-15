@@ -244,6 +244,87 @@
   margin-top: 22px;
 }
 
+.completedMissionDetails {
+  display: grid;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.completedMissionDetails section {
+  padding: 16px;
+  border: 1px solid #203145;
+  border-radius: 12px;
+  background: #090e17;
+}
+
+.completedMissionDetails h3 {
+  margin: 0 0 12px;
+  color: #f7efe3;
+  font-size: 1rem;
+}
+
+.completedMissionDetails p {
+  margin: 6px 0 0;
+  color: #aeb9c6;
+  line-height: 1.5;
+}
+
+.completedEvidenceList {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.completedEvidenceList li {
+  padding: 12px;
+  border: 1px solid #203145;
+  border-radius: 10px;
+  background: #0b111c;
+}
+
+.completedEvidenceList article,
+.completedEvidenceList strong,
+.completedEvidenceList span,
+.completedEvidenceList time {
+  display: block;
+}
+
+.completedEvidenceList strong {
+  color: #f7efe3;
+}
+
+.completedEvidenceList span,
+.completedEvidenceList time {
+  margin-top: 3px;
+  color: #9aa8b8;
+  font-size: 0.82rem;
+}
+
+.completedLearningSummary {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 0;
+}
+
+.completedLearningSummary div {
+  display: grid;
+  gap: 3px;
+}
+
+.completedLearningSummary dt {
+  color: #9aa8b8;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.completedLearningSummary dd {
+  margin: 0;
+  color: #f7efe3;
+}
+
 .primaryButton {
   display: inline-flex;
   min-height: 44px;

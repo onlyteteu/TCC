@@ -101,4 +101,66 @@ describe("MissionFocusPanel", () => {
       /\.stepAction:focus-visible\s*\{[\s\S]*?outline:\s*2px solid #f2a51a;[\s\S]*?outline-offset:\s*3px;/
     );
   });
+
+  it("renders completed evidence and learning content without mutation actions", () => {
+    const completedMission: MissionSummary = {
+      ...mission,
+      canAddLearning: false,
+      canComplete: false,
+      completedAt: "2026-07-15T14:00:00Z",
+      evidenceCount: 1,
+      evidences: [
+        {
+          context: "Conversa durante o fechamento mensal",
+          createdAt: "2026-07-14T12:00:00Z",
+          id: 31,
+          intervieweeName: "Marina Costa",
+          intervieweeProfile: "Gestora financeira de pequena empresa",
+          notes: "Perde duas horas conciliando planilhas antes de emitir o relatorio.",
+          occurredOn: "2026-07-13",
+          type: "customer_interview",
+        },
+      ],
+      learning: {
+        confidence: "high",
+        confidenceLabel: "Alta",
+        content: "A conciliacao manual e o maior gargalo percebido.",
+        createdAt: "2026-07-14T13:00:00Z",
+        id: 41,
+        impact: "Priorizar a importacao automatica de extratos.",
+        nextAction: "Testar um prototipo com tres gestoras financeiras.",
+        updatedAt: "2026-07-14T13:00:00Z",
+      },
+      progress: 100,
+      status: "completed",
+      statusLabel: "Concluido",
+      steps: mission.steps.map((step) => ({ ...step, status: "completed" as const })),
+    };
+    const onOpenStep = vi.fn();
+    const onPrimaryAction = vi.fn();
+
+    render(
+      <MissionFocusPanel
+        mission={completedMission}
+        isPrimaryActionPending={false}
+        onOpenStep={onOpenStep}
+        onPrimaryAction={onPrimaryAction}
+        startupId={7}
+      />
+    );
+
+    expect(screen.getByText("Marina Costa")).toBeInTheDocument();
+    expect(screen.getByText("Gestora financeira de pequena empresa")).toBeInTheDocument();
+    expect(
+      screen.getByText("Perde duas horas conciliando planilhas antes de emitir o relatorio.")
+    ).toBeInTheDocument();
+    expect(screen.getByText("A conciliacao manual e o maior gargalo percebido.")).toBeInTheDocument();
+    expect(screen.getByText("Priorizar a importacao automatica de extratos.")).toBeInTheDocument();
+    expect(
+      screen.getByText("Testar um prototipo com tres gestoras financeiras.")
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(onOpenStep).not.toHaveBeenCalled();
+    expect(onPrimaryAction).not.toHaveBeenCalled();
+  });
 });
