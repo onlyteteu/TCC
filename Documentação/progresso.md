@@ -498,3 +498,26 @@ clique surtia efeito.
 - execucao de `npx.cmd tsc --noEmit --pretty false` com sucesso
 - execucao de `npm.cmd run build` com sucesso
 - verificacao de layout pelo detector do Impeccable sem alertas
+
+## 2026-07-15
+
+### Scrollbars integradas a paleta do workspace
+
+- substituicao do trilho claro nativo por um trilho azul-marinho coerente com as superficies do painel
+- definicao global de polegar cinza-azulado com estados `hover` e `active` em ambar
+- padronizacao de largura em `10px`, cantos arredondados e remocao dos botoes de seta no Chrome e Edge
+- suporte ao Firefox por meio de `scrollbar-color` e `scrollbar-width`
+- separacao das regras por capacidade do navegador para preservar os estados interativos no Chrome moderno
+- aplicacao global em rolagens principais, paineis internos e formularios, sem mudar os `overflow` existentes
+- preservacao das telas fixas que escondem a scrollbar de proposito
+- criacao de teste de contrato para os tokens, navegadores e estados interativos
+
+### Validacoes executadas
+
+- validacao visual da rolagem principal da Home da startup
+- validacao visual da rolagem interna do formulario `Registrar entrevista`
+- confirmacao no navegador de trilho `#080d15`, polegar `#53677f` e largura de `10px`
+- execucao de `npm test -- --run src/app/scrollbar-theme.test.ts` com `2/2` testes aprovados
+- execucao de `npm test -- --maxWorkers=1` com `75/75` testes aprovados
+- execucao de `npm run lint` com sucesso
+- execucao de `npm run build` com sucesso
