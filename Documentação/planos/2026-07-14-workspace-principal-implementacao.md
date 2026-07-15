@@ -78,6 +78,12 @@
 - remover `dashboard-screen.*`, `startup-overview-screen.*`, `startup-today-screen.*` e `startup-detail-screen.*` somente depois de seus comportamentos estarem cobertos pelas novas telas;
 - atualizar `Documentação/telas.md`, `fluxos.md`, `funcionalidades.md`, `arquitetura-missoes.md`, `progresso.md` e `proximos-passos.md`.
 
+### Execution order note
+
+Depois da Task 4, executar a Task 6 antes da Task 5. O gerenciador cria o route group e garante que
+os destinos do seletor existam; a Task 5 então move Home e Jornada para esse layout em uma única
+integração, sem shell duplicado nem links temporariamente quebrados.
+
 ---
 
 ### Task 1: Persistir e ordenar a startup usada por último
@@ -620,9 +626,6 @@ git commit -m "feat: resolve entrada do workspace pela startup recente"
 - Create: `apps/frontend/src/components/workspace/workspace-topbar.tsx`
 - Create: `apps/frontend/src/components/workspace/workspace-shell.tsx`
 - Create: `apps/frontend/src/components/workspace/workspace-shell.module.css`
-- Create: `apps/frontend/src/app/painel/(workspace)/layout.tsx`
-- Move: `apps/frontend/src/app/painel/startup/[startupId]/page.tsx` to `apps/frontend/src/app/painel/(workspace)/startup/[startupId]/page.tsx`
-- Move: `apps/frontend/src/app/painel/startup/[startupId]/jornada/page.tsx` to `apps/frontend/src/app/painel/(workspace)/startup/[startupId]/jornada/page.tsx`
 - Test: `apps/frontend/src/components/workspace/workspace-brand.test.tsx`
 - Test: `apps/frontend/src/components/workspace/workspace-sidebar.test.tsx`
 
@@ -898,27 +901,19 @@ Base CSS completa da geometria:
 }
 ```
 
-- [ ] **Step 7: Create the authenticated route group**
+- [ ] **Step 7: Preserve the current routes until both screens are shell-free**
 
-Mover as duas páginas existentes com `git mv`. Criar o layout somente agora, quando `WorkspaceShell`
-já existe:
+Não mover nem envolver as páginas atuais nesta tarefa. `StartupTodayScreen` e `StartupDetailScreen`
+ainda possuem shell próprio; conectar o layout agora criaria duas sidebars e duas topbars. Confirmar
+que elas continuam nos caminhos atuais:
 
-```tsx
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-
-import { WorkspaceShell } from "@/components/workspace/workspace-shell";
-import { AUTH_COOKIE_NAME } from "@/lib/auth-session";
-
-export default async function WorkspaceLayout({ children }: { children: React.ReactNode }) {
-  const cookieStore = await cookies();
-  if (!cookieStore.has(AUTH_COOKIE_NAME)) redirect("/");
-  return <WorkspaceShell>{children}</WorkspaceShell>;
-}
+```powershell
+Test-Path -LiteralPath 'src/app/painel/startup/[startupId]/page.tsx'
+Test-Path -LiteralPath 'src/app/painel/startup/[startupId]/jornada/page.tsx'
 ```
 
-Depois da mudança, remover das duas páginas a verificação duplicada da cookie; manter apenas a
-validação numérica de `startupId`.
+Expected: os dois comandos retornam `True`. A integração atômica do route group ocorrerá na Task 5,
+depois de Home e Jornada não renderizarem mais shells próprios.
 
 - [ ] **Step 8: Run component tests, lint and typecheck**
 
@@ -934,7 +929,7 @@ Expected: all commands exit with code `0`.
 - [ ] **Step 9: Commit the shared shell**
 
 ```powershell
-git add apps/frontend/src/components/workspace apps/frontend/src/app/painel/'(workspace)'/layout.tsx apps/frontend/src/app/painel/'(workspace)'/startup/'[startupId]'/page.tsx apps/frontend/src/app/painel/'(workspace)'/startup/'[startupId]'/jornada/page.tsx
+git add apps/frontend/src/components/workspace
 git commit -m "feat: cria shell compartilhado do workspace"
 ```
 
@@ -949,7 +944,6 @@ git commit -m "feat: cria shell compartilhado do workspace"
 - Create: `apps/frontend/src/components/home/startup-home-screen.tsx`
 - Create: `apps/frontend/src/components/home/startup-home-screen.module.css`
 - Test: `apps/frontend/src/components/home/mission-focus-panel.test.tsx`
-- Modify: `apps/frontend/src/app/painel/(workspace)/startup/[startupId]/page.tsx`
 - Source to preserve temporarily: `apps/frontend/src/components/startup-today-screen.tsx`
 
 **Interfaces:**
@@ -1158,24 +1152,11 @@ para a função privada `renderWorkDialog()` e manter os estados `overview`, `in
 }
 ```
 
-- [ ] **Step 7: Point the canonical Home page to the new screen**
+- [ ] **Step 7: Keep the new Home isolated until atomic route integration**
 
-```tsx
-import { notFound } from "next/navigation";
-
-import { StartupHomeScreen } from "@/components/home/startup-home-screen";
-
-export default async function StartupHomePage({
-  params,
-}: {
-  params: Promise<{ startupId: string }>;
-}) {
-  const { startupId } = await params;
-  const numericId = Number(startupId);
-  if (!Number.isInteger(numericId) || numericId <= 0) notFound();
-  return <StartupHomeScreen startupId={numericId} />;
-}
-```
+Exportar `StartupHomeScreen` normalmente, mas não alterar a página canônica ainda. A tela antiga
+continua atendendo a rota enquanto Jornada ainda possui shell próprio. Confirmar que o novo arquivo
+não importa `WorkspaceShell`, sidebar ou topbar; ele deve representar somente o conteúdo da Home.
 
 - [ ] **Step 8: Run Home tests and frontend checks**
 
@@ -1191,7 +1172,7 @@ Expected: all commands exit with code `0`.
 - [ ] **Step 9: Commit the Home unit**
 
 ```powershell
-git add apps/frontend/src/components/home apps/frontend/src/app/painel/'(workspace)'/startup/'[startupId]'/page.tsx
+git add apps/frontend/src/components/home
 git commit -m "feat: transforma hoje na home guiada por missao"
 ```
 
@@ -1206,7 +1187,8 @@ git commit -m "feat: transforma hoje na home guiada por missao"
 - Create: `apps/frontend/src/components/journey/startup-journey-screen.tsx`
 - Create: `apps/frontend/src/components/journey/startup-journey-screen.module.css`
 - Test: `apps/frontend/src/components/journey/journey-workspace.test.tsx`
-- Modify: `apps/frontend/src/app/painel/(workspace)/startup/[startupId]/jornada/page.tsx`
+- Move: `apps/frontend/src/app/painel/startup/[startupId]/page.tsx` to `apps/frontend/src/app/painel/(workspace)/startup/[startupId]/page.tsx`
+- Move: `apps/frontend/src/app/painel/startup/[startupId]/jornada/page.tsx` to `apps/frontend/src/app/painel/(workspace)/startup/[startupId]/jornada/page.tsx`
 - Source to preserve temporarily: `apps/frontend/src/components/startup-detail-screen.tsx`
 
 **Interfaces:**
@@ -1369,13 +1351,25 @@ As setas esquerda/direita alternam as abas e movem o foco; `Home` e `End` levam 
 }
 ```
 
-- [ ] **Step 7: Point the canonical Journey page to the new screen**
+- [ ] **Step 7: Integrate Home and Journey atomically under the shared shell**
 
-Validar `startupId` como na Home e retornar:
+Mover as duas páginas com `git mv` para o route group autenticado criado na Task 6. O layout já
+envolve seus filhos com `WorkspaceShell`; não criar outro layout nem envolver as páginas novamente.
+
+Nas duas páginas, validar `startupId` com `Number.isInteger` e `notFound()`. A Home retorna:
+
+```tsx
+return <StartupHomeScreen startupId={numericId} />;
+```
+
+A Jornada retorna:
 
 ```tsx
 return <StartupJourneyScreen startupId={numericId} />;
 ```
+
+Remover das páginas a verificação duplicada da cookie; o route group é a única fronteira de
+autenticação. Esta ativação acontece somente depois de ambas as telas estarem livres de shell próprio.
 
 - [ ] **Step 8: Run Journey tests and checks**
 
@@ -1391,7 +1385,7 @@ Expected: all commands exit with code `0`.
 - [ ] **Step 9: Commit the Journey unit**
 
 ```powershell
-git add apps/frontend/src/components/journey apps/frontend/src/app/painel/'(workspace)'/startup/'[startupId]'/jornada/page.tsx
+git add apps/frontend/src/components/journey apps/frontend/src/app/painel/'(workspace)'/startup/'[startupId]'/page.tsx apps/frontend/src/app/painel/'(workspace)'/startup/'[startupId]'/jornada/page.tsx
 git commit -m "feat: reorganiza jornada em mestre detalhe"
 ```
 
@@ -1404,6 +1398,7 @@ git commit -m "feat: reorganiza jornada em mestre detalhe"
 - Create: `apps/frontend/src/components/startups/startup-manager-screen.tsx`
 - Create: `apps/frontend/src/components/startups/startup-manager-screen.module.css`
 - Test: `apps/frontend/src/components/startups/startup-manager-screen.test.tsx`
+- Create: `apps/frontend/src/app/painel/(workspace)/layout.tsx`
 - Create: `apps/frontend/src/app/painel/(workspace)/startups/page.tsx`
 - Create: `apps/frontend/src/app/painel/startups/nova/page.tsx`
 - Create: `apps/frontend/src/components/startups/create-startup-route-screen.tsx`
@@ -1528,7 +1523,29 @@ A página server-side autentica pela cookie como as demais e retorna `<CreateSta
 Quando a conta não possui startup, o botão voltar pode permanecer disponível porque `/painel/startups`
 mostrará o estado vazio com a mesma ação de criação.
 
-- [ ] **Step 6: Run manager tests and frontend checks**
+- [ ] **Step 6: Create the authenticated workspace layout for the manager**
+
+Criar o route group agora, sem mover Home ou Jornada. Assim o gerenciador usa o shell real e os
+links do seletor já existem quando Home/Jornada forem integradas na Task 5:
+
+```tsx
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+
+import { WorkspaceShell } from "@/components/workspace/workspace-shell";
+import { AUTH_COOKIE_NAME } from "@/lib/auth-session";
+
+export default async function WorkspaceLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies();
+  if (!cookieStore.has(AUTH_COOKIE_NAME)) redirect("/");
+  return <WorkspaceShell>{children}</WorkspaceShell>;
+}
+```
+
+Nesta tarefa, o route group contém somente `/painel/startups`; as páginas legadas de Home/Jornada
+continuam fora dele e preservam seus shells atuais até a integração atômica da Task 5.
+
+- [ ] **Step 7: Run manager tests and frontend checks**
 
 ```powershell
 cd apps/frontend
@@ -1539,10 +1556,10 @@ npx tsc --noEmit
 
 Expected: all commands exit with code `0`.
 
-- [ ] **Step 7: Commit manager and creation routes**
+- [ ] **Step 8: Commit manager and creation routes**
 
 ```powershell
-git add apps/frontend/src/components/startups apps/frontend/src/components/workspace/workspace-context.tsx apps/frontend/src/app/painel/'(workspace)'/startups/page.tsx apps/frontend/src/app/painel/startups/nova/page.tsx
+git add apps/frontend/src/components/startups apps/frontend/src/components/workspace/workspace-context.tsx apps/frontend/src/app/painel/'(workspace)'/layout.tsx apps/frontend/src/app/painel/'(workspace)'/startups/page.tsx apps/frontend/src/app/painel/startups/nova/page.tsx
 git commit -m "feat: adiciona gerenciamento de startups"
 ```
 

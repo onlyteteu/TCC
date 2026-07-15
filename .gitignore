@@ -37,6 +37,7 @@ postgres_data/
 
 # Logs
 *.log
+*.tsbuildinfo
 
 # Local render temp files
 .tmp-edge-*/
@@ -45,3 +46,4 @@ postgres_data/
 apps/frontend/.npm-cache/
 apps/backend/.codex-temp/
 .codex-runtime-logs/
+.superpowers/

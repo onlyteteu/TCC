@@ -1,0 +1,542 @@
+.page {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 42px 0 64px;
+  color: #f7efe3;
+}
+
+.managerContent {
+  display: contents;
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 26px;
+}
+
+.eyebrow {
+  color: #f2a51a;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.header h1,
+.emptyState h2,
+.dialog h2 {
+  margin: 0;
+  font-family: var(--font-product), "Segoe UI", sans-serif;
+  letter-spacing: -0.03em;
+}
+
+.header h1 {
+  margin-top: 7px;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.header p,
+.emptyState p,
+.dialog p {
+  margin: 8px 0 0;
+  color: #95a3b5;
+  line-height: 1.55;
+}
+
+.pageWarning {
+  margin: 0 0 14px;
+  padding: 11px 13px;
+  border: 1px solid rgba(242, 165, 26, 0.28);
+  border-radius: 10px;
+  color: #e9c98f;
+  background: rgba(242, 165, 26, 0.08);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.primaryAction,
+.openButton,
+.saveButton,
+.confirmDeleteButton,
+.textButton,
+.iconButton {
+  border: 0;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.primaryAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 10px;
+  color: #171109;
+  background: #f2a51a;
+  box-shadow: 0 12px 30px rgba(242, 165, 26, 0.16);
+}
+
+.primaryAction svg {
+  width: 18px;
+  height: 18px;
+}
+
+.list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-areas: "identity phase progress activity actions";
+  grid-template-columns: minmax(200px, 1.5fr) minmax(150px, 1fr) minmax(140px, 0.9fr) minmax(140px, 0.85fr) auto;
+  align-items: center;
+  gap: 22px;
+  min-height: 84px;
+  padding: 14px 16px;
+  border: 1px solid #203145;
+  border-radius: 12px;
+  background: #0b111c;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.row:hover {
+  border-color: #344b64;
+  background: #0e1623;
+}
+
+.identity {
+  display: flex;
+  grid-area: identity;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.mark,
+.emptyIcon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(242, 165, 26, 0.38);
+  color: #f2a51a;
+  background: #17130e;
+}
+
+.mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  font-weight: 850;
+}
+
+.nameBlock {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  min-width: 0;
+}
+
+.nameBlock > strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activeBadge {
+  padding: 3px 7px;
+  border-radius: 999px;
+  color: #f2c879;
+  background: rgba(242, 165, 26, 0.12);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.phase,
+.activity {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.phase {
+  grid-area: phase;
+}
+
+.activity {
+  grid-area: activity;
+}
+
+.phase span,
+.activity span,
+.progressBlock span,
+.progressBlock > div span {
+  color: #6f7f92;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.phase strong,
+.activity strong {
+  overflow: hidden;
+  color: #c7d0db;
+  font-size: 0.79rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.progressBlock {
+  display: grid;
+  grid-area: progress;
+  gap: 8px;
+}
+
+.progressBlock > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.progressBlock > div strong {
+  color: #c7d0db;
+  font-size: 0.75rem;
+}
+
+.progressTrack {
+  display: block;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #1d2a39;
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #d98e10, #f2be5c);
+}
+
+.actions {
+  display: flex;
+  grid-area: actions;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.openButton,
+.saveButton {
+  min-height: 34px;
+  padding: 0 11px;
+  border-radius: 8px;
+  color: #171109;
+  background: #f2a51a;
+  font-size: 0.72rem;
+}
+
+.iconButton,
+.textButton {
+  min-height: 34px;
+  padding: 0 9px;
+  border: 1px solid #2b3d52;
+  border-radius: 8px;
+  color: #aeb9c6;
+  background: transparent;
+  font-size: 0.7rem;
+}
+
+.dangerButton {
+  border-color: rgba(216, 93, 93, 0.24);
+  color: #df9797;
+}
+
+.primaryAction:hover,
+.openButton:hover,
+.saveButton:hover {
+  background: #ffb52e;
+}
+
+.iconButton:hover,
+.textButton:hover {
+  color: #f7efe3;
+  background: #152033;
+}
+
+.primaryAction:focus-visible,
+.openButton:focus-visible,
+.saveButton:focus-visible,
+.iconButton:focus-visible,
+.textButton:focus-visible,
+.confirmDeleteButton:focus-visible,
+.renameForm input:focus-visible,
+.confirmField input:focus-visible {
+  outline: 2px solid #f2a51a;
+  outline-offset: 3px;
+}
+
+.primaryAction:disabled,
+.openButton:disabled,
+.saveButton:disabled,
+.iconButton:disabled,
+.textButton:disabled,
+.confirmDeleteButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.renameForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+}
+
+.renameForm input,
+.confirmField input {
+  border: 1px solid #38506c;
+  border-radius: 8px;
+  color: #f7efe3;
+  background: #080d16;
+  font: inherit;
+}
+
+.renameForm input {
+  min-width: 130px;
+  height: 34px;
+  padding: 0 9px;
+}
+
+.rowError {
+  flex-basis: 100%;
+  color: #f1a1a1;
+  font-size: 0.7rem;
+  line-height: 1.35;
+}
+
+.emptyState {
+  display: grid;
+  min-height: 330px;
+  place-content: center;
+  justify-items: center;
+  padding: 40px;
+  border: 1px dashed #344b64;
+  border-radius: 16px;
+  background: #0b111c;
+  text-align: center;
+}
+
+.emptyIcon {
+  width: 58px;
+  height: 58px;
+  margin-bottom: 18px;
+  border-radius: 16px;
+}
+
+.emptyIcon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.emptyState h2 {
+  font-size: 1.5rem;
+}
+
+.emptyState p {
+  max-width: 48ch;
+}
+
+.emptyState .primaryAction {
+  margin-top: 22px;
+}
+
+.modalBackdrop {
+  position: fixed;
+  z-index: 80;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(2, 5, 10, 0.78);
+  backdrop-filter: blur(5px);
+}
+
+.dialog {
+  width: min(460px, 100%);
+  padding: 28px;
+  border: 1px solid #344b64;
+  border-radius: 16px;
+  background: #0b111c;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+}
+
+.dangerIcon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 16px;
+  place-items: center;
+  border: 1px solid rgba(216, 93, 93, 0.3);
+  border-radius: 50%;
+  color: #ef9b9b;
+  background: rgba(216, 93, 93, 0.1);
+  font-weight: 900;
+}
+
+.confirmField {
+  display: grid;
+  gap: 7px;
+  margin-top: 20px;
+  color: #c7d0db;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.confirmField input {
+  height: 42px;
+  padding: 0 12px;
+}
+
+.dialogError {
+  color: #f1a1a1 !important;
+  font-size: 0.78rem;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.confirmDeleteButton {
+  min-height: 38px;
+  padding: 0 13px;
+  border-radius: 8px;
+  color: #fff6f6;
+  background: #a73d3d;
+  font-size: 0.75rem;
+}
+
+.confirmDeleteButton:hover:not(:disabled) {
+  background: #c34b4b;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 1180px) {
+  .row {
+    grid-template-areas:
+      "identity phase progress activity"
+      "identity actions actions actions";
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 0.9fr) minmax(0, 0.9fr);
+    row-gap: 10px;
+  }
+
+  .actions {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 880px) {
+  .page {
+    width: min(100% - 32px, 1180px);
+    padding-top: 28px;
+  }
+
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .row {
+    grid-template-areas:
+      "identity identity"
+      "phase activity"
+      "progress progress"
+      "actions actions";
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    width: min(100% - 24px, 1180px);
+  }
+
+  .header .primaryAction {
+    width: 100%;
+  }
+
+  .row {
+    grid-template-areas:
+      "identity"
+      "phase"
+      "progress"
+      "activity"
+      "actions";
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding: 13px;
+  }
+
+  .phase,
+  .activity {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+  }
+
+  .phase strong,
+  .activity strong {
+    text-align: right;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .actions button {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dialogActions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row {
+    transition: none;
+  }
+}

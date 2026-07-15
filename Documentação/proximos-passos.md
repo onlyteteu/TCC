@@ -1,12 +1,37 @@
 # Proximos Passos
 
-## Prioridade imediata
+## Nucleo atual concluido
 
-1. Permitir editar e renomear a startup depois da criacao inicial.
-2. Estruturar a base inicial da jornada guiada.
-3. Evoluir o painel interno para um dashboard de progresso real.
-4. Definir a primeira camada de gamificacao leve.
-5. Ampliar o CRUD de startups sem perder o foco do MVP.
+- entrada pela startup usada por ultimo;
+- workspace compartilhado com Home, Jornada e gerenciador;
+- primeira missao real com evidencias, aprendizado, XP e sequencia;
+- Mapa inicial editavel e Jornada com oito etapas;
+- troca, renomeacao, criacao e exclusao segura de startups;
+- retirada das telas provisorias do frontend.
+
+## Ciclos posteriores
+
+1. **Missoes completas:** biblioteca por fase, recomendacao contextual, missoes semanais e tarefas
+   rapidas, sempre com criterios verificaveis.
+2. **Experimentos:** hipoteses, metodo, criterio de sucesso, execucao, evidencias e resultado.
+3. **Aprendizados:** biblioteca consultavel que preserve a origem em entrevistas e experimentos.
+4. **Metricas:** indicadores definidos pelo usuario e alimentados por atividades e experimentos.
+5. **Documentos:** artefatos vivos gerados a partir do mapa, evidencias, decisoes e metricas.
+6. **Conquistas:** pagina propria, celebracoes e novos marcos sem premiar atividade vazia.
+
+Esses modulos ja aparecem desabilitados na navegacao para comunicar a arquitetura, mas nao devem
+ser tratados como implementados antes de seus dados, regras, estados vazios e testes existirem.
+
+## Nota tecnica importante
+
+Os scripts do projeto usam `http://127.0.0.1:3000`. O `allowedDevOrigins` de `next.config.ts`
+autoriza `127.0.0.1` e `localhost`; a configuracao evita que a origem escolhida bloqueie o
+hot-reload e deixe a pagina renderizada sem interatividade. Corrigido em 2026-07-09; ver
+`progresso.md`.
+
+Nota historica de 2026-07-08: naquela data, o painel `Suas startups` foi preferido aos mockups do
+hub. Essa decisao foi superada em 2026-07-14, quando o painel e as telas de detalhe foram removidos
+e substituidos por Home, Jornada e Gerenciador. Os mockups continuam somente como arquivo historico.
 
 ## Itens que devem acompanhar cada ciclo
 
@@ -16,9 +41,9 @@
 
 ## Evolucoes apos o nucleo inicial
 
-- adicionar gamificacao leve ao fluxo principal
-- refinar recomendacoes de proximos passos
-- aprofundar indicadores de progresso
+- ampliar a gamificacao existente com a pagina de Conquistas e novos marcos verificaveis;
+- refinar recomendacoes de proximos passos com base em fase, evidencias e aprendizados;
+- aprofundar indicadores por meio do futuro modulo de Metricas.
 
 ## Cuidados de escopo
 

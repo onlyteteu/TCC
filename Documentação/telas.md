@@ -2,11 +2,50 @@
 
 ## Estado atual
 
-Na data de 2026-04-09, a tela principal de autenticacao, o fluxo real de criacao da startup e uma
-visao inicial das startups ja criadas foram implementados. As demais telas do fluxo principal
-continuam planejadas para os proximos ciclos.
+Em 2026-07-14, o workspace principal deixou de usar as telas provisorias. Depois da autenticacao,
+o produto resolve a startup mais recente e abre uma experiencia unica com sidebar fixa, topbar,
+seletor de startup e somente a area de conteudo rolavel. A prioridade desta versao e desktop.
 
-Tambem foram criados mockups visuais de referencia para a futura tela de login/cadastro em:
+## Workspace principal implementado
+
+### Home da startup
+
+- rota `/painel/startup/<id>`;
+- concentra a missao principal, seus passos e o proximo gesto esperado;
+- registra entrevistas como evidencias e libera a sintese dos aprendizados no momento correto;
+- mostra XP, nivel global, sequencia de dias, fase, atividade recente e proximo desbloqueio;
+- usa estados explicitos de carregamento, erro, bloqueio, envio e celebracao.
+
+### Jornada
+
+- rota `/painel/startup/<id>/jornada`;
+- usa composicao mestre-detalhe: lista as oito etapas e abre uma por vez;
+- a etapa atual abre por padrao, etapas concluidas podem ser revisitadas e etapas futuras explicam
+  o pre-requisito sem oferecer uma acao falsa;
+- as abas `Etapa` e `Mapa inicial` preservam a mesma rota e possuem navegacao por teclado;
+- o Mapa inicial edita uma secao por vez: nome, ideia, segmento, problema, publico e objetivo.
+
+### Gerenciamento de startups
+
+- rota `/painel/startups`;
+- lista as startups com fase, progresso, ultima atividade e identificacao da startup ativa;
+- permite abrir, renomear e excluir uma startup;
+- a exclusao exige digitacao do nome e escolhe um fallback seguro quando a startup ativa e removida;
+- a criacao dedicada permanece em `/painel/startups/nova`.
+
+### Modulos visiveis, mas desabilitados
+
+Missoes completas, Experimentos, Aprendizados, Metricas, Documentos, Conquistas e Configuracoes
+continuam na navegacao como arquitetura futura. Eles aparecem como `em breve`, sem links falsos
+ou conteudo de demonstracao apresentado como funcional.
+
+## Referencias historicas de design
+
+Os mockups e relatos desta secao registram a evolucao do projeto. Quando citam `painel`, `Suas
+startups` ou `pagina de detalhe`, descrevem interfaces anteriores a 2026-07-14, nao as rotas e
+componentes vigentes do workspace.
+
+Foram criados mockups visuais que orientaram a tela de login/cadastro implementada:
 
 - `Documentação/mockups/login-cadastro-v1.svg`
 - `Documentação/mockups/login-cadastro-v1.png`
@@ -77,7 +116,7 @@ Permitir entrada real na plataforma, com alternancia entre login e criacao de co
 - botao principal com base escura translcida e contorno laranja neon sutilmente animado
 - fundo com atmosfera quente, escura e futurista
 - validacao visual de erros
-- redirecionamento para painel autenticado inicial
+- redirecionamento para `/painel`, que resolve a criacao ou a Home da startup mais recente
 - portal curto de transicao apos login/cadastro bem-sucedido, antes de abrir a area interna
 
 ### Problema que resolve
@@ -110,12 +149,12 @@ Define o contexto da jornada e evita que o sistema comece sem informacoes basica
 
 ### Estado atual implementado
 
-- exibida em `/painel` quando a conta autenticada ainda nao tem startup
+- exibida em `/painel/startups/nova`; `/painel` apenas resolve o destino correto
 - campo principal para nome da startup
 - opcao para continuar sem definir o nome ainda
 - fluxo em etapas para nome, ideia curta, segmento, problema e publico inicial
 - criacao real persistida no backend apenas no fim da jornada inicial
-- transicao automatica para a visao interna de startups apos sucesso
+- transicao automatica para a Home da startup criada apos sucesso
 - entrada visual por camadas, com flare inicial, marca, logo, card e formulario aparecendo em sequencia
 - troca de etapas refinada com titulo entrando letra por letra e bloco da pergunta aparecendo com fade/blur curto
 - paginas internas da jornada devem conter a largura do card dentro da viewport, sem exigir rolagem lateral
@@ -192,7 +231,11 @@ Coletar uma descricao curta da ideia antes de perguntar classificacoes como segm
 
 Ajuda o usuario a sentir avanco constante e evita uma tela inicial pesada com muitas perguntas.
 
-## 3. Dashboard principal
+## 3. Historico: dashboard provisorio removido em 2026-07-14
+
+O antigo `DashboardScreen` e a tela `Suas startups` foram substituidos pelo workspace atual. A Home
+guia o trabalho da startup, a Jornada concentra etapas e Mapa inicial, e `/painel/startups`
+concentra o gerenciamento. Os itens abaixo registram apenas a versao anterior.
 
 ### Funcao
 
@@ -206,12 +249,23 @@ Exibir uma visao geral da evolucao da startup.
 - proximos passos
 - resumo de recompensas
 
-### Estado atual implementado
+### Estado historico da interface removida
 
 - visao inicial das startups ja criadas para o usuario autenticado
 - contagem simples de startups com nome definido e pendente
 - CTA para criar outra startup
 - botao de saida da conta
+- renomeacao inline no card, com chamada `Dar nome agora` para startups sem nome
+- modal proprio de confirmacao de exclusao (substituiu o dialogo nativo do navegador)
+- titulo do card clicavel e botao `Entrar na startup` levando a pagina de detalhe
+- barra fina de progresso da jornada e proxima etapa em cada card (2026-07-08)
+- metrica `Progresso medio` da conta no lugar de `A definir depois`
+- metrica `Nivel` com XP da conta e fileira de conquistas (2026-07-08)
+
+### Nota historica de direcao (2026-07-08, superada em 2026-07-14)
+
+A composicao implementada nessa data foi preferida em relacao aos mockups do hub. A decisao deixou
+de representar o produto vigente quando a tela foi removida em favor do workspace principal.
 
 ### Direcao visual do mockup mais recente
 
@@ -240,31 +294,59 @@ Exibir uma visao geral da evolucao da startup.
 - quebrar a grade simetrica com uma composicao mais intencional: startup principal, fila secundaria e painel de radar
 - manter a linguagem quente, premium e levemente gamer, sem parecer dashboard corporativo
 
-## 4. Tela de jornada
+## 3A. Historico: pagina de detalhe removida em 2026-07-14
+
+O antigo `StartupDetailScreen` ocupava `/painel/startup/[id]`. Essa rota agora renderiza a Home;
+a Jornada e o Mapa inicial foram movidos para `/painel/startup/[id]/jornada`. A lista abaixo e um
+registro da interface de 2026-07-08, nao do estado atual.
 
 ### Funcao
 
-Apresentar as etapas da estruturacao inicial de forma organizada e navegavel.
+Ser o espaco proprio de uma startup especifica: ver e refinar o mapa inicial e acompanhar a
+jornada.
+
+### Estado historico da interface removida
+
+- rota `/painel/startup/[id]` restrita ao dono
+- topo com retorno ao painel e marca
+- chips de etapa atual e data de fundacao
+- nome com renomeacao inline (mesmo padrao do painel)
+- bloco `Proximo passo` derivado do estado real (dar nome ou proposta de valor)
+- mapa inicial em quatro cards editaveis: ideia, segmento, problema e publico
+- mapa da jornada com as 8 etapas do TCC, barra de progresso e marcacao `Voce esta aqui`
+- jornada jogavel (2026-07-08): etapa atual abre editor com pergunta, dica e exemplo;
+  concluir abre a proxima porta; etapas concluidas podem ser refinadas
+- celebracao curta ao concluir etapa (2026-07-09): anel e faiscas no marcador, glow no card
+- estados de carregamento, erro e startup nao encontrada
+
+## 4. Jornada vigente
+
+### Funcao
+
+Apresentar as oito etapas em `/painel/startup/[id]/jornada`, com lista mestre-detalhe, etapa atual
+aberta, concluidas revisitaveis e futuras bloqueadas com pre-requisito explicito.
 
 ### Papel no projeto
 
 Concentrar a experiencia principal da plataforma.
 
-## 5. Tela de detalhe da etapa
+## 5. Detalhe da etapa integrado a Jornada
 
 ### Funcao
 
-Permitir preenchimento, leitura de orientacoes e conclusao de tarefas de uma etapa especifica.
+Permitir preenchimento, leitura de orientacoes e conclusao dentro do painel de detalhe da Jornada,
+sem criar uma rota ou tela independente.
 
 ### Papel no projeto
 
 Traduzir cada etapa em acao concreta para o usuario.
 
-## 6. Tela de progresso e recompensas
+## 6. Progresso e recompensas distribuidos no workspace
 
 ### Funcao
 
-Exibir niveis, badges, missoes e indicadores de avancar.
+Exibir nivel e sequencia globais na topbar e, na Home, XP, progresso da missao, fase, atividade e
+proximo desbloqueio. Conquistas completas continuam como modulo futuro desabilitado.
 
 ### Papel no projeto
 

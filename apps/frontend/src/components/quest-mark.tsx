@@ -2,15 +2,18 @@ import styles from "./quest-mark.module.css";
 
 type QuestMarkProps = {
   animated?: boolean;
-  mode?: "login" | "register";
+  mode?: "compact" | "login" | "register";
 };
 
 export function QuestMark({ animated = false, mode = "login" }: QuestMarkProps) {
+  const modeClass =
+    mode === "register" ? styles.register : mode === "compact" ? styles.compact : styles.login;
+
   return (
     <div
       className={[
         styles.shell,
-        mode === "register" ? styles.register : styles.login,
+        modeClass,
         animated ? styles.hasBreath : "",
       ]
         .filter(Boolean)

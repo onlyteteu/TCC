@@ -2,193 +2,118 @@
 
 ## Estado atual
 
-Na data de 2026-04-09, o projeto ja possui uma base funcional mais completa e ja entrega os
-primeiros fluxos reais de autenticacao e criacao da startup.
+Em 2026-07-14, a plataforma possui um workspace principal funcional: autenticacao, criacao e
+gerenciamento de startups, Home guiada por missao, Jornada mestre-detalhe e gamificacao ligada a
+atividades reais.
 
-## Implementado neste ciclo
+## Escopo da gamificacao
 
-### 1. Homepage inicial no frontend
+### Global da conta
 
-Foi implementada uma tela inicial com:
+- XP total e nivel combinam as etapas concluidas em todas as startups com eventos operacionais;
+- a sequencia de dias usa atividades significativas, nunca apenas o login;
+- conquistas globais derivam de marcos reais, como fundacao, entrevistas, aprendizado e missao;
+- a topbar preserva nivel e sequencia ao trocar de startup.
 
-- apresentacao da proposta da plataforma
-- resumo do escopo inicial
-- destaque para jornada guiada, progresso e engajamento
+### Local da startup
 
-### Problema que resolve
+- a Home mostra a missao principal, seu progresso, recompensa e desbloqueio;
+- evidencias, aprendizado, etapa da jornada e atividade recente pertencem a startup ativa;
+- fase e progresso da Jornada refletem somente o percurso daquela startup;
+- concluir entrevistas, aprendizado e missao gera eventos deduplicados e evita XP repetido.
 
-Evita que o frontend comece vazio e sem identidade de produto.
+A gamificacao informa e reforca o trabalho empreendedor. Ela nao substitui os criterios reais de
+conclusao, nao premia login isolado e nao cria progresso apenas visual.
 
-### Relacao com o objetivo do projeto
+## Workspace principal implementado em 2026-07-14
 
-Ajuda a consolidar a comunicacao do produto e o posicionamento da plataforma desde o primeiro
-acesso.
+- shell compartilhado com marca, navegacao, seletor, nivel, sequencia e menu de conta;
+- entrada automatica pela startup usada por ultimo;
+- Home orientada pela primeira missao operacional;
+- Jornada com oito etapas, bloqueios honestos e Mapa inicial editavel;
+- gerenciador com abertura, renomeacao, exclusao confirmada e fallback;
+- estados de carregamento, erro, sessao e conteudo ausente nas rotas principais.
+- sessao rejeitada pelo backend limpa o cookie antes de retornar ao login;
+- mutacoes de Home, Jornada e Mapa reconciliam topbar e gerenciador sem recarga manual;
 
-### 2. Login e cadastro reais no frontend
+## Funcionalidades implementadas
 
-Foi implementada uma tela real de autenticacao com:
+### 1. Autenticacao e sessao
 
-- aba de `Entrar`
-- aba de `Criar conta`
-- campos de nome, e-mail, senha e confirmar senha no cadastro
-- campos de e-mail e senha no login
-- animacao sutil de respiracao na logo central
-- redirecionamento para um painel autenticado inicial apos sucesso
+- cadastro, login, perfil e logout reais;
+- sessao protegida por cookie HTTP-only entre Next.js e Django;
+- `/painel` resolve a criacao ou a startup aberta mais recentemente;
+- recursos de outra conta respondem como nao encontrados.
 
-### Problema que resolve
+### 2. Fundacao e ciclo de vida da startup
 
-Substitui o mockup estatico por uma interface funcional, pronta para receber usuarios reais.
+- criacao dedicada em `/painel/startups/nova` com nome opcional, ideia, segmento, problema e publico;
+- listagem, abertura, leitura, atualizacao parcial e exclusao no backend;
+- `last_opened_at` registra a startup usada por ultimo, com ordenacao deterministica e nulos por ultimo;
+- `nextStartupId` fornece fallback depois da exclusao da startup ativa.
 
-### Relacao com o objetivo do projeto
+### 3. Workspace principal
 
-Entrega a primeira porta de entrada concreta da plataforma e prepara a base para os fluxos
-internos.
+- shell unico com marca, sidebar, topbar, seletor de startup e menu de conta;
+- Home em `/painel/startup/[id]`;
+- Jornada em `/painel/startup/[id]/jornada`;
+- gerenciador em `/painel/startups`;
+- somente a area de conteudo rola no layout desktop.
 
-### 3. Endpoint de saude no backend
+### 4. Home guiada por missao
 
-Foi implementado o endpoint:
+- missao principal com objetivo, motivo, passos, progresso, criterio e recompensa;
+- registro de entrevistas como evidencias;
+- sintese do aprendizado liberada depois das cinco entrevistas;
+- conclusao transacional e idempotente;
+- atividade recente e proximo desbloqueio derivados do backend.
 
-- `/api/health/`
+### 5. Jornada e Mapa inicial
 
-### Problema que resolve
+- oito etapas semeadas automaticamente por startup;
+- etapa atual aberta, concluidas revisitaveis e futuras bloqueadas;
+- editor com pergunta, dica, exemplo, rascunho e conclusao;
+- Mapa inicial edita uma secao por vez: nome, ideia, segmento, problema, publico e objetivo;
+- problema e publico permanecem sincronizados entre Startup e Jornada.
 
-Cria um ponto minimo de verificacao tecnica do backend.
+### 6. Gerenciamento de startups
 
-### Relacao com o objetivo do projeto
+- linhas compactas com fase, progresso, ultima atividade e startup ativa;
+- abertura e renomeacao no contexto do workspace;
+- exclusao com dialogo, digitacao do nome e foco controlado;
+- estado vazio encaminha para a criacao.
 
-Nao entrega valor direto ao usuario final, mas sustenta a evolucao segura da plataforma.
+### 7. Gamificacao baseada em atividade real
 
-### 4. API de autenticacao no backend
+- 100 XP por etapa concluida da Jornada;
+- 10 XP por entrevista, 25 XP pelo primeiro aprendizado da missao e 150 XP por sua conclusao;
+- um nivel a cada 300 XP;
+- sequencia calculada por dias com atividade significativa, nunca por login isolado;
+- eventos deduplicados impedem recompensa repetida;
+- nivel e sequencia sao globais da conta; missao, evidencias, aprendizado e fase sao locais da startup.
 
-Foi implementada a autenticacao com os endpoints:
+## Modulos ainda nao implementados
 
-- `/api/auth/register/`
-- `/api/auth/login/`
-- `/api/auth/me/`
-- `/api/auth/logout/`
+- biblioteca completa de Missoes;
+- Experimentos;
+- area propria de Aprendizados;
+- Metricas;
+- Documentos;
+- pagina completa de Conquistas;
+- Configuracoes.
 
-### Problema que resolve
+Eles permanecem desabilitados na sidebar e nao possuem links falsos.
 
-Cria um fluxo real de criacao de conta, entrada na plataforma e validacao de sessao.
+## Historico de implementacao
 
-### Relacao com o objetivo do projeto
+- **2026-04-09:** autenticacao, fundacao em cinco etapas e uma primeira tela `Suas startups`;
+- **2026-07-08:** CRUD, pagina de detalhe, Jornada e primeira gamificacao derivada das etapas;
+- **2026-07-13:** missao de entrevistas, evidencias, aprendizado, eventos operacionais, XP e sequencia;
+- **2026-07-14:** dashboard, pagina de detalhe e tela `Hoje` provisorios foram removidos e suas
+  responsabilidades migraram para Home, Jornada e Gerenciador do workspace atual.
 
-Permite evoluir o produto em cima de usuarios autenticados, o que sustenta a continuidade da
-jornada empreendedora de cada pessoa.
-
-### 5. Modelo inicial de startup
-
-Foi implementada a entidade `Startup` com campos iniciais de cadastro.
-
-### Problema que resolve
-
-Estabelece o primeiro objeto central do dominio.
-
-### Relacao com o objetivo do projeto
-
-Conecta diretamente o backend ao principal objetivo do sistema: permitir que o usuario cadastre e
-estruture sua startup.
-
-### 6. Integracao frontend-backend no fluxo de autenticacao
-
-O frontend passou a conversar com o backend Django por meio de rotas internas do Next.js, que
-recebem os dados do formulario, chamam a API Django e mantem a sessao em cookie HTTP-only.
-
-### Problema que resolve
-
-Evita depender de um frontend isolado ou de um backend sem interface real.
-
-### Relacao com o objetivo do projeto
-
-Estabelece a primeira integracao completa entre interface, regra de negocio e persistencia.
-
-### 7. Fluxo real de criacao da startup
-
-Foi implementado o primeiro fluxo interno apos o login:
-
-- tela real de criacao da startup em `/painel` para contas sem startup
-- opcao para criar a startup mesmo sem definir o nome ainda
-- persistencia da startup vinculada ao usuario autenticado
-- visao interna inicial das startups criadas para contas que ja passaram dessa etapa
-
-### Problema que resolve
-
-Tira o produto do estado de painel placeholder e transforma o pos-login em uma etapa concreta da
-jornada.
-
-### Relacao com o objetivo do projeto
-
-Entrega o primeiro ponto em que o usuario autenticado realmente inicia a estruturacao da startup
-dentro da plataforma.
-
-## Funcionalidades em construcao conceitual
-
-- jornada guiada por etapas
-- dashboard com visao de progresso aprofundada
-- recomendacao de proximos passos
-- tarefas por etapa
-- gamificacao leve com niveis, badges e missoes
-
-## Funcionalidades previstas para o MVP
-
-### 1. Autenticacao
-
-Permitir que o usuario:
-
-- crie uma conta
-- entre na plataforma
-- mantenha uma sessao valida
-
-### 2. Cadastro da startup
-
-Permitir o registro e aprofundamento das informacoes iniciais, como:
-
-- nome
-- descricao resumida
-- segmento
-- estagio atual
-- objetivo inicial
-
-### 3. Jornada guiada
-
-Estruturar a experiencia em etapas de evolucao, como:
-
-1. problema
-2. publico-alvo
-3. proposta de valor
-4. diferenciais
-5. validacao inicial
-6. modelo de negocio
-7. MVP
-8. metas iniciais
-
-### 4. Dashboard de progresso
-
-Exibir:
-
-- progresso geral
-- etapa atual
-- etapas concluidas
-- tarefas pendentes
-- proximo passo sugerido
-
-### 5. Gamificacao
-
-Aplicar elementos de engajamento sem descaracterizar o objetivo do produto:
-
-- niveis
-- badges
-- missoes
-- barras de progresso
-
-## O que foi deixado de fora neste ciclo
-
-- CRUD completo de startups
-- renomeacao e edicao detalhada da startup
-- API de jornada
-- dashboard funcional completo
-- gamificacao implementada
-- recomendacoes inteligentes de proximos passos
+As expressoes `painel inicial`, `Suas startups` e `pagina de detalhe` descrevem apenas esses ciclos
+historicos. Nao representam componentes ou destinos vigentes.
 
 ## Fora do escopo funcional atual
 

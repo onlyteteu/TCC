@@ -26,7 +26,15 @@ Na data de 2026-04-09, o projeto ja possui uma base tecnica funcional para conti
 - visao interna inicial de startups ja criadas para contas autenticadas
 - backend Django com endpoint de saude em `/api/health/`
 - backend Django com autenticacao em `/api/auth/register/`, `/api/auth/login/` e `/api/auth/me/`
-- backend Django com API de startups em `/api/startups/` e `/api/startups/create/`
+- backend Django com API de startups em `/api/startups/`, `/api/startups/create/` e
+  `/api/startups/<id>/` (GET para detalhe, PATCH para editar/renomear, DELETE para excluir)
+- pagina de detalhe da startup em `/painel/startup/[id]` com mapa inicial editavel e jornada
+  guiada jogavel
+- backend Django com API da jornada em `/api/startups/<id>/journey/` (GET) e
+  `/api/startups/<id>/journey/<etapa>/` (PATCH para responder/concluir)
+- modelo `JourneyStep` com as 8 etapas da estruturacao inicial, semeado automaticamente
+- painel com progresso da jornada por card, progresso medio, nivel com XP e conquistas
+  calculadas do estado real da conta
 - modelo inicial `Startup`
 - startup vinculada ao usuario autenticado
 - migrations do modulo `startups` aplicadas

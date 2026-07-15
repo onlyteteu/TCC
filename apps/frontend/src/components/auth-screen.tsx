@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import type { CSSProperties } from "react";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 import { QuestMark } from "@/components/quest-mark";
 import type { AuthErrorPayload, AuthMode, AuthSuccessPayload } from "@/lib/auth-types";
@@ -30,8 +30,6 @@ const fieldLabels: Record<keyof AuthFormState, string> = {
   confirmPassword: "Confirmar senha",
 };
 
-const JOURNEY_OPENING_DELAY = 1050;
-
 export function AuthScreen() {
   const router = useRouter();
   const [mode, setMode] = useState<AuthMode>("login");
@@ -41,7 +39,6 @@ export function AuthScreen() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isJourneyOpening, setIsJourneyOpening] = useState(false);
-  const journeyTimeoutRef = useRef<number | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const submitLabel = mode === "login" ? "Entrar na plataforma" : "Criar conta";
@@ -49,12 +46,6 @@ export function AuthScreen() {
 
   useEffect(() => {
     router.prefetch("/painel");
-
-    return () => {
-      if (journeyTimeoutRef.current !== null) {
-        window.clearTimeout(journeyTimeoutRef.current);
-      }
-    };
   }, [router]);
 
   const activeFields =
@@ -158,12 +149,9 @@ export function AuthScreen() {
           : successPayload.message
       );
       setIsJourneyOpening(true);
-
-      journeyTimeoutRef.current = window.setTimeout(() => {
-        startTransition(() => {
-          router.push("/painel");
-        });
-      }, JOURNEY_OPENING_DELAY);
+      startTransition(() => {
+        router.push("/painel");
+      });
     } catch {
       setStatusMessage(
         "Nao foi possivel falar com o servidor agora. Confira se o backend Django esta rodando."
