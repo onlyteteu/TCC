@@ -92,6 +92,21 @@ class JourneyStep(models.Model):
 
 
 class Mission(models.Model):
+    class Origin(models.TextChoices):
+        CATALOG = "catalog", "Catalogo"
+        DYNAMIC = "dynamic", "Dinamica"
+
+    class ActionType(models.TextChoices):
+        INTERVIEWS = "interviews", "Entrevistas"
+        PROBLEM_REFINEMENT = "problem_refinement", "Refinamento do problema"
+        AUDIENCE_VALIDATION = "audience_validation", "Validacao do publico"
+        VALUE_PROPOSITION = "value_proposition", "Proposta de valor"
+        ALTERNATIVES_MAP = "alternatives_map", "Mapa de alternativas"
+
+    class CompletionRule(models.TextChoices):
+        INTERVIEWS_AND_LEARNING = "interviews_learning", "Entrevistas e aprendizado"
+        PRIMARY_SUBMISSION = "primary_submission", "Entregavel principal"
+
     class Status(models.TextChoices):
         LOCKED = "locked", "Bloqueada"
         AVAILABLE = "available", "Disponivel"
@@ -122,6 +137,23 @@ class Mission(models.Model):
     contextual_tip = models.TextField(blank=True)
     required_evidence_count = models.PositiveSmallIntegerField(default=0)
     xp_reward = models.PositiveIntegerField(default=0)
+    definition_version = models.PositiveSmallIntegerField(default=1)
+    origin = models.CharField(max_length=20, choices=Origin.choices, default=Origin.CATALOG)
+    is_required = models.BooleanField(default=True)
+    priority = models.PositiveSmallIntegerField(default=100)
+    prerequisite_keys = models.JSONField(default=list, blank=True)
+    action_type = models.CharField(
+        max_length=30,
+        choices=ActionType.choices,
+        default=ActionType.INTERVIEWS,
+    )
+    completion_rule = models.CharField(
+        max_length=30,
+        choices=CompletionRule.choices,
+        default=CompletionRule.INTERVIEWS_AND_LEARNING,
+    )
+    requirement_config = models.JSONField(default=dict, blank=True)
+    step_blueprint = models.JSONField(default=list, blank=True)
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
@@ -166,16 +198,27 @@ class MissionEvidence(models.Model):
         choices=Type.choices,
         default=Type.INTERVIEW,
     )
-    interviewee_name = models.CharField(max_length=120)
+    title = models.CharField(max_length=180, blank=True, default="")
+    summary = models.TextField(blank=True, default="")
+    details = models.JSONField(default=dict, blank=True)
+    submission_key = models.CharField(max_length=80, blank=True, default="")
+    interviewee_name = models.CharField(max_length=120, blank=True, default="")
     interviewee_profile = models.CharField(max_length=180, blank=True)
     context = models.CharField(max_length=300, blank=True)
-    notes = models.TextField()
+    notes = models.TextField(blank=True, default="")
     occurred_on = models.DateField(default=timezone.localdate)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["-occurred_on", "-created_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["mission", "submission_key"],
+                condition=models.Q(submission_key__gt=""),
+                name="unique_submission_key_per_mission",
+            ),
+        ]
         verbose_name = "Evidencia de missao"
         verbose_name_plural = "Evidencias de missao"
 
@@ -230,6 +273,7 @@ class Learning(models.Model):
 class ActivityEvent(models.Model):
     class Kind(models.TextChoices):
         INTERVIEW_RECORDED = "interview_recorded", "Entrevista registrada"
+        EVIDENCE_RECORDED = "evidence_recorded", "Evidencia registrada"
         LEARNING_RECORDED = "learning_recorded", "Aprendizado registrado"
         MISSION_COMPLETED = "mission_completed", "Missao concluida"
         JOURNEY_STEP_COMPLETED = "journey_step_completed", "Etapa concluida"
