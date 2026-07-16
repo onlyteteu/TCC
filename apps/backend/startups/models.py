@@ -307,70 +307,11 @@ class ActivityEvent(models.Model):
         return self.description
 
 
-MISSION_BLUEPRINTS = [
-    {
-        "key": "customer_interviews_5",
-        "mission_type": Mission.Type.MAIN,
-        "phase": "Descoberta",
-        "title": "Converse com 5 potenciais clientes",
-        "objective": "Entender como o problema acontece na vida real antes de definir a solução.",
-        "why_it_matters": (
-            "Conversas reais substituem suposições por evidências e ajudam a descobrir se a dor "
-            "é frequente, importante e compartilhada pelo público inicial."
-        ),
-        "instructions": [
-            "Prepare um roteiro curto com perguntas sobre situações reais do passado.",
-            "Converse com cinco pessoas do público inicial sem apresentar sua solução.",
-            "Registre cada entrevista e depois resuma os padrões encontrados.",
-        ],
-        "completion_criteria": (
-            "Registrar cinco entrevistas e uma síntese de aprendizado baseada nos padrões."
-        ),
-        "contextual_tip": (
-            "Evite apresentar sua solução. Pergunte sobre situações reais do passado."
-        ),
-        "required_evidence_count": 5,
-        "xp_reward": 150,
-        "status": Mission.Status.AVAILABLE,
-        "order": 0,
-    },
-]
-
-
 def ensure_missions(startup: Startup) -> None:
-    """Cria as missoes-base sem duplicar instancias existentes."""
-    for blueprint in MISSION_BLUEPRINTS:
-        key = blueprint["key"]
-        defaults = {name: value for name, value in blueprint.items() if name != "key"}
-        mission, created = Mission.objects.get_or_create(
-            startup=startup,
-            key=key,
-            defaults=defaults,
-        )
+    """Compatibilidade temporaria ate a camada HTTP adotar o novo motor."""
+    from .mission_engine import sync_mission_catalog
 
-        if not created:
-            content_fields = (
-                "mission_type",
-                "phase",
-                "title",
-                "objective",
-                "why_it_matters",
-                "instructions",
-                "completion_criteria",
-                "contextual_tip",
-                "required_evidence_count",
-                "xp_reward",
-                "order",
-            )
-            changed_fields = []
-            for field in content_fields:
-                value = defaults[field]
-                if getattr(mission, field) != value:
-                    setattr(mission, field, value)
-                    changed_fields.append(field)
-
-            if changed_fields:
-                mission.save(update_fields=[*changed_fields, "updated_at"])
+    sync_mission_catalog(startup)
 
 
 def ensure_journey(startup: Startup) -> None:
