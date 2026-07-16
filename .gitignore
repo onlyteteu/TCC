@@ -47,3 +47,4 @@ apps/frontend/.npm-cache/
 apps/backend/.codex-temp/
 .codex-runtime-logs/
 .superpowers/
+.worktrees/
