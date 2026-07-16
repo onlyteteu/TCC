@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from .mission_catalog import MISSION_DEFINITIONS, MissionDefinition, validate_catalog
 from .mission_engine import sync_mission_catalog
-from .models import ActivityEvent, Mission, MissionEvidence, Startup
+from .models import ActivityEvent, Mission, MissionEvidence, Startup, ensure_missions
 
 User = get_user_model()
 
@@ -87,6 +87,20 @@ class MissionCatalogTests(TestCase):
         mission.refresh_from_db()
 
         self.assertEqual(mission.title, "Titulo preservado")
+        self.assertEqual(mission.definition_version, 1)
+
+    def test_legacy_shim_preserves_started_mission_snapshot(self):
+        ensure_missions(self.startup)
+        mission = self.startup.missions.get(key="customer_interviews_5")
+        mission.status = Mission.Status.IN_PROGRESS
+        mission.title = "Titulo legado preservado"
+        mission.definition_version = 1
+        mission.save()
+
+        ensure_missions(self.startup)
+        mission.refresh_from_db()
+
+        self.assertEqual(mission.title, "Titulo legado preservado")
         self.assertEqual(mission.definition_version, 1)
 
     def test_catalog_rejects_a_dependency_cycle(self):
