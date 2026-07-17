@@ -12,7 +12,15 @@ from .mission_engine import (
     sync_mission_catalog,
 )
 from .mission_submissions import SubmissionValidationError, apply_mission_submission
-from .models import ActivityEvent, JourneyStep, Learning, Mission, MissionEvidence, Startup
+from .models import (
+    ActivityEvent,
+    JourneyStep,
+    Learning,
+    Mission,
+    MissionEvidence,
+    Startup,
+    ensure_journey,
+)
 
 User = get_user_model()
 
@@ -243,3 +251,76 @@ class MissionCatalogTests(TestCase):
         self.assertEqual(audience_step.answer, self.startup.audience)
         self.assertEqual(mutation.evidence.details["decision"], "adjust")
         self.assertEqual(mutation.mission.status, Mission.Status.COMPLETED)
+
+    def test_audience_completion_releases_value_and_alternatives_in_parallel(self):
+        self.complete_prerequisites(
+            "customer_interviews_5",
+            "refine_problem_with_evidence",
+            "validate_priority_audience",
+        )
+
+        value = self.startup.missions.get(key="reframe_value_proposition")
+        alternatives = self.startup.missions.get(key="map_current_alternatives")
+        self.assertEqual(value.status, Mission.Status.AVAILABLE)
+        self.assertEqual(alternatives.status, Mission.Status.AVAILABLE)
+        self.assertEqual(select_recommended_mission(self.startup).key, value.key)
+
+    def test_value_submission_updates_and_completes_current_value_step(self):
+        self.complete_prerequisites(
+            "customer_interviews_5",
+            "refine_problem_with_evidence",
+            "validate_priority_audience",
+        )
+        mission = self.startup.missions.get(key="reframe_value_proposition")
+
+        mutation = apply_mission_submission(
+            self.startup,
+            mission,
+            {
+                "valueProposition": "Ajudamos restaurantes independentes a enxergar o estoque antes de comprar e reduzir perdas semanais.",
+                "rationale": "A promessa combina o público validado, a compra duplicada e o resultado observado nas entrevistas.",
+            },
+        )
+
+        value_step = self.startup.journey_steps.get(key=Startup.Stage.VALUE)
+        differentiators = self.startup.journey_steps.get(
+            key=Startup.Stage.DIFFERENTIATORS
+        )
+        self.assertEqual(value_step.status, JourneyStep.Status.DONE)
+        self.assertEqual(differentiators.status, JourneyStep.Status.CURRENT)
+        self.assertEqual(
+            value_step.answer, mutation.evidence.details["valueProposition"]
+        )
+
+    def test_alternatives_submission_does_not_advance_an_unrelated_journey_step(self):
+        self.complete_prerequisites(
+            "customer_interviews_5",
+            "refine_problem_with_evidence",
+            "validate_priority_audience",
+        )
+        ensure_journey(self.startup)
+        value_step = self.startup.journey_steps.get(key=Startup.Stage.VALUE)
+        differentiators = self.startup.journey_steps.get(
+            key=Startup.Stage.DIFFERENTIATORS
+        )
+        mission = self.startup.missions.get(key="map_current_alternatives")
+
+        mutation = apply_mission_submission(
+            self.startup,
+            mission,
+            {
+                "alternatives": "Caderno, planilha, memória do comprador e conferência visual feita somente no momento da compra.",
+                "limitations": "As alternativas dependem de disciplina manual e não mostram duplicidade antes do pedido ao fornecedor.",
+                "opportunity": "Oferecer visibilidade simples e preventiva sem exigir um ERP completo do restaurante.",
+            },
+        )
+
+        value_step.refresh_from_db()
+        differentiators.refresh_from_db()
+        self.assertEqual(value_step.status, JourneyStep.Status.CURRENT)
+        self.assertEqual(differentiators.status, JourneyStep.Status.PENDING)
+        self.assertEqual(differentiators.answer, "")
+        self.assertEqual(
+            mutation.evidence.details["opportunity"],
+            "Oferecer visibilidade simples e preventiva sem exigir um ERP completo do restaurante.",
+        )

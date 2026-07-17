@@ -4,7 +4,14 @@ from django.db import transaction
 from django.utils import timezone
 
 from .mission_engine import complete_mission_record, reconcile_mission_states
-from .models import ActivityEvent, Mission, MissionEvidence, Startup, ensure_journey
+from .models import (
+    ActivityEvent,
+    JourneyStep,
+    Mission,
+    MissionEvidence,
+    Startup,
+    ensure_journey,
+)
 
 XP_PER_GENERIC_EVIDENCE = 25
 
@@ -102,9 +109,75 @@ def _audience_validation(payload):
     )
 
 
+def _value_proposition(payload):
+    errors = {}
+    value = _required_text(
+        payload,
+        "valueProposition",
+        minimum=30,
+        label="A proposta de valor",
+        field_errors=errors,
+    )
+    rationale = _required_text(
+        payload,
+        "rationale",
+        minimum=30,
+        label="A justificativa",
+        field_errors=errors,
+    )
+    if errors:
+        raise SubmissionValidationError("Revise a proposta de valor.", errors)
+    return SubmissionResult(
+        title="Proposta de valor reformulada",
+        summary=rationale,
+        details={"valueProposition": value, "rationale": rationale},
+        journey_key=Startup.Stage.VALUE,
+        journey_answer=value,
+        complete_journey_step=True,
+    )
+
+
+def _alternatives_map(payload):
+    errors = {}
+    alternatives = _required_text(
+        payload,
+        "alternatives",
+        minimum=40,
+        label="As alternativas",
+        field_errors=errors,
+    )
+    limitations = _required_text(
+        payload,
+        "limitations",
+        minimum=40,
+        label="As limitações",
+        field_errors=errors,
+    )
+    opportunity = _required_text(
+        payload,
+        "opportunity",
+        minimum=30,
+        label="A oportunidade",
+        field_errors=errors,
+    )
+    if errors:
+        raise SubmissionValidationError("Revise o mapa de alternativas.", errors)
+    return SubmissionResult(
+        title="Alternativas atuais mapeadas",
+        summary=opportunity,
+        details={
+            "alternatives": alternatives,
+            "limitations": limitations,
+            "opportunity": opportunity,
+        },
+    )
+
+
 VALIDATORS = {
     Mission.ActionType.PROBLEM_REFINEMENT: _problem_refinement,
     Mission.ActionType.AUDIENCE_VALIDATION: _audience_validation,
+    Mission.ActionType.VALUE_PROPOSITION: _value_proposition,
+    Mission.ActionType.ALTERNATIVES_MAP: _alternatives_map,
 }
 
 
@@ -115,6 +188,25 @@ def _update_journey(startup, result):
     step = startup.journey_steps.select_for_update().get(key=result.journey_key)
     step.answer = result.journey_answer
     step.save(update_fields=["answer", "updated_at"])
+
+    if result.complete_journey_step and step.status == JourneyStep.Status.CURRENT:
+        step.status = JourneyStep.Status.DONE
+        step.completed_at = timezone.now()
+        step.save(update_fields=["answer", "status", "completed_at", "updated_at"])
+        next_step = (
+            startup.journey_steps.select_for_update()
+            .filter(
+                status=JourneyStep.Status.PENDING,
+                order__gt=step.order,
+            )
+            .order_by("order")
+            .first()
+        )
+        if next_step:
+            next_step.status = JourneyStep.Status.CURRENT
+            next_step.save(update_fields=["status", "updated_at"])
+            startup.current_stage = next_step.key
+            startup.save(update_fields=["current_stage", "updated_at"])
 
     startup_field = {
         Startup.Stage.PROBLEM: "problem",
