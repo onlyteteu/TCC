@@ -221,7 +221,13 @@ def _update_journey(startup, result):
 def apply_mission_submission(startup, mission, payload):
     mission = Mission.objects.select_for_update().get(pk=mission.pk, startup=startup)
     existing = mission.evidences.filter(submission_key="primary").first()
-    if mission.status == Mission.Status.COMPLETED and existing:
+    completed_with_evidence = (
+        mission.status == Mission.Status.COMPLETED and existing is not None
+    )
+    if (
+        completed_with_evidence
+        and mission.action_type != Mission.ActionType.VALUE_PROPOSITION
+    ):
         return SubmissionMutation(mission, existing, False, False)
     if mission.status == Mission.Status.LOCKED:
         raise SubmissionValidationError("Essa missão ainda está bloqueada.")
@@ -229,6 +235,8 @@ def apply_mission_submission(startup, mission, payload):
         raise SubmissionValidationError("Essa missão não aceita este tipo de entrega.")
 
     result = VALIDATORS[mission.action_type](payload)
+    if completed_with_evidence and result.details == existing.details:
+        return SubmissionMutation(mission, existing, False, False)
     _update_journey(startup, result)
     evidence, created = MissionEvidence.objects.update_or_create(
         mission=mission,

@@ -292,6 +292,64 @@ class MissionCatalogTests(TestCase):
             value_step.answer, mutation.evidence.details["valueProposition"]
         )
 
+    def test_completed_value_submission_can_be_revised_without_reopening_or_new_xp(self):
+        self.complete_prerequisites(
+            "customer_interviews_5",
+            "refine_problem_with_evidence",
+            "validate_priority_audience",
+        )
+        mission = self.startup.missions.get(key="reframe_value_proposition")
+        original = apply_mission_submission(
+            self.startup,
+            mission,
+            {
+                "valueProposition": "Ajudamos restaurantes independentes a enxergar o estoque antes de comprar e reduzir perdas semanais.",
+                "rationale": "A promessa combina o público validado, a compra duplicada e o resultado observado nas entrevistas.",
+            },
+        )
+        evidence_count = mission.evidences.count()
+        event_count = self.startup.activity_events.count()
+        awarded_xp = sum(
+            self.startup.activity_events.values_list("xp_awarded", flat=True)
+        )
+
+        revised = apply_mission_submission(
+            self.startup,
+            mission,
+            {
+                "valueProposition": "Ajudamos restaurantes independentes a antecipar compras duplicadas e preservar margem toda semana.",
+                "rationale": "A revisão torna explícito o ganho financeiro prioritário confirmado nas entrevistas com os compradores.",
+            },
+        )
+
+        self.startup.refresh_from_db()
+        value_step = self.startup.journey_steps.get(key=Startup.Stage.VALUE)
+        mission.refresh_from_db()
+        revised.evidence.refresh_from_db()
+        self.assertEqual(revised.evidence.pk, original.evidence.pk)
+        self.assertEqual(
+            revised.evidence.details["valueProposition"],
+            "Ajudamos restaurantes independentes a antecipar compras duplicadas e preservar margem toda semana.",
+        )
+        self.assertEqual(
+            revised.evidence.details["rationale"],
+            "A revisão torna explícito o ganho financeiro prioritário confirmado nas entrevistas com os compradores.",
+        )
+        self.assertEqual(
+            value_step.answer, revised.evidence.details["valueProposition"]
+        )
+        self.assertEqual(value_step.status, JourneyStep.Status.DONE)
+        self.assertEqual(self.startup.current_stage, Startup.Stage.DIFFERENTIATORS)
+        self.assertEqual(mission.status, Mission.Status.COMPLETED)
+        self.assertEqual(mission.evidences.count(), evidence_count)
+        self.assertEqual(self.startup.activity_events.count(), event_count)
+        self.assertEqual(
+            sum(self.startup.activity_events.values_list("xp_awarded", flat=True)),
+            awarded_xp,
+        )
+        self.assertFalse(revised.evidence_created)
+        self.assertFalse(revised.completed_now)
+
     def test_alternatives_submission_does_not_advance_an_unrelated_journey_step(self):
         self.complete_prerequisites(
             "customer_interviews_5",
