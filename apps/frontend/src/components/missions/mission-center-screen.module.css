@@ -1,0 +1,598 @@
+.page {
+  width: 100%;
+  max-width: 1540px;
+  margin: 0 auto;
+  padding: 32px;
+  color: #f7efe3;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 24px;
+}
+
+.header h1,
+.sectionHeading h2,
+.focus h2 {
+  text-wrap: balance;
+}
+
+.header h1 {
+  margin: 0;
+  color: #f7efe3;
+  font-size: 2.3rem;
+  letter-spacing: -0.025em;
+}
+
+.header p,
+.sectionHeading p {
+  max-width: 70ch;
+  margin: 8px 0 0;
+  color: #9aa8b8;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.arcProgress {
+  display: grid;
+  grid-template-columns: auto auto;
+  min-width: 230px;
+  gap: 7px 24px;
+  padding: 13px 15px;
+  border: 1px solid #203145;
+  border-radius: 12px;
+  background: #0b111c;
+}
+
+.arcProgress strong {
+  color: #f7efe3;
+}
+
+.arcProgress > span {
+  color: #f2a51a;
+  font-weight: 800;
+  text-align: right;
+}
+
+.arcTrack {
+  grid-column: 1 / -1;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #203145;
+}
+
+.arcTrack span,
+.progressTrack span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #f2a51a;
+}
+
+.focus {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 40px;
+  padding: 30px;
+  border: 1px solid rgba(242, 165, 26, 0.48);
+  border-radius: 16px;
+  background: #0b111c;
+}
+
+.focusCopy {
+  min-width: 0;
+}
+
+.focusReason {
+  max-width: 72ch;
+  margin: 0 0 14px;
+  color: #f2a51a;
+  font-size: 0.9rem;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+.focus h2 {
+  max-width: 24ch;
+  margin: 0;
+  color: #f7efe3;
+  font-size: 2rem;
+  letter-spacing: -0.025em;
+  line-height: 1.16;
+}
+
+.focusObjective {
+  max-width: 68ch;
+  margin: 10px 0 0;
+  color: #9aa8b8;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.missionProgress {
+  max-width: 680px;
+  margin-top: 25px;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+  color: #9aa8b8;
+  font-size: 0.86rem;
+}
+
+.progressLabel strong {
+  color: #f2a51a;
+}
+
+.progressTrack {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #203145;
+}
+
+.focusAction {
+  display: grid;
+  min-width: 190px;
+  justify-items: end;
+  gap: 15px;
+}
+
+.reward {
+  color: #f2a51a;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.primaryAction,
+.retryButton {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 10px;
+  background: #f2a51a;
+  color: #070b13;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 160ms ease-out, transform 160ms ease-out;
+}
+
+.primaryAction svg {
+  width: 18px;
+  height: 18px;
+}
+
+.primaryAction:hover,
+.retryButton:hover {
+  background: #ffb630;
+  transform: translateY(-1px);
+}
+
+.primaryAction:focus-visible,
+.alternativeLink:focus-visible,
+.trailRow:focus-visible,
+.retryButton:focus-visible {
+  outline: 2px solid #f2a51a;
+  outline-offset: 3px;
+}
+
+.availableSection,
+.trailSection {
+  margin-top: 34px;
+}
+
+.sectionHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 28px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #203145;
+}
+
+.sectionHeading h2 {
+  margin: 0;
+  color: #f7efe3;
+  font-size: 1.2rem;
+}
+
+.sectionHeading p {
+  margin: 0;
+  font-size: 0.86rem;
+  text-align: right;
+}
+
+.availableList,
+.trail {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.availableList li {
+  border-bottom: 1px solid #203145;
+}
+
+.alternativeLink {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 17px 10px;
+  color: #f7efe3;
+  text-decoration: none;
+  transition: background 160ms ease-out;
+}
+
+.alternativeLink:hover {
+  background: #0b111c;
+}
+
+.alternativeLink > span:first-child {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.alternativeLink small {
+  overflow: hidden;
+  color: #9aa8b8;
+  font-size: 0.84rem;
+  font-weight: 400;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.alternativeMeta {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 9px;
+  color: #f2a51a;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.alternativeMeta svg {
+  width: 17px;
+  height: 17px;
+}
+
+.trail {
+  counter-reset: mission-trail;
+}
+
+.trail li {
+  counter-increment: mission-trail;
+  border-bottom: 1px solid #203145;
+}
+
+.trailRow {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  min-width: 0;
+  align-items: center;
+  gap: 16px;
+  padding: 17px 10px;
+  color: #f7efe3;
+  text-decoration: none;
+  transition: background 160ms ease-out;
+}
+
+a.trailRow:hover {
+  background: #0b111c;
+}
+
+.trailIcon {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid #203145;
+  border-radius: 10px;
+  background: #0b111c;
+  color: #9aa8b8;
+}
+
+.trailIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.trailCopy {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.trailCopy > span {
+  overflow: hidden;
+  color: #9aa8b8;
+  font-size: 0.84rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trailCopy small {
+  color: #bac5d1;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.trailState {
+  color: #9aa8b8;
+  font-size: 0.82rem;
+  font-weight: 750;
+  text-align: right;
+}
+
+.trail_in_progress .trailRow {
+  background: rgba(242, 165, 26, 0.08);
+}
+
+.trail_in_progress .trailIcon,
+.trail_in_progress .trailState,
+.trail_available .trailState {
+  border-color: rgba(242, 165, 26, 0.48);
+  color: #f2a51a;
+}
+
+.trail_completed .trailIcon {
+  border-color: #2f6550;
+  background: #10241b;
+  color: #bfe8ce;
+}
+
+.trail_completed .trailState {
+  color: #bfe8ce;
+}
+
+.trail_locked .trailRow {
+  color: #9aa8b8;
+  cursor: not-allowed;
+}
+
+.trail_locked .trailIcon,
+.trail_locked .trailState {
+  color: #7f8da0;
+}
+
+.focusCompleted {
+  display: block;
+  border-color: #2f6550;
+  background: #10241b;
+}
+
+.completedFocus,
+.noFocus {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.completedFocus p,
+.noFocus p {
+  max-width: 70ch;
+  margin: 9px 0 0;
+  color: #bfe8ce;
+  line-height: 1.55;
+}
+
+.completedIcon,
+.noFocus > svg {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid #2f6550;
+  border-radius: 12px;
+  color: #bfe8ce;
+}
+
+.completedIcon svg,
+.noFocus > svg {
+  width: 21px;
+  height: 21px;
+}
+
+.noFocus p {
+  color: #9aa8b8;
+}
+
+.skeletonPage {
+  width: 100%;
+  max-width: 1540px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.skeletonHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.skeletonHeader span,
+.skeletonFocus,
+.skeletonTrail span {
+  display: block;
+  border-radius: 12px;
+  background: #0b111c;
+  animation: skeleton-pulse 1.2s ease-in-out infinite alternate;
+}
+
+.skeletonHeader span:first-child {
+  width: min(360px, 55%);
+  height: 70px;
+}
+
+.skeletonHeader span:last-child {
+  width: 230px;
+  height: 70px;
+}
+
+.skeletonFocus {
+  height: 270px;
+  margin-top: 24px;
+  border: 1px solid #203145;
+}
+
+.skeletonTrail {
+  display: grid;
+  gap: 1px;
+  margin-top: 34px;
+  background: #203145;
+}
+
+.skeletonTrail span {
+  height: 72px;
+  border-radius: 0;
+}
+
+.errorPanel {
+  display: grid;
+  width: min(620px, calc(100% - 48px));
+  min-height: 320px;
+  margin: 48px auto;
+  padding: 28px;
+  place-content: center;
+  justify-items: start;
+  border: 1px solid #203145;
+  border-radius: 16px;
+  background: #0b111c;
+  color: #f7efe3;
+}
+
+.errorPanel > svg {
+  color: #f2a51a;
+}
+
+.errorPanel h1 {
+  margin: 16px 0 0;
+  font-size: 1.45rem;
+}
+
+.errorPanel p {
+  margin: 8px 0 20px;
+  color: #9aa8b8;
+  line-height: 1.55;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes skeleton-pulse {
+  from {
+    opacity: 0.58;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1120px) {
+  .page,
+  .skeletonPage {
+    padding: 24px;
+  }
+
+  .focus {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .focusAction {
+    min-width: 0;
+    justify-items: start;
+  }
+}
+
+@media (max-width: 680px) {
+  .page,
+  .skeletonPage {
+    padding: 18px;
+  }
+
+  .header,
+  .sectionHeading,
+  .alternativeLink {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .arcProgress {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .focus {
+    padding: 22px;
+  }
+
+  .sectionHeading p {
+    text-align: left;
+  }
+
+  .alternativeLink {
+    gap: 10px;
+  }
+
+  .trailRow {
+    grid-template-columns: 36px minmax(0, 1fr);
+  }
+
+  .trailState {
+    grid-column: 2;
+    text-align: left;
+  }
+
+  .trailCopy > span {
+    white-space: normal;
+  }
+
+  .skeletonHeader span:last-child {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arcTrack span,
+  .progressTrack span,
+  .primaryAction,
+  .retryButton,
+  .alternativeLink,
+  .trailRow {
+    transition: none;
+  }
+
+  .skeletonHeader span,
+  .skeletonFocus,
+  .skeletonTrail span {
+    animation: none;
+  }
+}
