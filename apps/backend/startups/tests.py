@@ -725,9 +725,14 @@ class MissionApiTests(TestCase):
         self.assertEqual(payload["mission"]["status"], "available")
         self.assertEqual(payload["mission"]["requiredEvidenceCount"], 5)
         self.assertEqual(payload["mission"]["evidenceCount"], 0)
+        self.assertEqual(payload["missionState"], "active")
+        self.assertEqual(
+            payload["mission"]["recommendationReason"],
+            "Comece por evid\u00eancias reais antes de avan\u00e7ar para a solu\u00e7\u00e3o.",
+        )
         self.assertEqual(payload["journey"]["progress"], 25)
         self.assertFalse(payload["nextUnlock"]["available"])
-        self.assertEqual(Mission.objects.filter(startup=self.startup).count(), 1)
+        self.assertEqual(Mission.objects.filter(startup=self.startup).count(), 5)
 
     def test_recording_interview_requires_real_notes(self):
         response = self.client.post(
@@ -769,7 +774,10 @@ class MissionApiTests(TestCase):
 
         self.assertEqual(response.status_code, 409)
         self.assertFalse(response.json()["mission"]["requirements"][1]["completed"])
-        self.assertEqual(Mission.objects.get().status, Mission.Status.IN_PROGRESS)
+        self.assertEqual(
+            Mission.objects.get(key="customer_interviews_5").status,
+            Mission.Status.IN_PROGRESS,
+        )
 
     def test_complete_mission_awards_reward_and_unlocks_next_step(self):
         self.add_required_interviews()
@@ -780,11 +788,15 @@ class MissionApiTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         payload = response.json()
-        self.assertEqual(payload["mission"]["status"], "completed")
+        self.assertEqual(payload["mission"]["key"], "refine_problem_with_evidence")
+        self.assertEqual(payload["mission"]["status"], "available")
         self.assertEqual(payload["gamification"]["xp"], 425)
         self.assertEqual(payload["gamification"]["level"], 2)
-        self.assertTrue(payload["nextUnlock"]["available"])
         self.assertEqual(payload["celebration"]["xpAwarded"], 150)
+        self.assertEqual(
+            payload["celebration"]["unlocked"],
+            "Refine o problema com evid\u00eancias",
+        )
         unlocked = {
             achievement["key"]
             for achievement in payload["gamification"]["achievements"]
@@ -807,6 +819,22 @@ class MissionApiTests(TestCase):
             1,
         )
         self.assertEqual(second.json()["gamification"]["xp"], 425)
+
+    def test_today_marks_the_initial_arc_complete(self):
+        self.client.get(self.today_url(), **self.auth)
+        Mission.objects.filter(startup=self.startup).update(
+            status=Mission.Status.COMPLETED,
+            completed_at=timezone.now(),
+        )
+
+        response = self.client.get(self.today_url(), **self.auth)
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIsNone(payload["mission"])
+        self.assertEqual(payload["missionState"], "arc_complete")
+        self.assertEqual(payload["nextUnlock"]["title"], "Pr\u00f3xima trilha")
+        self.assertFalse(payload["nextUnlock"]["available"])
 
     def test_mission_endpoints_require_startup_owner(self):
         other_user = User.objects.create_user(

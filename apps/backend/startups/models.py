@@ -307,37 +307,6 @@ class ActivityEvent(models.Model):
         return self.description
 
 
-def ensure_missions(startup: Startup) -> None:
-    """Compatibilidade temporaria ate a camada HTTP adotar o novo motor."""
-    from .mission_catalog import MISSION_DEFINITIONS
-
-    definition = MISSION_DEFINITIONS[0]
-    snapshot = definition.snapshot()
-    mission, created = Mission.objects.get_or_create(
-        startup=startup,
-        key=definition.key,
-        defaults={**snapshot, "status": Mission.Status.AVAILABLE},
-    )
-    if created:
-        return
-
-    may_refresh_snapshot = (
-        mission.started_at is None
-        and mission.completed_at is None
-        and mission.status in {Mission.Status.LOCKED, Mission.Status.AVAILABLE}
-    )
-    if not may_refresh_snapshot:
-        return
-
-    changed = []
-    for field, value in snapshot.items():
-        if getattr(mission, field) != value:
-            setattr(mission, field, value)
-            changed.append(field)
-    if changed:
-        mission.save(update_fields=[*changed, "updated_at"])
-
-
 def ensure_journey(startup: Startup) -> None:
     """Garante que a startup tenha as 8 etapas da jornada.
 

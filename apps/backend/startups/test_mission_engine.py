@@ -2,8 +2,14 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from .mission_catalog import MISSION_DEFINITIONS, MissionDefinition, validate_catalog
-from .mission_engine import sync_mission_catalog
-from .models import ActivityEvent, Mission, MissionEvidence, Startup, ensure_missions
+from .mission_engine import (
+    complete_mission_record,
+    evaluate_mission,
+    recommendation_reason,
+    select_recommended_mission,
+    sync_mission_catalog,
+)
+from .models import ActivityEvent, Learning, Mission, MissionEvidence, Startup
 
 User = get_user_model()
 
@@ -89,19 +95,74 @@ class MissionCatalogTests(TestCase):
         self.assertEqual(mission.title, "Titulo preservado")
         self.assertEqual(mission.definition_version, 1)
 
-    def test_legacy_shim_preserves_started_mission_snapshot(self):
-        ensure_missions(self.startup)
+    def test_recommendation_prefers_in_progress_over_available(self):
+        sync_mission_catalog(self.startup)
+        first = self.startup.missions.get(key="customer_interviews_5")
+        second = self.startup.missions.get(key="refine_problem_with_evidence")
+        first.status = Mission.Status.IN_PROGRESS
+        first.save(update_fields=["status", "updated_at"])
+        second.status = Mission.Status.AVAILABLE
+        second.save(update_fields=["status", "updated_at"])
+
+        recommended = select_recommended_mission(self.startup)
+
+        self.assertEqual(recommended.key, "customer_interviews_5")
+        self.assertIn("continue", recommendation_reason(recommended).lower())
+
+    def test_interview_evaluation_requires_five_interviews_and_learning(self):
+        sync_mission_catalog(self.startup)
         mission = self.startup.missions.get(key="customer_interviews_5")
-        mission.status = Mission.Status.IN_PROGRESS
-        mission.title = "Titulo legado preservado"
-        mission.definition_version = 1
-        mission.save()
+        for number in range(5):
+            MissionEvidence.objects.create(
+                mission=mission,
+                evidence_type=MissionEvidence.Type.INTERVIEW,
+                interviewee_name=f"Pessoa {number}",
+                notes="Relato suficientemente detalhado para a entrevista.",
+            )
+        Learning.objects.create(
+            startup=self.startup,
+            mission=mission,
+            content="Padrao encontrado",
+            impact="Impacto na proposta",
+            next_action="Refinar o problema",
+        )
 
-        ensure_missions(self.startup)
-        mission.refresh_from_db()
+        evaluation = evaluate_mission(mission)
 
-        self.assertEqual(mission.title, "Titulo legado preservado")
-        self.assertEqual(mission.definition_version, 1)
+        self.assertEqual(evaluation.progress, 100)
+        self.assertTrue(evaluation.can_complete)
+
+    def test_completion_unlocks_only_satisfied_dependents_and_is_idempotent(self):
+        sync_mission_catalog(self.startup)
+        mission = self.startup.missions.get(key="customer_interviews_5")
+        for number in range(5):
+            MissionEvidence.objects.create(
+                mission=mission,
+                evidence_type=MissionEvidence.Type.INTERVIEW,
+                interviewee_name=f"Pessoa {number}",
+                notes="Relato suficientemente detalhado para a entrevista.",
+            )
+        Learning.objects.create(
+            startup=self.startup,
+            mission=mission,
+            content="Padrao encontrado",
+            impact="Impacto na proposta",
+            next_action="Refinar o problema",
+        )
+
+        _, completed_now = complete_mission_record(mission)
+        _, completed_again = complete_mission_record(mission)
+
+        second = self.startup.missions.get(key="refine_problem_with_evidence")
+        third = self.startup.missions.get(key="validate_priority_audience")
+        self.assertTrue(completed_now)
+        self.assertFalse(completed_again)
+        self.assertEqual(second.status, Mission.Status.AVAILABLE)
+        self.assertEqual(third.status, Mission.Status.LOCKED)
+        self.assertEqual(
+            ActivityEvent.objects.filter(kind=ActivityEvent.Kind.MISSION_COMPLETED).count(),
+            1,
+        )
 
     def test_catalog_rejects_a_dependency_cycle(self):
         first = MissionDefinition.minimal("first", prerequisites=("second",))

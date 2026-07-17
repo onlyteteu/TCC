@@ -14,6 +14,14 @@ from django.utils import timezone
 
 from accounts.tokens import get_user_from_token
 
+from .mission_engine import (
+    MissionRuleError,
+    complete_mission_record,
+    recommendation_reason,
+    select_recommended_mission,
+    sync_mission_catalog,
+)
+from .mission_serializers import serialize_mission_detail
 from .models import (
     ActivityEvent,
     JourneyStep,
@@ -22,7 +30,6 @@ from .models import (
     MissionEvidence,
     Startup,
     ensure_journey,
-    ensure_missions,
 )
 
 DEFERRED_STARTUP_NAME = "Startup sem nome"
@@ -397,7 +404,7 @@ def create_startup(request):
         last_opened_at=timezone.now(),
     )
     ensure_journey(startup)
-    ensure_missions(startup)
+    sync_mission_catalog(startup)
 
     message = (
         "Mapa inicial criado. Voce pode definir o nome com calma depois."
@@ -531,139 +538,6 @@ def _serialize_step(step):
     }
 
 
-def _serialize_evidence(evidence):
-    return {
-        "id": evidence.pk,
-        "type": evidence.evidence_type,
-        "intervieweeName": evidence.interviewee_name,
-        "intervieweeProfile": evidence.interviewee_profile,
-        "context": evidence.context,
-        "notes": evidence.notes,
-        "occurredOn": evidence.occurred_on.isoformat(),
-        "createdAt": evidence.created_at.isoformat(),
-    }
-
-
-def _serialize_learning(learning):
-    if learning is None:
-        return None
-
-    return {
-        "id": learning.pk,
-        "content": learning.content,
-        "impact": learning.impact,
-        "nextAction": learning.next_action,
-        "confidence": learning.confidence,
-        "confidenceLabel": learning.get_confidence_display(),
-        "createdAt": learning.created_at.isoformat(),
-        "updatedAt": learning.updated_at.isoformat(),
-    }
-
-
-def _serialize_mission(mission):
-    evidences = list(mission.evidences.all())
-    evidence_count = len(evidences)
-    learning = mission.learnings.first()
-    interviews_complete = evidence_count >= mission.required_evidence_count
-    learning_complete = learning is not None
-    is_completed = mission.status == Mission.Status.COMPLETED
-    total_units = max(mission.required_evidence_count, 1) + 1
-    completed_units = min(evidence_count, mission.required_evidence_count) + int(
-        learning_complete
-    )
-
-    steps = [
-        {
-            "key": "prepare",
-            "title": "Prepare o roteiro",
-            "description": "Use perguntas sobre situações reais do passado.",
-            "status": (
-                "completed"
-                if evidence_count > 0 or is_completed
-                else "current"
-            ),
-        },
-        {
-            "key": "interviews",
-            "title": f"Registre {mission.required_evidence_count} entrevistas",
-            "description": (
-                f"{evidence_count} de {mission.required_evidence_count} entrevistas concluídas"
-            ),
-            "status": (
-                "completed"
-                if interviews_complete
-                else "current"
-                if evidence_count > 0
-                else "available"
-            ),
-        },
-        {
-            "key": "learning",
-            "title": "Resuma os padrões",
-            "description": (
-                "Síntese registrada"
-                if learning_complete
-                else "Disponível após registrar as entrevistas"
-            ),
-            "status": (
-                "completed"
-                if learning_complete
-                else "available"
-                if interviews_complete
-                else "locked"
-            ),
-        },
-    ]
-
-    return {
-        "key": mission.key,
-        "type": mission.mission_type,
-        "typeLabel": {
-            Mission.Type.MAIN: "Missão principal",
-            Mission.Type.WEEKLY: "Missão semanal",
-            Mission.Type.QUICK: "Tarefa rápida",
-            Mission.Type.EXPERIMENT: "Experimento",
-            Mission.Type.LEARNING: "Aprendizado",
-            Mission.Type.MANAGEMENT: "Gestão recorrente",
-        }.get(mission.mission_type, mission.get_mission_type_display()),
-        "phase": mission.phase,
-        "title": mission.title,
-        "objective": mission.objective,
-        "whyItMatters": mission.why_it_matters,
-        "instructions": mission.instructions,
-        "completionCriteria": mission.completion_criteria,
-        "contextualTip": mission.contextual_tip,
-        "requiredEvidenceCount": mission.required_evidence_count,
-        "evidenceCount": evidence_count,
-        "xpReward": mission.xp_reward,
-        "status": mission.status,
-        "statusLabel": mission.get_status_display(),
-        "progress": round((completed_units / total_units) * 100),
-        "canAddLearning": interviews_complete and not learning_complete,
-        "canComplete": interviews_complete and learning_complete and not is_completed,
-        "completedAt": mission.completed_at.isoformat() if mission.completed_at else None,
-        "requirements": [
-            {
-                "key": "interviews",
-                "label": f"{mission.required_evidence_count} entrevistas registradas",
-                "current": evidence_count,
-                "target": mission.required_evidence_count,
-                "completed": interviews_complete,
-            },
-            {
-                "key": "learning",
-                "label": "Síntese de aprendizado registrada",
-                "current": int(learning_complete),
-                "target": 1,
-                "completed": learning_complete,
-            },
-        ],
-        "steps": steps,
-        "evidences": [_serialize_evidence(evidence) for evidence in evidences],
-        "learning": _serialize_learning(learning),
-    }
-
-
 def _serialize_activity(event):
     return {
         "id": event.pk,
@@ -689,7 +563,9 @@ def _startups_with_journey(user):
 
 def _today_payload(user, startup, *, message=None, celebration=None):
     ensure_journey(startup)
-    ensure_missions(startup)
+    mission = select_recommended_mission(startup)
+    missions = list(startup.missions.order_by("priority", "order", "key"))
+    by_key = {item.key: item for item in missions}
 
     journey_steps = list(startup.journey_steps.all())
     done_count = sum(1 for step in journey_steps if step.status == JourneyStep.Status.DONE)
@@ -698,11 +574,44 @@ def _today_payload(user, startup, *, message=None, celebration=None):
         (step for step in journey_steps if step.status == JourneyStep.Status.CURRENT),
         None,
     )
-    mission = (
-        startup.missions.exclude(status=Mission.Status.COMPLETED).first()
-        or startup.missions.order_by("-completed_at", "order").first()
+    mission_payload = (
+        serialize_mission_detail(
+            mission,
+            by_key=by_key,
+            reason=recommendation_reason(mission),
+        )
+        if mission
+        else None
     )
-    mission_payload = _serialize_mission(mission) if mission else None
+    arc_complete = len(missions) == 5 and all(
+        item.status == Mission.Status.COMPLETED for item in missions
+    )
+    mission_state = (
+        "active" if mission else "arc_complete" if arc_complete else "unavailable"
+    )
+    dependent = next(
+        (
+            candidate
+            for candidate in missions
+            if mission and mission.key in candidate.prerequisite_keys
+        ),
+        None,
+    )
+    if arc_complete or dependent is None:
+        next_unlock = {
+            "key": None,
+            "title": "Pr\u00f3xima trilha",
+            "description": "A pr\u00f3xima trilha ainda n\u00e3o foi liberada.",
+            "available": False,
+        }
+    else:
+        next_unlock = {
+            "key": dependent.key,
+            "title": dependent.title,
+            "description": dependent.objective,
+            "available": dependent.status == Mission.Status.AVAILABLE,
+        }
+
     recent_activity = list(startup.activity_events.all()[:6])
     account_progress = _build_account_progress(_startups_with_journey(user))
     first_name = (user.first_name or "").strip() or user.email.split("@", 1)[0]
@@ -718,18 +627,10 @@ def _today_payload(user, startup, *, message=None, celebration=None):
             "currentStepLabel": current_step.get_key_display() if current_step else None,
         },
         "mission": mission_payload,
+        "missionState": mission_state,
         "gamification": account_progress,
         "recentActivities": [_serialize_activity(event) for event in recent_activity],
-        "nextUnlock": {
-            "key": "refine_value_proposition",
-            "title": "Refinar proposta de valor",
-            "description": (
-                "Use os padrões das entrevistas para ajustar a promessa central da startup."
-            ),
-            "available": bool(
-                mission and mission.status == Mission.Status.COMPLETED
-            ),
-        },
+        "nextUnlock": next_unlock,
     }
 
     if message:
@@ -769,7 +670,7 @@ def today(request, startup_id):
 
 
 def _mission_for_startup(startup, mission_key, *, for_update=False):
-    ensure_missions(startup)
+    sync_mission_catalog(startup)
     missions = startup.missions
     if for_update:
         missions = missions.select_for_update()
@@ -969,50 +870,39 @@ def complete_mission(request, startup_id, mission_key):
     if startup is None:
         return _error_response("Startup nao encontrada.", status=404)
 
-    with transaction.atomic():
-        mission = _mission_for_startup(startup, mission_key, for_update=True)
-        if mission is None:
-            return _error_response("Missao nao encontrada.", status=404)
-        if mission.status == Mission.Status.COMPLETED:
-            return JsonResponse(
-                _today_payload(user, startup, message="Essa missao ja esta concluida.")
-            )
+    mission = _mission_for_startup(startup, mission_key)
+    if mission is None:
+        return _error_response("Missao nao encontrada.", status=404)
 
-        evidence_count = mission.evidences.count()
-        has_learning = mission.learnings.exists()
-        if evidence_count < mission.required_evidence_count or not has_learning:
-            return JsonResponse(
-                {
-                    "message": "A missao ainda precisa de evidencias antes de ser concluida.",
-                    "mission": _serialize_mission(mission),
-                },
-                status=409,
-            )
-
-        mission.status = Mission.Status.COMPLETED
-        mission.completed_at = timezone.now()
-        mission.save(update_fields=["status", "completed_at", "updated_at"])
-
-        ActivityEvent.objects.get_or_create(
-            startup=startup,
-            dedupe_key=f"mission_completed:{mission.pk}",
-            defaults={
-                "kind": ActivityEvent.Kind.MISSION_COMPLETED,
-                "description": f"Missao concluida: {mission.title}",
-                "xp_awarded": mission.xp_reward,
-                "metadata": {"missionKey": mission.key},
+    try:
+        mission, completed_now = complete_mission_record(mission)
+    except MissionRuleError as error:
+        mission.refresh_from_db()
+        missions = list(startup.missions.order_by("priority", "order", "key"))
+        by_key = {item.key: item for item in missions}
+        return JsonResponse(
+            {
+                "message": str(error),
+                "mission": serialize_mission_detail(mission, by_key=by_key),
             },
+            status=409,
         )
 
+    if not completed_now:
+        return JsonResponse(
+            _today_payload(user, startup, message="Essa missao ja esta concluida.")
+        )
+
+    next_mission = select_recommended_mission(startup)
     return JsonResponse(
         _today_payload(
             user,
             startup,
-            message=f"Missão concluída. Você ganhou {mission.xp_reward} XP.",
+            message=f"Miss\u00e3o conclu\u00edda. Voc\u00ea ganhou {mission.xp_reward} XP.",
             celebration={
-                "title": "Missão cumprida",
+                "title": "Miss\u00e3o cumprida",
                 "xpAwarded": mission.xp_reward,
-                "unlocked": "Refinar proposta de valor",
+                "unlocked": next_mission.title if next_mission else "Arco concluido",
             },
         )
     )
