@@ -346,10 +346,13 @@ a.trailRow:hover {
 }
 
 .trail_in_progress .trailIcon,
-.trail_in_progress .trailState,
-.trail_available .trailState {
+.trail_in_progress .trailState {
   border-color: rgba(242, 165, 26, 0.48);
   color: #f2a51a;
+}
+
+.trail_available .trailState {
+  color: #9aa8b8;
 }
 
 .trail_completed .trailIcon {

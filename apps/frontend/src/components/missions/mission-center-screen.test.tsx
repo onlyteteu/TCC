@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type {
@@ -11,6 +11,15 @@ import { MissionCenterScreen } from "./mission-center-screen";
 
 const router = vi.hoisted(() => ({ replace: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: () => router }));
+
+function deferred<T>() {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((promiseResolve) => {
+    resolve = promiseResolve;
+  });
+
+  return { promise, resolve };
+}
 
 const recommended = {
   key: "customer_interviews_5",
@@ -88,6 +97,12 @@ describe("MissionCenterScreen", () => {
     expect(screen.queryByRole("heading", { name: "Tambem disponivel" })).not.toBeInTheDocument();
     expect(screen.getByText("Conclua: Converse com 5 potenciais clientes")).toBeInTheDocument();
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
+
+    const trail = screen.getByRole("region", { name: "Trilha completa" });
+    expect(within(trail).getByRole("link", { name: new RegExp(recommended.title) })).toHaveAttribute(
+      "href",
+      "/painel/startup/7"
+    );
   });
 
   it("renders real alternatives when the API returns them", async () => {
@@ -110,10 +125,55 @@ describe("MissionCenterScreen", () => {
     render(<MissionCenterScreen startupId={7} />);
 
     expect(await screen.findByRole("heading", { name: "Tambem disponivel" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Mapeie as alternativas atuais/ })).toHaveAttribute(
+    const alternatives = screen.getByRole("region", { name: "Tambem disponivel" });
+    expect(within(alternatives).getByRole("link", { name: /Mapeie as alternativas atuais/ })).toHaveAttribute(
       "href",
       "/painel/startup/7/missoes/map_current_alternatives"
     );
+  });
+
+  it("keeps the newest startup when requests resolve out of order", async () => {
+    const auroraResponse = deferred<Response>();
+    const borealResponse = deferred<Response>();
+    const fetchMock = vi
+      .fn()
+      .mockReturnValueOnce(auroraResponse.promise)
+      .mockReturnValueOnce(borealResponse.promise);
+    const borealMission = {
+      ...recommended,
+      key: "validate_initial_audience",
+      title: "Valide o publico inicial",
+      actionType: "audience_validation" as const,
+    };
+    const borealPayload: MissionCenterPayload = {
+      ...payload,
+      startup: { ...payload.startup, id: 8, name: "Boreal" },
+      recommendedMission: borealMission,
+      lockedMissions: [],
+    };
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { rerender } = render(<MissionCenterScreen startupId={7} />);
+    rerender(<MissionCenterScreen startupId={8} />);
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+
+    await act(async () => {
+      borealResponse.resolve(new Response(JSON.stringify(borealPayload), { status: 200 }));
+      await borealResponse.promise;
+    });
+    expect(
+      await screen.findByRole("heading", { name: borealMission.title })
+    ).toBeInTheDocument();
+
+    await act(async () => {
+      auroraResponse.resolve(new Response(JSON.stringify(payload), { status: 200 }));
+      await auroraResponse.promise;
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: borealMission.title })).toBeInTheDocument();
+      expect(screen.queryByRole("heading", { name: recommended.title })).not.toBeInTheDocument();
+    });
   });
 
   it("shows an actionable retry state", async () => {

@@ -24,6 +24,9 @@ describe("mission center CSS contract", () => {
     expect(source).toContain("#f2a51a");
     expect(source).toContain("#bfe8ce");
     expect(source).toContain("#10241b");
+    const availableState = source.match(/\.trail_available \.trailState\s*\{([^}]*)\}/i)?.[1] ?? "";
+    expect(availableState).toMatch(/color:\s*#9aa8b8/i);
+    expect(availableState).not.toMatch(/color:\s*#f2a51a/i);
     expect(source).not.toMatch(/(?:linear|radial|conic)-gradient/i);
     expect(source).not.toMatch(/background-clip:\s*text/i);
     expect(source).not.toMatch(/border-radius:\s*(?:1[7-9]|[2-9]\d)px/i);

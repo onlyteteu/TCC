@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ProductIcon, type ProductIconName } from "@/components/product-icon";
 import { missionExecutionHref } from "@/lib/startup-navigation";
@@ -94,7 +94,6 @@ function TrailItem({ mission, startupId }: { mission: MissionCardSummary; startu
       ) : (
         <Link
           aria-current={mission.status === "in_progress" ? "step" : undefined}
-          aria-label={`Abrir missao ${mission.order} na trilha, ${mission.statusLabel}`}
           className={styles.trailRow}
           href={missionExecutionHref(startupId, mission.key, mission.actionType)}
         >
@@ -130,16 +129,23 @@ function MissionCenterSkeleton() {
 
 export function MissionCenterScreen({ startupId }: MissionCenterScreenProps) {
   const router = useRouter();
+  const requestSequence = useRef(0);
   const [payload, setPayload] = useState<MissionCenterPayload | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   const loadMissions = useCallback(async () => {
+    const requestId = requestSequence.current + 1;
+    requestSequence.current = requestId;
     setIsLoading(true);
     setLoadError(null);
 
     try {
       const response = await fetch(`/api/startups/${startupId}/missions`, { cache: "no-store" });
+
+      if (requestId !== requestSequence.current) {
+        return;
+      }
 
       if (response.status === 401) {
         router.replace("/");
@@ -158,17 +164,29 @@ export function MissionCenterScreen({ startupId }: MissionCenterScreenProps) {
         return;
       }
 
-      setPayload((await response.json()) as MissionCenterPayload);
+      const nextPayload = (await response.json()) as MissionCenterPayload;
+
+      if (requestId === requestSequence.current) {
+        setPayload(nextPayload);
+      }
     } catch {
-      setPayload(null);
-      setLoadError(LOAD_ERROR);
+      if (requestId === requestSequence.current) {
+        setPayload(null);
+        setLoadError(LOAD_ERROR);
+      }
     } finally {
-      setIsLoading(false);
+      if (requestId === requestSequence.current) {
+        setIsLoading(false);
+      }
     }
   }, [router, startupId]);
 
   useEffect(() => {
     void loadMissions();
+
+    return () => {
+      requestSequence.current += 1;
+    };
   }, [loadMissions]);
 
   if (isLoading) {
