@@ -6,7 +6,7 @@ import type { TodayPayload } from "@/lib/startup-types";
 
 import { StartupHomeScreen } from "./startup-home-screen";
 
-const navigation = vi.hoisted(() => ({ replace: vi.fn() }));
+const navigation = vi.hoisted(() => ({ push: vi.fn(), replace: vi.fn() }));
 
 vi.mock("next/navigation", () => ({
   useRouter: () => navigation,
@@ -37,6 +37,8 @@ const payload: TodayPayload = {
   },
   mission: {
     key: "customer_interviews_5",
+    definitionVersion: 2,
+    origin: "catalog",
     type: "main",
     typeLabel: "Missao principal",
     phase: "Descoberta",
@@ -52,6 +54,13 @@ const payload: TodayPayload = {
     status: "in_progress",
     statusLabel: "Em andamento",
     progress: 20,
+    actionType: "interviews",
+    isRequired: true,
+    order: 10,
+    priority: 100,
+    prerequisiteKeys: [],
+    lockedReasons: [],
+    recommendationReason: "Comece por evidencias reais.",
     canAddLearning: false,
     canComplete: false,
     completedAt: null,
@@ -64,6 +73,7 @@ const payload: TodayPayload = {
       { key: "learning", title: "Resuma os padroes", description: "Depois das entrevistas.", status: "locked" },
     ],
   },
+  missionState: "active",
   gamification: {
     xp: 360,
     level: 3,
@@ -102,6 +112,34 @@ function jsonResponse(body: unknown, status = 200) {
   );
 }
 
+const structuredMission = {
+  ...payload.mission!,
+  key: "refine_problem_with_evidence",
+  actionType: "problem_refinement" as const,
+  title: "Refine o problema com evidencias",
+  requiredEvidenceCount: 1,
+  evidenceCount: 0,
+  requirements: [
+    {
+      key: "submission",
+      label: "Formulacao refinada registrada",
+      current: 0,
+      target: 1,
+      completed: false,
+    },
+  ],
+  steps: [
+    {
+      key: "submit",
+      title: "Refine o problema",
+      description: "Conecte a formulacao as entrevistas.",
+      status: "current" as const,
+    },
+  ],
+  canAddLearning: false,
+  canComplete: false,
+};
+
 function withMission(overrides: Partial<NonNullable<TodayPayload["mission"]>>) {
   return {
     ...payload,
@@ -111,6 +149,7 @@ function withMission(overrides: Partial<NonNullable<TodayPayload["mission"]>>) {
 
 describe("StartupHomeScreen", () => {
   beforeEach(() => {
+    navigation.push.mockReset();
     navigation.replace.mockReset();
   });
 
@@ -147,6 +186,40 @@ describe("StartupHomeScreen", () => {
     );
   }, 10_000);
 
+  it("opens the structured recommended mission instead of the interview dialog", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ ...payload, mission: structuredMission }), { status: 200 })
+      )
+    );
+
+    render(<StartupHomeScreen startupId={7} />);
+    fireEvent.click(await screen.findByRole("button", { name: "Abrir missão" }));
+
+    expect(navigation.push).toHaveBeenCalledWith(
+      "/painel/startup/7/missoes/refine_problem_with_evidence"
+    );
+    expect(screen.queryByRole("dialog", { name: "Registrar entrevista" })).not.toBeInTheDocument();
+  });
+
+  it("opens the structured mission detail from its current step", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ ...payload, mission: structuredMission }), { status: 200 })
+      )
+    );
+
+    render(<StartupHomeScreen startupId={7} />);
+    fireEvent.click(await screen.findByText("Refine o problema"));
+
+    expect(navigation.push).toHaveBeenCalledWith(
+      "/painel/startup/7/missoes/refine_problem_with_evidence"
+    );
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
   it("prevents duplicate completion requests and exposes the pending CTA", async () => {
     const completablePayload = withMission({ canComplete: true, progress: 100 });
     let resolveCompletion!: (value: Response) => void;
@@ -164,7 +237,7 @@ describe("StartupHomeScreen", () => {
     const completeButton = await screen.findByRole("button", { name: "Concluir missão" });
     fireEvent.click(completeButton);
     fireEvent.click(completeButton);
-    const pendingButton = await screen.findByRole("button", { name: "Concluindo missão..." });
+    const pendingButton = await screen.findByRole("button", { name: "Salvando..." });
     expect(pendingButton).toBeDisabled();
     expect(fetchMock).toHaveBeenCalledTimes(2);
 

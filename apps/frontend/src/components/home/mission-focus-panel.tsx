@@ -28,13 +28,19 @@ export function MissionFocusPanel({
   startupId,
 }: MissionFocusPanelProps) {
   const isCompleted = mission.status === "completed";
+  const isInterviewMission = mission.actionType === "interviews";
   const primaryLabel = isPrimaryActionPending
-    ? "Concluindo missão..."
-    : mission.canComplete
-      ? "Concluir missão"
-      : mission.canAddLearning
-        ? "Registrar aprendizado"
-        : "Registrar entrevista";
+    ? "Salvando..."
+    : !isInterviewMission
+      ? "Abrir missão"
+      : mission.canComplete
+        ? "Concluir missão"
+        : mission.canAddLearning
+          ? "Registrar aprendizado"
+          : "Registrar entrevista";
+  const progressLabel = isInterviewMission
+    ? `${mission.evidenceCount} de ${mission.requiredEvidenceCount} entrevistas`
+    : (mission.requirements[0]?.label ?? "Entregável principal");
 
   return (
     <section className={styles.missionPanel} aria-labelledby="mission-title">
@@ -51,9 +57,7 @@ export function MissionFocusPanel({
       </div>
 
       <div className={styles.missionProgressLabel}>
-        <span>
-          <strong>{mission.evidenceCount}</strong> de {mission.requiredEvidenceCount} entrevistas
-        </span>
+        <span>{progressLabel}</span>
         <span>{mission.progress}%</span>
       </div>
       <div

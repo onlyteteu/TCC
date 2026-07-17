@@ -1,14 +1,18 @@
 import Link from "next/link";
 
 import { ProductIcon, type ProductIconName } from "@/components/product-icon";
-import { startupHomeHref, startupJourneyHref } from "@/lib/startup-navigation";
+import {
+  startupHomeHref,
+  startupJourneyHref,
+  startupMissionsHref,
+} from "@/lib/startup-navigation";
 
 import styles from "./workspace-shell.module.css";
 
 const items = [
   { key: "home", label: "Home", icon: "home", enabled: true },
   { key: "journey", label: "Jornada", icon: "journey", enabled: true },
-  { key: "missions", label: "Missoes", icon: "mission", enabled: false },
+  { key: "missions", label: "Missoes", icon: "mission", enabled: true },
   { key: "experiments", label: "Experimentos", icon: "flask", enabled: false },
   { key: "learnings", label: "Aprendizados", icon: "book", enabled: false },
   { key: "metrics", label: "Metricas", icon: "chart", enabled: false },
@@ -28,8 +32,10 @@ type WorkspaceSidebarProps = {
   startupId: number | null;
 };
 
-function destination(key: "home" | "journey", startupId: number) {
-  return key === "home" ? startupHomeHref(startupId) : startupJourneyHref(startupId);
+function destination(key: "home" | "journey" | "missions", startupId: number) {
+  if (key === "home") return startupHomeHref(startupId);
+  if (key === "journey") return startupJourneyHref(startupId);
+  return startupMissionsHref(startupId);
 }
 
 export function WorkspaceSidebar({ activeSection, startupId }: WorkspaceSidebarProps) {

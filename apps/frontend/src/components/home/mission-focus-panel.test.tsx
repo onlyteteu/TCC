@@ -9,6 +9,8 @@ import { MissionFocusPanel } from "./mission-focus-panel";
 
 const mission: MissionSummary = {
   key: "customer_interviews_5",
+  definitionVersion: 2,
+  origin: "catalog",
   type: "main",
   typeLabel: "Missao principal",
   phase: "Descoberta",
@@ -24,6 +26,13 @@ const mission: MissionSummary = {
   status: "in_progress",
   statusLabel: "Em andamento",
   progress: 20,
+  actionType: "interviews",
+  isRequired: true,
+  order: 10,
+  priority: 100,
+  prerequisiteKeys: [],
+  lockedReasons: [],
+  recommendationReason: "Comece por evidencias reais.",
   canAddLearning: false,
   canComplete: false,
   completedAt: null,
@@ -87,7 +96,35 @@ describe("MissionFocusPanel", () => {
       />
     );
 
-    expect(screen.getByRole("button", { name: "Concluindo missão..." })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Salvando..." })).toBeDisabled();
+  });
+
+  it("uses generic copy and CTA for a structured mission", () => {
+    render(
+      <MissionFocusPanel
+        mission={{
+          ...mission,
+          actionType: "problem_refinement",
+          requirements: [
+            {
+              key: "submission",
+              label: "Formulacao refinada registrada",
+              current: 0,
+              target: 1,
+              completed: false,
+            },
+          ],
+        }}
+        isPrimaryActionPending={false}
+        onOpenStep={vi.fn()}
+        onPrimaryAction={vi.fn()}
+        startupId={7}
+      />
+    );
+
+    expect(screen.getByText("Formulacao refinada registrada")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Abrir missão" })).toBeInTheDocument();
+    expect(screen.queryByText("1 de 5 entrevistas")).not.toBeInTheDocument();
   });
 
   it("defines a high-contrast amber focus outline for actionable rows", () => {
@@ -113,11 +150,14 @@ describe("MissionFocusPanel", () => {
         {
           context: "Conversa durante o fechamento mensal",
           createdAt: "2026-07-14T12:00:00Z",
+          details: {},
           id: 31,
           intervieweeName: "Marina Costa",
           intervieweeProfile: "Gestora financeira de pequena empresa",
           notes: "Perde duas horas conciliando planilhas antes de emitir o relatorio.",
           occurredOn: "2026-07-13",
+          summary: "",
+          title: "",
           type: "customer_interview",
         },
       ],

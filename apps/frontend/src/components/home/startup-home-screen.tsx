@@ -14,6 +14,7 @@ import {
 
 import { ProductIcon } from "@/components/product-icon";
 import type { AuthErrorPayload } from "@/lib/auth-types";
+import { missionExecutionHref } from "@/lib/startup-navigation";
 import type { ActivitySummary, TodayPayload } from "@/lib/startup-types";
 
 import { FounderProgressRail } from "./founder-progress-rail";
@@ -364,6 +365,10 @@ export function StartupHomeScreen({
   }
 
   function handleOpenMissionStep(stepKey: string) {
+    if (mission && mission.actionType !== "interviews") {
+      router.push(missionExecutionHref(startupId, mission.key, mission.actionType));
+      return;
+    }
     openWorkDialog(
       stepKey === "interviews" ? "interview" : stepKey === "learning" ? "learning" : "details"
     );
@@ -371,6 +376,10 @@ export function StartupHomeScreen({
 
   function handlePrimaryMissionAction() {
     if (!mission) {
+      return;
+    }
+    if (mission.actionType !== "interviews") {
+      router.push(missionExecutionHref(startupId, mission.key, mission.actionType));
       return;
     }
     if (mission.canComplete) {

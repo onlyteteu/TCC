@@ -17,7 +17,9 @@ function routeStartupId(value: string | string[] | undefined) {
 }
 
 function activeSection(pathname: string): WorkspaceSection {
-  return pathname.endsWith("/jornada") ? "journey" : "home";
+  if (pathname.includes("/missoes")) return "missions";
+  if (pathname.endsWith("/jornada")) return "journey";
+  return "home";
 }
 
 type WorkspaceFrameProps = {

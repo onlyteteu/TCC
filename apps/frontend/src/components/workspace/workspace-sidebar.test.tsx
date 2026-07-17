@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { WorkspaceSidebar } from "./workspace-sidebar";
 
 describe("WorkspaceSidebar", () => {
-  it("keeps Home and Jornada enabled and future modules disabled", () => {
+  it("keeps Home, Jornada and Missoes enabled and future modules disabled", () => {
     render(<WorkspaceSidebar activeSection="home" startupId={7} />);
 
     expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute(
@@ -14,6 +14,10 @@ describe("WorkspaceSidebar", () => {
     expect(screen.getByRole("link", { name: "Jornada" })).toHaveAttribute(
       "href",
       "/painel/startup/7/jornada"
+    );
+    expect(screen.getByRole("link", { name: "Missoes" })).toHaveAttribute(
+      "href",
+      "/painel/startup/7/missoes"
     );
     expect(screen.getByText("Experimentos").closest("span")).toHaveAttribute(
       "aria-disabled",
@@ -29,6 +33,6 @@ describe("WorkspaceSidebar", () => {
       "aria-disabled",
       "true"
     );
-    expect(screen.getAllByText("Crie uma startup para acessar")).toHaveLength(2);
+    expect(screen.getAllByText("Crie uma startup para acessar")).toHaveLength(3);
   });
 });

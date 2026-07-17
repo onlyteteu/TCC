@@ -89,9 +89,43 @@ export interface JourneyPayload {
 
 export type MissionStatus = "locked" | "available" | "in_progress" | "completed";
 
+export type MissionOrigin = "catalog" | "dynamic";
+export type MissionActionType =
+  | "interviews"
+  | "problem_refinement"
+  | "audience_validation"
+  | "value_proposition"
+  | "alternatives_map";
+
+export interface MissionCardSummary {
+  key: string;
+  definitionVersion: number;
+  origin: MissionOrigin;
+  type: string;
+  typeLabel: string;
+  phase: string;
+  title: string;
+  objective: string;
+  xpReward: number;
+  status: MissionStatus;
+  statusLabel: string;
+  progress: number;
+  actionType: MissionActionType;
+  isRequired: boolean;
+  order: number;
+  priority: number;
+  prerequisiteKeys: string[];
+  lockedReasons: string[];
+  recommendationReason: string | null;
+  completedAt: string | null;
+}
+
 export interface MissionEvidenceSummary {
   id: number;
   type: string;
+  title: string;
+  summary: string;
+  details: Record<string, string>;
   intervieweeName: string;
   intervieweeProfile: string;
   context: string;
@@ -126,30 +160,42 @@ export interface MissionStepSummary {
   status: "locked" | "available" | "current" | "completed";
 }
 
-export interface MissionSummary {
-  key: string;
-  type: string;
-  typeLabel: string;
-  phase: string;
-  title: string;
-  objective: string;
+export interface MissionDetailSummary extends MissionCardSummary {
   whyItMatters: string;
   instructions: string[];
   completionCriteria: string;
   contextualTip: string;
   requiredEvidenceCount: number;
   evidenceCount: number;
-  xpReward: number;
-  status: MissionStatus;
-  statusLabel: string;
-  progress: number;
   canAddLearning: boolean;
   canComplete: boolean;
-  completedAt: string | null;
   requirements: MissionRequirement[];
   steps: MissionStepSummary[];
   evidences: MissionEvidenceSummary[];
   learning: MissionLearningSummary | null;
+}
+
+// Compatibilidade temporaria com os componentes atuais da Home.
+export type MissionSummary = MissionDetailSummary;
+
+export interface MissionCenterPayload {
+  startup: StartupSummary;
+  catalogVersion: number;
+  arc: { key: string; title: string; completed: number; total: number; progress: number };
+  recommendedMission: MissionCardSummary | null;
+  availableMissions: MissionCardSummary[];
+  lockedMissions: MissionCardSummary[];
+  completedMissions: MissionCardSummary[];
+  gamification: AccountProgress;
+}
+
+export interface MissionDetailPayload {
+  startup: StartupSummary;
+  mission: MissionDetailSummary;
+  gamification: AccountProgress;
+  nextRecommendedMission?: MissionCardSummary | null;
+  message?: string;
+  celebration?: { title: string; xpAwarded: number; unlocked: string };
 }
 
 export interface ActivitySummary {
@@ -172,7 +218,8 @@ export interface TodayPayload {
     currentStepKey: string | null;
     currentStepLabel: string | null;
   };
-  mission: MissionSummary | null;
+  mission: MissionDetailSummary | null;
+  missionState: "active" | "arc_complete" | "unavailable";
   gamification: AccountProgress;
   recentActivities: ActivitySummary[];
   nextUnlock: {
