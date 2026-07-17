@@ -1,15 +1,18 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.utils import timezone
 
 from .mission_catalog import MISSION_DEFINITIONS, MissionDefinition, validate_catalog
 from .mission_engine import (
     complete_mission_record,
     evaluate_mission,
+    reconcile_mission_states,
     recommendation_reason,
     select_recommended_mission,
     sync_mission_catalog,
 )
-from .models import ActivityEvent, Learning, Mission, MissionEvidence, Startup
+from .mission_submissions import SubmissionValidationError, apply_mission_submission
+from .models import ActivityEvent, JourneyStep, Learning, Mission, MissionEvidence, Startup
 
 User = get_user_model()
 
@@ -45,6 +48,14 @@ class MissionCatalogTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="catalog@example.com", password="123")
         self.startup = Startup.objects.create(owner=self.user, name="Aurora Labs")
+
+    def complete_prerequisites(self, *keys):
+        sync_mission_catalog(self.startup)
+        self.startup.missions.filter(key__in=keys).update(
+            status=Mission.Status.COMPLETED,
+            completed_at=timezone.now(),
+        )
+        reconcile_mission_states(self.startup)
 
     def test_catalog_contains_the_five_approved_discovery_missions(self):
         self.assertEqual(
@@ -170,3 +181,65 @@ class MissionCatalogTests(TestCase):
 
         with self.assertRaisesMessage(ValueError, "ciclo"):
             validate_catalog((first, second))
+
+    def test_problem_submission_updates_startup_journey_and_unlocks_audience(self):
+        self.complete_prerequisites("customer_interviews_5")
+        mission = self.startup.missions.get(key="refine_problem_with_evidence")
+
+        mutation = apply_mission_submission(
+            self.startup,
+            mission,
+            {
+                "problemStatement": "Restaurantes pequenos perdem margem quando compram ingredientes sem visibilidade do estoque.",
+                "evidenceSummary": "Quatro de cinco entrevistados relataram compras duplicadas e descarte semanal de ingredientes.",
+            },
+        )
+
+        self.startup.refresh_from_db()
+        problem_step = self.startup.journey_steps.get(key=Startup.Stage.PROBLEM)
+        audience_mission = self.startup.missions.get(key="validate_priority_audience")
+        self.assertTrue(mutation.completed_now)
+        self.assertEqual(mutation.evidence.submission_key, "primary")
+        self.assertEqual(self.startup.problem, mutation.evidence.details["problemStatement"])
+        self.assertEqual(problem_step.answer, self.startup.problem)
+        self.assertEqual(audience_mission.status, Mission.Status.AVAILABLE)
+
+    def test_problem_submission_rejects_shallow_content(self):
+        self.complete_prerequisites("customer_interviews_5")
+        mission = self.startup.missions.get(key="refine_problem_with_evidence")
+
+        with self.assertRaises(SubmissionValidationError) as caught:
+            apply_mission_submission(
+                self.startup,
+                mission,
+                {"problemStatement": "Problema curto", "evidenceSummary": "Pouca evidencia"},
+            )
+
+        self.assertIn("problemStatement", caught.exception.field_errors)
+        self.assertIn("evidenceSummary", caught.exception.field_errors)
+        self.assertFalse(mission.evidences.exists())
+
+    def test_audience_submission_updates_audience_and_records_decision(self):
+        self.complete_prerequisites(
+            "customer_interviews_5", "refine_problem_with_evidence"
+        )
+        mission = self.startup.missions.get(key="validate_priority_audience")
+
+        mutation = apply_mission_submission(
+            self.startup,
+            mission,
+            {
+                "audienceStatement": "Donos de restaurantes independentes com uma unidade e controle manual de estoque.",
+                "observedSignals": "O grupo relatou perda semanal, decide as compras e consegue testar uma rotina nova rapidamente.",
+                "decision": "adjust",
+            },
+        )
+
+        self.startup.refresh_from_db()
+        audience_step = self.startup.journey_steps.get(key=Startup.Stage.AUDIENCE)
+        self.assertEqual(
+            self.startup.audience, mutation.evidence.details["audienceStatement"]
+        )
+        self.assertEqual(audience_step.answer, self.startup.audience)
+        self.assertEqual(mutation.evidence.details["decision"], "adjust")
+        self.assertEqual(mutation.mission.status, Mission.Status.COMPLETED)
