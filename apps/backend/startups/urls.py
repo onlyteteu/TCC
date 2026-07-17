@@ -6,8 +6,11 @@ from .views import (
     journey,
     journey_step,
     list_startups,
+    mission_detail,
     mission_evidence,
     mission_learning,
+    mission_submission,
+    missions,
     open_startup,
     startup_detail,
     today,
@@ -19,6 +22,7 @@ urlpatterns = [
     path("startups/<int:startup_id>/open/", open_startup),
     path("startups/<int:startup_id>/", startup_detail),
     path("startups/<int:startup_id>/today/", today),
+    path("startups/<int:startup_id>/missions/", missions),
     path(
         "startups/<int:startup_id>/missions/<str:mission_key>/evidence/",
         mission_evidence,
@@ -30,6 +34,14 @@ urlpatterns = [
     path(
         "startups/<int:startup_id>/missions/<str:mission_key>/complete/",
         complete_mission,
+    ),
+    path(
+        "startups/<int:startup_id>/missions/<str:mission_key>/submission/",
+        mission_submission,
+    ),
+    path(
+        "startups/<int:startup_id>/missions/<str:mission_key>/",
+        mission_detail,
     ),
     path("startups/<int:startup_id>/journey/", journey),
     path("startups/<int:startup_id>/journey/<str:step_key>/", journey_step),

@@ -1,4 +1,10 @@
-from .mission_engine import evaluate_mission
+from .mission_catalog import CATALOG_VERSION
+from .mission_engine import (
+    evaluate_mission,
+    recommendation_reason,
+    select_recommended_mission,
+    sync_mission_catalog,
+)
 from .models import Mission
 
 
@@ -97,4 +103,50 @@ def serialize_mission_detail(mission, *, by_key, reason=None):
         "steps": evaluation.steps,
         "evidences": [serialize_evidence(item) for item in mission.evidences.all()],
         "learning": serialize_learning(learning),
+    }
+
+
+def serialize_center_missions(startup):
+    missions = sync_mission_catalog(startup)
+    by_key = {mission.key: mission for mission in missions}
+    recommended = select_recommended_mission(startup)
+    cards = {
+        mission.key: serialize_mission_card(mission, by_key=by_key)
+        for mission in missions
+    }
+    recommended_card = None
+    if recommended:
+        recommended_card = serialize_mission_card(
+            recommended,
+            by_key=by_key,
+            reason=recommendation_reason(recommended),
+        )
+    completed = [
+        mission for mission in missions if mission.status == Mission.Status.COMPLETED
+    ]
+    available = [
+        cards[mission.key]
+        for mission in missions
+        if mission.status == Mission.Status.AVAILABLE and mission != recommended
+    ]
+    locked = [
+        cards[mission.key]
+        for mission in missions
+        if mission.status == Mission.Status.LOCKED
+    ]
+    return {
+        "catalogVersion": CATALOG_VERSION,
+        "arc": {
+            "key": "discovery",
+            "title": "Descoberta",
+            "completed": len(completed),
+            "total": len(missions),
+            "progress": round((len(completed) / len(missions)) * 100)
+            if missions
+            else 0,
+        },
+        "recommendedMission": recommended_card,
+        "availableMissions": available,
+        "lockedMissions": locked,
+        "completedMissions": [cards[mission.key] for mission in completed],
     }

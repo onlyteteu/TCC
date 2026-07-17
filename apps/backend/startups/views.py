@@ -21,7 +21,12 @@ from .mission_engine import (
     select_recommended_mission,
     sync_mission_catalog,
 )
-from .mission_serializers import serialize_mission_detail
+from .mission_serializers import (
+    serialize_center_missions,
+    serialize_mission_card,
+    serialize_mission_detail,
+)
+from .mission_submissions import SubmissionValidationError, apply_mission_submission
 from .models import (
     ActivityEvent,
     JourneyStep,
@@ -675,6 +680,134 @@ def _mission_for_startup(startup, mission_key, *, for_update=False):
     if for_update:
         missions = missions.select_for_update()
     return missions.filter(key=mission_key).first()
+
+
+def _owned_startup(user, startup_id):
+    return Startup.objects.filter(owner=user, pk=startup_id).first()
+
+
+def _mission_center_payload(user, startup):
+    center = serialize_center_missions(startup)
+    return {
+        "startup": _serialize_startup(startup),
+        **center,
+        "gamification": _build_account_progress(_startups_with_journey(user)),
+    }
+
+
+@require_GET
+def missions(request, startup_id):
+    try:
+        user = _authenticate_request(request)
+    except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
+        return _error_response("Sessao invalida ou expirada.", status=401)
+
+    startup = _owned_startup(user, startup_id)
+    if startup is None:
+        return _error_response("Startup nao encontrada.", status=404)
+
+    return JsonResponse(_mission_center_payload(user, startup))
+
+
+@require_GET
+def mission_detail(request, startup_id, mission_key):
+    try:
+        user = _authenticate_request(request)
+    except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
+        return _error_response("Sessao invalida ou expirada.", status=401)
+
+    startup = _owned_startup(user, startup_id)
+    if startup is None:
+        return _error_response("Startup nao encontrada.", status=404)
+
+    sync_mission_catalog(startup)
+    by_key = {
+        item.key: item for item in startup.missions.order_by("order", "key")
+    }
+    mission = by_key.get(mission_key)
+    if mission is None:
+        return _error_response("Missao nao encontrada.", status=404)
+
+    recommended = select_recommended_mission(startup)
+    reason = (
+        recommendation_reason(mission)
+        if recommended and recommended.pk == mission.pk
+        else None
+    )
+    return JsonResponse(
+        {
+            "startup": _serialize_startup(startup),
+            "mission": serialize_mission_detail(
+                mission, by_key=by_key, reason=reason
+            ),
+            "gamification": _build_account_progress(_startups_with_journey(user)),
+        }
+    )
+
+
+@csrf_exempt
+@require_POST
+def mission_submission(request, startup_id, mission_key):
+    try:
+        user = _authenticate_request(request)
+    except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
+        return _error_response("Sessao invalida ou expirada.", status=401)
+
+    startup = _owned_startup(user, startup_id)
+    if startup is None:
+        return _error_response("Startup nao encontrada.", status=404)
+
+    try:
+        payload = _json_body(request)
+    except ValueError as error:
+        return _error_response(str(error))
+
+    mission = _mission_for_startup(startup, mission_key)
+    if mission is None:
+        return _error_response("Missao nao encontrada.", status=404)
+
+    try:
+        mutation = apply_mission_submission(startup, mission, payload)
+    except SubmissionValidationError as error:
+        return _error_response(
+            error.message,
+            status=400 if error.field_errors else 409,
+            field_errors=error.field_errors,
+        )
+
+    missions_by_key = {
+        item.key: item for item in startup.missions.order_by("order", "key")
+    }
+    next_mission = select_recommended_mission(startup)
+    response_payload = {
+        "startup": _serialize_startup(startup),
+        "mission": serialize_mission_detail(
+            mutation.mission, by_key=missions_by_key
+        ),
+        "nextRecommendedMission": (
+            serialize_mission_card(
+                next_mission,
+                by_key=missions_by_key,
+                reason=recommendation_reason(next_mission),
+            )
+            if next_mission
+            else None
+        ),
+        "gamification": _build_account_progress(_startups_with_journey(user)),
+        "message": (
+            "Missao concluida."
+            if mutation.completed_now
+            else "Essa missao ja esta concluida."
+        ),
+    }
+    if mutation.completed_now:
+        response_payload["celebration"] = {
+            "title": "Missao cumprida",
+            "xpAwarded": mutation.mission.xp_reward,
+            "unlocked": next_mission.title if next_mission else "Arco concluido",
+        }
+
+    return JsonResponse(response_payload)
 
 
 @csrf_exempt
