@@ -1,115 +1,138 @@
-# Arquitetura do primeiro ciclo de missões
+# Arquitetura do Motor de Missões 2.0
 
-## Objetivo
+## Estado do documento
 
-Este documento registra como o primeiro fluxo operacional da Startup Quest foi implementado.
-O recorte transforma a missão de entrevistas em um ciclo completo e verificável:
+O Incremento 1 está implementado. Ele entrega o arco inicial de Descoberta/Proposta com cinco
+missões operacionais, catálogo versionado, recomendação determinística, dependências reais,
+Central de missão e telas de execução. Missões 6 a 10, Experimentos, Decisões e gestão semanal
+continuam planejados para incrementos posteriores.
 
-`Missão -> Passos -> Evidências -> Aprendizado -> Conclusão -> XP, sequência e atividade`
+O ciclo implementado é:
 
-## Interacao entre os elementos
+`Catálogo -> Instâncias -> Recomendação -> Evidência -> Conclusão -> Jornada/Mapa -> XP`
 
-1. A `Mission` define o objetivo, a explicacao, a recompensa e os criterios verificaveis.
-2. A API deriva os passos de interface do estado persistido: preparar, registrar evidencias,
-   sintetizar e concluir.
-3. Cada `MissionEvidence` avanca a contagem do criterio sem, por si so, encerrar a missao.
-4. Ao atingir a quantidade exigida, a sintese e liberada e vira um `Learning` ligado a mesma
-   startup e missao.
-5. A conclusao valida evidencias e aprendizado em uma transacao antes de mudar o status.
-6. Cada gesto relevante cria um `ActivityEvent` com chave de deduplicacao; esse evento alimenta
-   XP operacional, sequencia, atividade recente e conquistas.
-7. A Home recebe esse estado agregado pelo endpoint `today`, de modo que passos, bloqueios,
-   progresso e recompensa nunca dependem apenas do estado local da interface.
+## Catálogo e sincronização
 
-O XP da Jornada e o XP operacional sao somados na conta, mas a missao, suas evidencias e seu
-aprendizado continuam locais a startup. Assim, trocar de startup preserva nivel e sequencia globais
-sem misturar o trabalho e as decisoes de cada negocio.
+`mission_catalog.py` é a fonte de verdade das definições. O catálogo atual é a versão 2 e
+contém exatamente:
 
-## Modelo de dados
+1. `customer_interviews_5` — Converse com 5 potenciais clientes;
+2. `refine_problem_with_evidence` — Refine o problema com evidências;
+3. `validate_priority_audience` — Valide o público prioritário;
+4. `reframe_value_proposition` — Reformule a proposta de valor;
+5. `map_current_alternatives` — Mapeie as alternativas atuais.
+
+Cada definição possui chave e versão estáveis, tipo, fase, prioridade, ordem, recompensa,
+pré-requisitos, orientações, critério de conclusão, tipo de ação, configuração dos
+requisitos e passos. A validação rejeita chaves duplicadas, pré-requisitos ausentes e ciclos.
+
+`sync_mission_catalog()` cria as cinco instâncias sem duplicá-las e atualiza somente snapshots
+ainda não iniciados. Uma missão iniciada ou concluída preserva a definição com a qual o usuário
+trabalhou, mesmo quando o catálogo evoluir.
+
+## Modelo persistido
 
 ### Mission
 
-Representa uma missão atribuída a uma startup. Guarda chave estável, tipo, fase, conteúdo de
-orientação, quantidade de evidências exigidas, recompensa, status e datas de início e conclusão.
-A chave inicial é `customer_interviews_5`.
+Além da chave, conteúdo, recompensa, status e datas do primeiro ciclo, a instância guarda:
+
+- versão da definição e origem;
+- tipo e fase;
+- ordem, prioridade e obrigatoriedade;
+- chaves dos pré-requisitos;
+- tipo de ação e regra de conclusão;
+- configuração dos requisitos e blueprint dos passos;
+- objetivo, motivo, instruções, critério e dica contextual.
 
 ### MissionEvidence
 
-Registra a evidência entregue para uma missão. No primeiro ciclo, a evidência é uma entrevista e
-possui identificação da pessoa, perfil, contexto, anotações e data da conversa. O modelo é genérico
-o suficiente para receber outros tipos de evidência nos ciclos seguintes.
+Aceita tanto entrevistas quanto submissões estruturadas. Os campos genéricos `evidence_type`,
+`title`, `summary`, `details` e `submission_key` convivem com os campos legados de entrevista.
+Uma restrição condicional impede duas evidências com a mesma chave de submissão na mesma
+missão.
 
-### Learning
+### Learning e ActivityEvent
 
-Consolida o padrão encontrado nas evidências. Cada missão possui no máximo um aprendizado ativo,
-com conteúdo, impacto, próxima ação e grau de confiança. Atualizações não concedem XP novamente.
+`Learning` continua consolidando o padrão encontrado nas entrevistas. `ActivityEvent` registra
+atividades significativas e imutáveis; suas chaves de deduplicação impedem XP repetido. O tipo
+`evidence_recorded` cobre também as evidências estruturadas.
 
-### ActivityEvent
+## Motor de estado e recomendação
 
-É o histórico imutável das atividades significativas. Cada evento possui tipo, descrição, XP,
-data, metadados e uma chave de deduplicação. Essa tabela é a fonte operacional para XP adicional,
-sequência de dias e atividade recente.
+O backend sincroniza o catálogo, reconcilia bloqueios e escolhe uma única recomendação. A ordem
+é determinística:
 
-## Regras do fluxo inicial
+1. missão em andamento;
+2. missão obrigatória disponível;
+3. outra missão disponível;
+4. sem recomendação quando todo o arco foi concluído.
 
-1. A missão exige cinco entrevistas válidas.
-2. Cada entrevista exige identificação e anotações com pelo menos 20 caracteres.
-3. Cada entrevista concede 10 XP e cria um evento de atividade único.
-4. O aprendizado só pode ser registrado após as cinco entrevistas.
-5. A primeira criação do aprendizado concede 25 XP; edições posteriores não repetem a recompensa.
-6. A missão só pode ser concluída com cinco entrevistas e um aprendizado.
-7. A conclusão concede 150 XP uma única vez, mesmo que a requisição seja repetida.
-8. Login isolado não cria evento e não mantém a sequência.
-9. Uma etapa concluída da jornada mantém a sequência, mas não duplica os 100 XP já calculados pela jornada.
+Home e Central consomem o mesmo avaliador para status, progresso e recomendação. O Today informa
+`active`, `unavailable` ou `arc_complete`; ao concluir as cinco missões, a Home celebra o arco e
+oferece a revisão da Central em vez de exibir um bloqueio falso.
 
-## Endpoints
+Conclusão e concessão de XP ocorrem dentro de transação, com bloqueio do registro e chaves de
+deduplicação. Repetir refresh, submissão ou conclusão não cria evidência, evento ou XP novo.
 
-- `GET /api/startups/<id>/today/`: reúne missão, jornada, gamificação, próximos passos e atividade.
-- `POST /api/startups/<id>/missions/<key>/evidence/`: registra uma evidência.
-- `POST /api/startups/<id>/missions/<key>/learning/`: cria ou atualiza o aprendizado.
-- `POST /api/startups/<id>/missions/<key>/complete/`: conclui a missão de forma transacional e idempotente.
+## Execução das cinco missões
 
-As rotas internas equivalentes do Next.js encaminham a sessão autenticada ao Django sem expor o
-token ao componente de interface.
+- Entrevistas reutiliza o fluxo completo da Home: cinco evidências, aprendizado e conclusão.
+- Refinamento do problema exige problema e resumo das evidências e atualiza problema na Startup,
+  Jornada e Mapa inicial.
+- Validação do público exige recorte, sinais observados e decisão; atualiza público na Startup,
+  Jornada e Mapa inicial.
+- Proposta de valor exige promessa e justificativa; atualiza a etapa correspondente e a conclui
+  somente quando ela é a etapa atual.
+- Alternativas exige opções atuais, limitações e oportunidade e permanece registrada como
+  evidência estruturada.
 
-## Cálculo inicial da gamificação
+Cada primeira submissão estruturada válida concede 25 XP de evidência, além do XP próprio da
+missão concluída. Validações superficiais retornam erros por campo; missões bloqueadas retornam
+os pré-requisitos ainda necessários.
 
-- XP da jornada: 100 por etapa concluída.
-- XP operacional: soma dos eventos de atividade.
-- Nível: um novo nível a cada 300 XP.
-- Sequência: dias locais consecutivos com pelo menos uma atividade significativa.
-- Estado da sequência: mantida, em risco, quebrada ou ainda não iniciada.
+## Endpoints entregues
 
-## Decisões de interface
+- `GET /api/startups/<id>/today/` — Home, recomendação e progresso agregado;
+- `GET /api/startups/<id>/missions/` — Central, arco, foco, alternativas, bloqueadas e concluídas;
+- `GET /api/startups/<id>/missions/<key>/` — detalhe, instruções e evidências;
+- `POST /api/startups/<id>/missions/<key>/submission/` — submissões estruturadas;
+- `POST /api/startups/<id>/missions/<key>/evidence/` — entrevistas;
+- `POST /api/startups/<id>/missions/<key>/learning/` — aprendizado da missão de entrevistas;
+- `POST /api/startups/<id>/missions/<key>/complete/` — conclusão idempotente.
 
-- a Home da startup, chamada `Hoje` no primeiro ciclo, concentra a próxima ação e evita exigir que
-  o usuário descubra sozinho o que fazer
-- a missão ocupa a área dominante; XP, fogo e saúde ficam em uma coluna lateral secundária
-- o registro de entrevista acontece no contexto da missão, sem navegação desnecessária
-- módulos futuros permanecem visíveis para comunicar a arquitetura, mas marcados como `em breve`
-- a prioridade é desktop; há apenas uma adaptação estrutural básica para telas estreitas neste ciclo
+As rotas internas equivalentes do Next.js encaminham a sessão HTTP-only ao Django sem expor o
+token aos componentes.
 
-## Próximas extensões previstas
+## Responsabilidades de interface
 
-1. Transformar a entrevista em um experimento relacionado a uma hipótese.
-2. Criar uma biblioteca de missões por fase e regras de recomendação.
-3. Exibir aprendizados e evidências em áreas próprias, mantendo o vínculo com a origem.
-4. Atualizar métricas a partir das atividades e critérios de sucesso.
-5. Gerar documentos vivos a partir das evidências e decisões registradas.
+- Home responde `o que fazer agora?` e mantém entrevistas no contexto em que já funcionavam.
+- Central em `/painel/startup/<id>/missoes` mostra foco, alternativas realmente disponíveis,
+  trilha, bloqueios e histórico.
+- Detalhe em `/painel/startup/<id>/missoes/<key>` orienta e executa as quatro submissões
+  estruturadas; bloqueadas explicam requisitos e concluídas ficam em modo leitura.
+- Jornada continua responsável pelas oito etapas e pelo Mapa inicial; ela recebe apenas efeitos
+  coerentes produzidos pelas missões.
 
-## Evolução aprovada em 2026-07-15
+## Gamificação
 
-O próximo ciclo amplia esta arquitetura para o `Motor de Missões 2.0`. A evolução preserva o fluxo
-operacional já implementado, mas adiciona:
+- XP da Jornada: 100 por etapa concluída;
+- entrevistas: 10 XP por evidência;
+- primeiro aprendizado da missão de entrevistas: 25 XP;
+- submissão estruturada válida: 25 XP;
+- conclusão: recompensa congelada na instância da missão;
+- nível: um novo nível a cada 300 XP;
+- sequência: dias locais consecutivos com atividade significativa, nunca login ou abertura de tela.
 
-- catálogo curado e versionado;
-- instâncias persistidas que preservam a versão iniciada ou concluída;
-- pré-requisitos verificáveis e recomendação determinística;
-- evidências compatíveis com tipos além de entrevista;
-- trilha inicial de 10 missões, da descoberta ao recorte do MVP;
-- Central de missão com foco, alternativas reais, trilha, bloqueios e histórico;
-- preparação para experimentos, decisões, gestão semanal e missões dinâmicas futuras.
+## Limites atuais
 
-A especificação completa e os critérios de aceite estão em
-`design/2026-07-15-motor-missoes-2.md`. Este documento continua descrevendo fielmente o primeiro
-ciclo já implementado; o novo documento descreve a evolução ainda não implementada.
+Não estão implementados neste incremento:
+
+- missões 6 a 10 da trilha aprovada;
+- entidades e telas de Experimentos e Decisões;
+- biblioteca independente de Aprendizados;
+- missões semanais, metas e revisão recorrente;
+- geração dinâmica ou por IA;
+- Métricas e Documentos derivados do motor.
+
+O próximo plano recomendado é o Incremento 2, depois de validar o uso real deste arco inicial.
+A especificação de produto permanece em `design/2026-07-15-motor-missoes-2.md`.

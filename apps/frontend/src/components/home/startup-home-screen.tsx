@@ -701,6 +701,12 @@ export function StartupHomeScreen({
             onPrimaryAction={handlePrimaryMissionAction}
             startupId={startupId}
           />
+        ) : payload.missionState === "arc_complete" ? (
+          <section className={styles.missionUnavailable}>
+            <h2>Arco de Descoberta concluído</h2>
+            <p>Você concluiu as missões disponíveis neste incremento.</p>
+            <Link href={`/painel/startup/${startupId}/missoes`}>Rever missões</Link>
+          </section>
         ) : (
           <section className={styles.missionUnavailable}>
             <h2>Sua próxima missão ainda está bloqueada</h2>

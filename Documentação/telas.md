@@ -2,9 +2,10 @@
 
 ## Estado atual
 
-Em 2026-07-14, o workspace principal deixou de usar as telas provisorias. Depois da autenticacao,
-o produto resolve a startup mais recente e abre uma experiencia unica com sidebar fixa, topbar,
-seletor de startup e somente a area de conteudo rolavel. A prioridade desta versao e desktop.
+Em 2026-07-20, o workspace principal inclui Home, Central de missão, detalhe de missão, Jornada
+e gerenciamento. Depois da autenticação, o produto resolve a startup mais recente e abre uma
+experiência única com sidebar fixa, topbar, seletor e somente a área de conteúdo rolável. A
+prioridade desta versão é desktop.
 
 ## Workspace principal implementado
 
@@ -15,6 +16,26 @@ seletor de startup e somente a area de conteudo rolavel. A prioridade desta vers
 - registra entrevistas como evidencias e libera a sintese dos aprendizados no momento correto;
 - mostra XP, nivel global, sequencia de dias, fase, atividade recente e proximo desbloqueio;
 - usa estados explicitos de carregamento, erro, bloqueio, envio e celebracao.
+- distingue o arco concluído de uma recomendação temporariamente indisponível.
+
+### Central de missão
+
+- rota `/painel/startup/<id>/missoes`;
+- mostra uma missão em foco com motivo da recomendação e recompensa;
+- exibe `Também disponível` apenas quando existe outra missão realmente liberada;
+- organiza a trilha por estados e deixa bloqueios compreensíveis por texto, não apenas por cor;
+- permite abrir linhas disponíveis/concluídas por teclado e mantém as bloqueadas sem ação falsa;
+- trata carregamento, sessão inválida, startup ausente, erro de rede e arco concluído.
+
+### Detalhe e execução da missão
+
+- rota `/painel/startup/<id>/missoes/<missionKey>`;
+- apresenta orientações, motivo, critério, progresso e recompensa;
+- oferece formulários explícitos para problema, público, proposta de valor e alternativas;
+- associa dicas e erros aos campos e congela controles durante o envio;
+- explica todos os pré-requisitos quando bloqueada;
+- apresenta evidências em modo leitura quando concluída;
+- encaminha entrevistas à Home, preservando um único fluxo para essa missão.
 
 ### Jornada
 
@@ -35,9 +56,17 @@ seletor de startup e somente a area de conteudo rolavel. A prioridade desta vers
 
 ### Modulos visiveis, mas desabilitados
 
-Missoes completas, Experimentos, Aprendizados, Metricas, Documentos, Conquistas e Configuracoes
-continuam na navegacao como arquitetura futura. Eles aparecem como `em breve`, sem links falsos
-ou conteudo de demonstracao apresentado como funcional.
+Experimentos, Aprendizados, Metricas, Documentos, Conquistas e Configuracoes continuam na
+navegacao como arquitetura futura. Eles aparecem como `em breve`, sem links falsos ou conteudo de
+demonstracao apresentado como funcional. Missoes deixou esse grupo: a Central e o detalhe do
+Incremento 1 estao ativos.
+
+### Validação de interface do Incremento 1
+
+Os componentes possuem testes de semântica, foco, navegação, loading, erro, bloqueio, envio e
+leitura. O CSS foi construído para desktop com contenção de largura, `min-width: 0`, truncamento e
+breakpoint estrutural. A inspeção visual manual final nos quatro viewports-alvo permanece uma
+checagem de aceitação separada; ela não é inferida apenas da suíte automatizada.
 
 ## Referencias historicas de design
 

@@ -1,13 +1,13 @@
 # Handoff do projeto
 
-Data de revisão: 15 de julho de 2026
+Data de revisão: 20 de julho de 2026
 
 ## Dados principais
 
 - repositório: [onlyteteu/TCC](https://github.com/onlyteteu/TCC)
 - branch principal: `main`
 - aplicação: Startup Quest
-- diretório local atual: `C:\Users\mateu\OneDrive\Desktop\TCC\repo`
+- diretório local atual: `C:\Users\mateu\OneDrive\Área de Trabalho\TCC`
 - comando recomendado para iniciar o ambiente local: `LIGAR-TUDO.cmd`
 
 O hash não é fixado neste documento. Use `git log -1 --oneline` para consultar a revisão atual.
@@ -51,17 +51,26 @@ O produto não deve terminar depois da fundação. A visão aprovada combina:
 - `/painel` resolve a startup usada mais recentemente;
 - Home em `/painel/startup/[id]`;
 - Jornada em `/painel/startup/[id]/jornada`;
+- Central em `/painel/startup/[id]/missoes`;
+- detalhe em `/painel/startup/[id]/missoes/[missionKey]`;
 - gerenciador em `/painel/startups`;
 - criação em `/painel/startups/nova`;
 - sidebar, topbar, seletor, nível, sequência e perfil compartilhados;
 - rolagem restrita à área de conteúdo e scrollbars integradas à paleta.
 
-### Home e primeira missão
+### Home e Motor de Missões 2.0 — Incremento 1
 
-- missão `Converse com 5 potenciais clientes`;
+- catálogo versionado com cinco missões operacionais;
+- recomendação determinística compartilhada por Home e Central;
+- pré-requisitos e motivos de bloqueio derivados pelo backend;
+- missão `Converse com 5 potenciais clientes` mantida na Home;
 - registro de entrevistas como evidências;
 - síntese de aprendizado após cinco entrevistas;
-- conclusão transacional e idempotente;
+- formulários estruturados para problema, público, proposta de valor e alternativas;
+- conclusão, submissão e XP transacionais e idempotentes;
+- missões de problema e público atualizam Startup, Jornada e Mapa inicial;
+- proposta atualiza e conclui sua etapa quando ela é a atual;
+- arco concluído possui estado honesto, sem falso bloqueio;
 - XP, nível, sequência, atividade recente e conquistas derivadas de eventos reais.
 
 ### Jornada e startups
@@ -72,25 +81,16 @@ O produto não deve terminar depois da fundação. A visão aprovada combina:
 - troca, renomeação, criação e exclusão confirmada de startups;
 - isolamento dos dados entre contas e startups.
 
-## Próxima evolução aprovada
+## Próxima evolução recomendada
 
-O próximo ciclo é o `Motor de Missões 2.0`.
+O Incremento 1 do `Motor de Missões 2.0` está implementado. Antes de ampliar o catálogo, validar
+o arco atual com usuários e observar compreensão, abandono e qualidade das respostas. Depois
+disso, o próximo plano recomendado é o Incremento 2: missões 6 a 8, Experimentos, Decisões e
+biblioteca consultável de Aprendizados. Missões 9 e 10, recorte do MVP e gestão semanal permanecem
+no Incremento 3.
 
-Direções aprovadas:
-
-- catálogo curado e versionado;
-- recomendação determinística e explicável;
-- uma missão principal recomendada;
-- missões opcionais e semanais quando existirem de verdade;
-- pré-requisitos verificáveis;
-- trilha inicial de 10 missões, da descoberta ao recorte do MVP;
-- tela de Missões no formato `Central de missão`;
-- arquitetura preparada para missões dinâmicas futuras;
-- entrega em três incrementos: descoberta, experimentos/decisões e MVP/gestão semanal.
-
-A especificação está em
-[2026-07-15-motor-missoes-2.md](design/2026-07-15-motor-missoes-2.md). Ela deve ser revisada pelo
-usuário antes da criação do plano técnico e antes de qualquer implementação do Motor 2.0.
+A especificação completa está em
+[2026-07-15-motor-missoes-2.md](design/2026-07-15-motor-missoes-2.md).
 
 ## Estado da documentação
 
@@ -100,14 +100,14 @@ Fontes principais:
 - [especificacao-plataforma.md](especificacao-plataforma.md): visão ampla da plataforma;
 - [funcionalidades.md](funcionalidades.md): o que está implementado;
 - [arquitetura.md](arquitetura.md): arquitetura geral;
-- [arquitetura-missoes.md](arquitetura-missoes.md): primeiro ciclo operacional de missões;
+- [arquitetura-missoes.md](arquitetura-missoes.md): Motor 2.0 e primeiro incremento operacional;
 - [fluxos.md](fluxos.md): fluxos de uso;
 - [telas.md](telas.md): inventário de telas;
 - [decisoes.md](decisoes.md): decisões registradas;
 - [progresso.md](progresso.md): histórico de evolução e validações;
 - [proximos-passos.md](proximos-passos.md): ordem dos próximos ciclos;
 - [design/2026-07-14-workspace-principal-startup-quest.md](design/2026-07-14-workspace-principal-startup-quest.md): workspace aprovado;
-- [design/2026-07-15-motor-missoes-2.md](design/2026-07-15-motor-missoes-2.md): próxima evolução.
+- [design/2026-07-15-motor-missoes-2.md](design/2026-07-15-motor-missoes-2.md): especificação dos três incrementos.
 
 `funcionalidades.md` deve continuar sendo a fonte do estado real. Uma especificação não transforma
 uma funcionalidade em implementada.
@@ -165,14 +165,23 @@ npm.cmd run lint
 npm.cmd run build
 ```
 
-Na última validação completa anterior a esta especificação, o frontend possuía `75/75` testes
-aprovados, além de lint e build aprovados. Esse número é histórico e deve ser atualizado após novas
-implementações.
+Validação completa de 20 de julho de 2026:
+
+- `makemigrations --check --dry-run`: nenhuma mudança pendente;
+- `manage.py check`: sem problemas;
+- backend: `71/71` testes aprovados;
+- frontend: `102/102` testes em 24 arquivos aprovados;
+- TypeScript e ESLint: aprovados;
+- build Next.js 16.2.10: aprovado, com 12 páginas geradas e as rotas de Central/detalhe listadas.
+
+A suíte frontend ainda imprime o aviso conhecido do jsdom `Not implemented: navigation to
+another Document`, sem falha e com código de saída 0. A inspeção visual manual final nos quatro
+viewports desktop continua uma checagem de aceitação separada.
 
 ## Cuidados para continuar
 
 - confirmar o repositório e a branch antes de editar;
-- não tratar Missões 2.0 como implementado enquanto código, migrations, estados e testes não existirem;
+- não tratar os Incrementos 2 e 3 como implementados;
 - preservar compatibilidade com startups e missões já criadas;
 - manter Home, Central e Jornada com responsabilidades distintas;
 - não conceder XP por login, abertura de tela ou clique sem trabalho real;

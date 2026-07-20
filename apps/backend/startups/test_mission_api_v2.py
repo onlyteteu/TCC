@@ -179,3 +179,35 @@ class MissionV2ApiTests(TestCase):
 
         self.assertEqual(detail.status_code, 404)
         self.assertEqual(submission.status_code, 404)
+
+    def test_today_and_center_share_the_same_recommendation_and_progress(self):
+        center = self.client.get(
+            f"/api/startups/{self.startup.pk}/missions/", **self.auth
+        ).json()
+        today = self.client.get(
+            f"/api/startups/{self.startup.pk}/today/", **self.auth
+        ).json()
+
+        self.assertEqual(
+            today["mission"]["key"], center["recommendedMission"]["key"]
+        )
+        self.assertEqual(
+            today["mission"]["progress"],
+            center["recommendedMission"]["progress"],
+        )
+
+    def test_today_reports_arc_complete_instead_of_a_false_lock(self):
+        self.startup.missions.update(
+            status=Mission.Status.COMPLETED,
+            completed_at=timezone.now(),
+        )
+
+        today = self.client.get(
+            f"/api/startups/{self.startup.pk}/today/", **self.auth
+        ).json()
+
+        self.assertIsNone(today["mission"])
+        self.assertEqual(today["missionState"], "arc_complete")
+        self.assertEqual(today["nextUnlock"]["key"], "next_arc")
+        self.assertEqual(today["nextUnlock"]["title"], "Próxima trilha")
+        self.assertFalse(today["nextUnlock"]["available"])

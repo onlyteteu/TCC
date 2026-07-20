@@ -604,7 +604,7 @@ def _today_payload(user, startup, *, message=None, celebration=None):
     )
     if arc_complete or dependent is None:
         next_unlock = {
-            "key": None,
+            "key": "next_arc",
             "title": "Pr\u00f3xima trilha",
             "description": "A pr\u00f3xima trilha ainda n\u00e3o foi liberada.",
             "available": False,

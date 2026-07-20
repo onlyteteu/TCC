@@ -2,7 +2,50 @@
 
 Cada entrada abaixo e um retrato do projeto na data indicada. Quando uma entrada antiga menciona
 `painel`, `Suas startups`, `pagina de detalhe`, `Hoje` ou criacao direta em `/painel`, ela registra
-uma etapa superada; o estado vigente e o ciclo mais recente, de 2026-07-14.
+uma etapa superada; o estado vigente e o ciclo mais recente, de 2026-07-20.
+
+## 2026-07-20 (Motor de Missões 2.0 — Incremento 1)
+
+### Resultado do ciclo
+
+- catálogo versionado na versão 2 com cinco definições e validação de chaves, dependências e
+  ciclos;
+- sincronização idempotente por startup e preservação do snapshot de missões iniciadas ou
+  concluídas;
+- recomendação determinística compartilhada entre Home e Central;
+- pré-requisitos, progresso, bloqueios e estado `arc_complete` derivados no backend;
+- Central em `/painel/startup/<id>/missoes` com foco, alternativas reais, trilha e histórico;
+- detalhe em `/painel/startup/<id>/missoes/<key>` com instruções, formulários estruturados,
+  bloqueio explicável e leitura de submissões concluídas;
+- entrevistas preservadas na Home e quatro ações novas para problema, público, proposta de
+  valor e alternativas;
+- missões de problema e público sincronizam Startup, Jornada e Mapa inicial;
+- proposta de valor atualiza a Jornada e conclui a etapa somente quando ela é a atual;
+- evidências estruturadas, eventos e XP protegidos contra reenvio e conclusão repetida;
+- Home distingue um arco completo de uma missão indisponível e oferece `Rever missões`.
+
+### Validações executadas
+
+- `manage.py makemigrations --check --dry-run`: nenhuma mudança detectada;
+- `manage.py check`: sem problemas;
+- `manage.py test accounts startups`: `71/71` testes aprovados;
+- `npm.cmd test -- --maxWorkers=1`: `102/102` testes em 24 arquivos aprovados;
+- `npx.cmd tsc --noEmit --pretty false`: aprovado;
+- `npm.cmd run lint`: aprovado;
+- `npm.cmd run build`: aprovado no Next.js 16.2.10, com 12 páginas geradas e rotas de Central,
+  detalhe e proxies de missão listadas.
+
+O Vitest imprime o aviso conhecido do jsdom `Not implemented: navigation to another Document`,
+sem falha e com código de saída 0.
+
+### Limites preservados
+
+- missões 6 a 10, Experimentos, Decisões, biblioteca de Aprendizados e gestão semanal não foram
+  implementados;
+- não existem missões opcionais, semanais ou dinâmicas artificiais;
+- a inspeção visual manual final nos quatro viewports desktop continua separada da cobertura
+  automatizada e não é alegada por estes testes;
+- o próximo plano recomendado é o Incremento 2, depois de validar o uso real do arco atual.
 
 ## 2026-07-14 (workspace principal concluido)
 

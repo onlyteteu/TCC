@@ -2,9 +2,10 @@
 
 ## Estado atual
 
-Em 2026-07-14, a plataforma possui um workspace principal funcional: autenticacao, criacao e
-gerenciamento de startups, Home guiada por missao, Jornada mestre-detalhe e gamificacao ligada a
-atividades reais.
+Em 2026-07-20, a plataforma possui um workspace funcional com autenticação, ciclo de vida de
+startups, Home guiada, Jornada, gamificação ligada a trabalho real e o primeiro incremento do
+Motor de Missões 2.0. O arco atual possui cinco missões operacionais, Central própria e execução
+estruturada.
 
 ## Escopo da gamificacao
 
@@ -57,6 +58,8 @@ conclusao, nao premia login isolado e nao cria progresso apenas visual.
 - shell unico com marca, sidebar, topbar, seletor de startup e menu de conta;
 - Home em `/painel/startup/[id]`;
 - Jornada em `/painel/startup/[id]/jornada`;
+- Central de missão em `/painel/startup/[id]/missoes`;
+- detalhe e execução em `/painel/startup/[id]/missoes/[missionKey]`;
 - gerenciador em `/painel/startups`;
 - somente a area de conteudo rola no layout desktop.
 
@@ -67,6 +70,20 @@ conclusao, nao premia login isolado e nao cria progresso apenas visual.
 - sintese do aprendizado liberada depois das cinco entrevistas;
 - conclusao transacional e idempotente;
 - atividade recente e proximo desbloqueio derivados do backend.
+- recomendacao e progresso compartilhados com a Central;
+- estado `arc_complete` mostra a conclusao da Descoberta sem inventar uma missao bloqueada.
+
+### 4A. Motor de Missoes 2.0 — Incremento 1
+
+- catalogo versionado na versao 2, sincronizado sem duplicar instancias;
+- snapshots iniciados ou concluidos preservados quando o catalogo evolui;
+- recomendacao deterministica e explicavel, com uma unica missao principal;
+- dependencias reais, motivos de bloqueio e progresso derivados no backend;
+- cinco missoes operacionais: entrevistas, problema, publico, proposta de valor e alternativas;
+- Central separada em foco, alternativas disponiveis, trilha, bloqueadas e concluidas;
+- quatro formularios estruturados com validacao por campo e modo leitura apos conclusao;
+- submissao e conclusao idempotentes, sem evidencias, eventos ou XP repetidos;
+- isolamento por usuario e startup em Central, detalhe e submissao.
 
 ### 5. Jornada e Mapa inicial
 
@@ -94,9 +111,11 @@ conclusao, nao premia login isolado e nao cria progresso apenas visual.
 
 ## Modulos ainda nao implementados
 
-- biblioteca completa de Missoes;
+- missoes 6 a 10 e novos arcos do Motor de Missoes;
 - Experimentos;
 - area propria de Aprendizados;
+- Decisoes;
+- metas, missoes semanais e revisao recorrente;
 - Metricas;
 - Documentos;
 - pagina completa de Conquistas;
@@ -104,15 +123,12 @@ conclusao, nao premia login isolado e nao cria progresso apenas visual.
 
 Eles permanecem desabilitados na sidebar e nao possuem links falsos.
 
-## Proximo ciclo especificado
+## Proximo ciclo recomendado
 
-O `Motor de Missoes 2.0` foi definido em 2026-07-15, mas ainda nao esta implementado. A direcao
-aprovada inclui catalogo versionado, recomendacao deterministica, Central de missao e uma trilha
-inicial de 10 missoes. A entrega sera dividida em tres incrementos: descoberta, experimentos e
-decisoes, e por fim MVP com gestao semanal.
-
-A especificacao completa esta em `design/2026-07-15-motor-missoes-2.md`. Ate a implementacao ser
-validada, a lista acima continua sendo a fonte do estado funcional atual.
+O Incremento 1 do `Motor de Missoes 2.0` está implementado e coberto por testes. O próximo plano
+deve ser o Incremento 2, com Experimentos e Decisões, somente depois de observar o uso real das
+cinco missões atuais. O terceiro incremento continua reservado ao recorte do MVP e à gestão
+semanal. A especificação completa permanece em `design/2026-07-15-motor-missoes-2.md`.
 
 ## Historico de implementacao
 
@@ -121,6 +137,8 @@ validada, a lista acima continua sendo a fonte do estado funcional atual.
 - **2026-07-13:** missao de entrevistas, evidencias, aprendizado, eventos operacionais, XP e sequencia;
 - **2026-07-14:** dashboard, pagina de detalhe e tela `Hoje` provisorios foram removidos e suas
   responsabilidades migraram para Home, Jornada e Gerenciador do workspace atual.
+- **2026-07-20:** o Incremento 1 do Motor 2.0 entregou catálogo, recomendação, dependências,
+  cinco missões, Central e detalhe operacional.
 
 As expressoes `painel inicial`, `Suas startups` e `pagina de detalhe` descrevem apenas esses ciclos
 historicos. Nao representam componentes ou destinos vigentes.

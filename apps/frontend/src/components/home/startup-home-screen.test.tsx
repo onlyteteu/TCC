@@ -361,6 +361,41 @@ describe("StartupHomeScreen", () => {
     );
   });
 
+  it("distinguishes a completed arc from a blocked next mission", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            ...payload,
+            mission: null,
+            missionState: "arc_complete",
+            nextUnlock: {
+              key: "next_arc",
+              title: "Próxima trilha",
+              description: "A próxima trilha ainda não foi liberada.",
+              available: false,
+            },
+          }),
+          { status: 200 }
+        )
+      )
+    );
+
+    render(<StartupHomeScreen startupId={7} />);
+
+    expect(
+      await screen.findByRole("heading", { name: "Arco de Descoberta concluído" })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText("Sua próxima missão ainda está bloqueada")
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Rever missões" })).toHaveAttribute(
+      "href",
+      "/painel/startup/7/missoes"
+    );
+  });
+
   it("requests workspace reconciliation after recording evidence", async () => {
     const onWorkspaceChanged = vi.fn().mockResolvedValue(true);
     const fetchMock = vi

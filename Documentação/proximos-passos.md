@@ -1,54 +1,67 @@
-# Proximos Passos
+# Próximos Passos
 
-## Nucleo atual concluido
+## Núcleo atual concluído
 
-- entrada pela startup usada por ultimo;
-- workspace compartilhado com Home, Jornada e gerenciador;
-- primeira missao real com evidencias, aprendizado, XP e sequencia;
-- Mapa inicial editavel e Jornada com oito etapas;
-- troca, renomeacao, criacao e exclusao segura de startups;
-- retirada das telas provisorias do frontend.
+- entrada pela startup usada por último e workspace compartilhado;
+- Home, Jornada, Mapa inicial e gerenciamento de startups;
+- gamificação baseada em atividades significativas, com XP, nível e sequência;
+- Motor de Missões 2.0 com catálogo versionado e recomendação determinística;
+- Central de missão e detalhe operacional;
+- cinco missões do arco inicial: entrevistas, problema, público, proposta e alternativas;
+- dependências, bloqueios, submissões idempotentes e integração com Jornada/Mapa.
 
-## Ciclos posteriores
+## Antes de ampliar o motor
 
-1. **Motor de Missoes 2.0:** catalogo versionado, recomendacao deterministica, dependencias reais e
-   Central de missao. O primeiro incremento ativa as missoes 1 a 5 da trilha de Descoberta; os dois
-   incrementos seguintes conectam experimentos, decisoes, MVP e gestao semanal. A especificacao
-   aprovada esta em `design/2026-07-15-motor-missoes-2.md`.
-2. **Experimentos:** hipoteses, metodo, criterio de sucesso, execucao, evidencias e resultado.
-3. **Aprendizados:** biblioteca consultavel que preserve a origem em entrevistas e experimentos.
-4. **Metricas:** indicadores definidos pelo usuario e alimentados por atividades e experimentos.
-5. **Documentos:** artefatos vivos gerados a partir do mapa, evidencias, decisoes e metricas.
-6. **Conquistas:** pagina propria, celebracoes e novos marcos sem premiar atividade vazia.
+O passo recomendado é validar o Incremento 1 em uso real. Observar especialmente:
 
-Esses modulos ja aparecem desabilitados na navegacao para comunicar a arquitetura, mas nao devem
-ser tratados como implementados antes de seus dados, regras, estados vazios e testes existirem.
+- se o fundador entende por que uma missão foi recomendada;
+- se consegue concluir as cinco missões sem explicação externa;
+- onde abandona ou entrega respostas superficiais;
+- se a relação entre Home, Central, detalhe, Jornada e Mapa fica clara;
+- se XP e fogo reforçam trabalho real sem competir com o objetivo da missão.
 
-## Nota tecnica importante
+Essa validação deve orientar texto, critérios e ordem antes de aumentar o catálogo.
 
-Os scripts do projeto usam `http://127.0.0.1:3000`. O `allowedDevOrigins` de `next.config.ts`
-autoriza `127.0.0.1` e `localhost`; a configuracao evita que a origem escolhida bloqueie o
-hot-reload e deixe a pagina renderizada sem interatividade. Corrigido em 2026-07-09; ver
-`progresso.md`.
+## Incremento 2 recomendado
 
-Nota historica de 2026-07-08: naquela data, o painel `Suas startups` foi preferido aos mockups do
-hub. Essa decisao foi superada em 2026-07-14, quando o painel e as telas de detalhe foram removidos
-e substituidos por Home, Jornada e Gerenciador. Os mockups continuam somente como arquivo historico.
+Depois da validação do arco atual:
+
+1. implementar as missões 6 a 8 da trilha aprovada;
+2. criar Experimentos com hipótese, método, critério de sucesso, execução e resultado;
+3. criar Decisões ligadas às evidências e aos resultados dos experimentos;
+4. ampliar Aprendizados para uma biblioteca consultável com origem preservada;
+5. manter a recomendação determinística enquanto não houver dados suficientes para regras
+   dinâmicas confiáveis.
+
+## Incremento 3 previsto
+
+- missões 9 e 10 e recorte do MVP;
+- metas, missões semanais e revisão recorrente;
+- Métricas alimentadas por atividades e experimentos;
+- Documentos vivos derivados do mapa, evidências e decisões;
+- ampliação de Conquistas com marcos verificáveis.
+
+## Itens ainda futuros
+
+Experimentos, Decisões, biblioteca independente de Aprendizados, Métricas, Documentos, página
+completa de Conquistas, Configurações e missões dinâmicas não estão implementados. Os módulos
+visíveis na sidebar continuam desabilitados até possuírem dados, regras, estados vazios e testes.
 
 ## Itens que devem acompanhar cada ciclo
 
-- atualizar a documentacao afetada no mesmo momento da implementacao
-- registrar decisoes de escopo e arquitetura
-- manter coerencia entre codigo, telas, fluxos e funcionalidades
-
-## Evolucoes apos o nucleo inicial
-
-- ampliar a gamificacao existente com a pagina de Conquistas e novos marcos verificaveis;
-- refinar recomendacoes de proximos passos com base em fase, evidencias e aprendizados;
-- aprofundar indicadores por meio do futuro modulo de Metricas.
+- atualizar documentação, testes e handoff no mesmo incremento;
+- registrar decisões de escopo e arquitetura;
+- preservar compatibilidade com missões já iniciadas ou concluídas;
+- manter Home, Central, detalhe e Jornada com responsabilidades distintas;
+- validar os viewports desktop `1280 x 720`, `1366 x 768`, `1536 x 720` e `1920 x 900`;
+- verificar navegação por teclado e mensagens que não dependam apenas de cor.
 
 ## Cuidados de escopo
 
-- nao expandir para modulos de gestao empresarial completa
-- nao adicionar funcionalidades que prejudiquem a entrega do fluxo principal
-- nao transformar gamificacao no foco do produto
+- não expandir para CRM, financeiro ou operação empresarial completa;
+- não criar missões opcionais ou semanais apenas para preencher a interface;
+- não conceder XP por login, abertura de tela ou clique sem trabalho real;
+- não transformar gamificação no foco do produto;
+- não introduzir geração por IA antes de existir sinal de uso e mecanismo de auditoria.
+
+A especificação dos três incrementos está em `design/2026-07-15-motor-missoes-2.md`.

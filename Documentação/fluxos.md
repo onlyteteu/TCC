@@ -3,7 +3,7 @@
 ## Estado atual
 
 O fluxo principal esta operacional de ponta a ponta: autenticacao, resolucao da startup mais
-recente, criacao, troca, trabalho guiado, gerenciamento e exclusao com fallback.
+recente, criacao, troca, trabalho guiado por cinco missoes, gerenciamento e exclusao com fallback.
 
 ## Fluxos atuais do workspace
 
@@ -44,6 +44,41 @@ recente, criacao, troca, trabalho guiado, gerenciamento e exclusao com fallback.
 O menu da conta encerra a sessao e devolve o usuario a tela de login. Recursos de outro usuario
 continuam respondendo como nao encontrados, sem revelar a existencia dos dados.
 
+### Home, Central e recomendação
+
+1. A Home consulta `GET /api/startups/<id>/today/` e apresenta a missão recomendada pelo backend.
+2. A Central consulta `GET /api/startups/<id>/missions/` e usa a mesma recomendação e progresso.
+3. No início, entrevistas é o foco e não existe alternativa disponível artificial.
+4. Cada missão bloqueada lista a missão anterior que precisa ser concluída.
+5. Quando mais de uma missão está disponível, a prioridade do catálogo define o foco e as demais
+   aparecem como alternativas reais.
+6. Com as cinco missões concluídas, a Home informa `Arco de Descoberta concluído` e a Central
+   permanece disponível para revisão.
+
+### Execução do arco inicial
+
+1. O usuário registra cinco entrevistas e um aprendizado na Home.
+2. A conclusão libera `Refine o problema com evidências`.
+3. A submissão do problema atualiza Startup, Jornada e Mapa inicial e libera a validação do
+   público.
+4. A submissão do público atualiza os mesmos contextos e libera duas missões de Proposta.
+5. `Reformule a proposta de valor` torna-se o foco; `Mapeie as alternativas atuais` aparece como
+   alternativa disponível.
+6. A proposta atualiza a etapa correspondente e só a avança quando ela é a etapa atual.
+7. Alternativas registra opções, limitações e oportunidade como evidência estruturada.
+8. Cada mutação bem-sucedida reconcilia o workspace. Refresh ou reenvio não duplica evidência,
+   conclusão ou XP.
+
+### Abertura e submissão de uma missão
+
+1. Missões estruturadas abrem `/painel/startup/<id>/missoes/<key>`.
+2. A tela carrega instruções, critérios, progresso e evidências pelo backend.
+3. Se estiver bloqueada, exibe todos os pré-requisitos e não oferece formulário.
+4. Se estiver concluída, exibe a submissão em modo somente leitura.
+5. Se estiver disponível, valida os campos e envia uma submissão estruturada.
+6. Em sucesso, mostra a próxima recomendação e atualiza silenciosamente topbar e contexto.
+7. A missão de entrevistas continua na Home para evitar dois fluxos concorrentes.
+
 ## Historico de evolucao dos fluxos
 
 Esta secao preserva a sequencia de implementacao sem confundi-la com a navegacao vigente:
@@ -56,6 +91,8 @@ Esta secao preserva a sequencia de implementacao sem confundi-la com a navegacao
 - **2026-07-14:** o workspace substituiu as telas intermediarias. A pagina `Hoje` tornou-se Home,
   a Jornada ganhou rota propria, o Mapa foi integrado a ela e `Suas startups` foi substituida pelo
   gerenciador em `/painel/startups`.
+- **2026-07-20:** Home e Central passaram a compartilhar o Motor 2.0; o primeiro arco recebeu cinco
+  missões, pré-requisitos reais e telas de execução estruturada.
 
 Os fluxos vigentes sao exclusivamente os descritos em `Fluxos atuais do workspace` acima. Em
 especial, a criacao ocorre em `/painel/startups/nova`, a entrada ocorre pela Home da startup mais
