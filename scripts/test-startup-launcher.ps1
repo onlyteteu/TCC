@@ -18,6 +18,8 @@ if ($parseErrors.Count -gt 0) {
 }
 
 $contracts = @(
+    @('\$ComposeProject\s*=\s*"tcc"', 'O projeto Docker Compose deve permanecer tcc.'),
+    @('docker compose -p \$ComposeProject -f \$Compose up -d postgres', 'O PostgreSQL deve usar o projeto Compose fixo.'),
     @('\$BackendPort\s*=\s*8000', 'BackendPort deve ser 8000.'),
     @('\$FrontendPort\s*=\s*3001', 'FrontendPort deve ser 3001.'),
     @('\$BackendApiBaseUrl\s*=\s*"http://127\.0\.0\.1:\$BackendPort/api"', 'A URL do backend deve terminar em /api.'),

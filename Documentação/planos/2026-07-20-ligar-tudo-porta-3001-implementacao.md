@@ -78,3 +78,7 @@ Stage somente `start.ps1`, o teste e estes documentos; excluir `next-env.d.ts`. 
 - `http://127.0.0.1:8000/api/health/`: `200`.
 - `/api/startups` pelo proxy: `401` JSON sem sessão, confirmando que a chamada chegou ao endpoint
   correto sob `/api` e não ao antigo `/startups/` que retornava `404`.
+- Segunda execução consecutiva: frontend próprio identificado, cache limpo e servidor reiniciado
+  em `3001` sem tocar no serviço da porta `3000`.
+- Docker Compose usa o nome fixo `tcc`, evitando tentativa de criar outro `tcc-postgres` quando o
+  launcher é validado em um worktree.

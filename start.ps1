@@ -12,6 +12,7 @@ $Root      = $PSScriptRoot
 $Backend   = Join-Path $Root "apps\backend"
 $Frontend  = Join-Path $Root "apps\frontend"
 $Compose   = Join-Path $Root "docker-compose.yml"
+$ComposeProject = "tcc"
 $VenvPy    = Join-Path $Backend ".venv\Scripts\python.exe"
 $NodeDir   = "C:\Program Files\nodejs"
 $FrontendCache = Join-Path $Frontend ".next"
@@ -74,7 +75,7 @@ Write-Ok "Docker rodando."
 # 2) PostgreSQL (container)
 # ------------------------------------------------------------
 Write-Step "Subindo o PostgreSQL..."
-docker compose -f $Compose up -d postgres | Out-Null
+docker compose -p $ComposeProject -f $Compose up -d postgres | Out-Null
 
 Write-Warn "Aguardando o banco ficar saudavel (healthy)..."
 $deadline = (Get-Date).AddMinutes(2)
