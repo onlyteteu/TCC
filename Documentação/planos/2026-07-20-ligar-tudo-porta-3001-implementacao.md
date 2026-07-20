@@ -29,29 +29,29 @@
 - Consumes: portas `8000`, `3001`, caminhos `$Backend` e `$Frontend`.
 - Produces: frontend em `http://127.0.0.1:3001` com `BACKEND_API_BASE_URL=http://127.0.0.1:8000/api`.
 
-- [ ] **Step 1: Escrever o teste de contrato do launcher**
+- [x] **Step 1: Escrever o teste de contrato do launcher**
 
 O script deve carregar `start.ps1` como texto e falhar enquanto ele ainda apontar o frontend para
 `3000`, não definir a URL `/api` ou não verificar a porta `3001`.
 
-- [ ] **Step 2: Executar o teste e confirmar RED**
+- [x] **Step 2: Executar o teste e confirmar RED**
 
 Run: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-startup-launcher.ps1`
 
 Expected: falha indicando que o launcher ainda não fixa a porta `3001`.
 
-- [ ] **Step 3: Implementar a mudança mínima**
+- [x] **Step 3: Implementar a mudança mínima**
 
 Definir `$BackendPort = 8000`, `$FrontendPort = 3001`, `$BackendApiBaseUrl` com `/api`, usar essas
 variáveis nos listeners, mensagens, processo do Next.js, esperas HTTP e abertura do navegador.
 
-- [ ] **Step 4: Executar o teste e confirmar GREEN**
+- [x] **Step 4: Executar o teste e confirmar GREEN**
 
 Run: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-startup-launcher.ps1`
 
 Expected: todos os contratos do launcher aprovados.
 
-- [ ] **Step 5: Validar a execução real**
+- [x] **Step 5: Validar a execução real**
 
 Encerrar apenas os processos atuais deste projeto, executar `start.ps1` e confirmar:
 
@@ -63,9 +63,18 @@ http://127.0.0.1:8000/api/health/ -> 200
 Também confirmar que uma rota autenticada do proxy não retorna `404` do Django por ausência de
 `/api`.
 
-- [ ] **Step 6: Executar verificações e commitar**
+- [x] **Step 6: Executar verificações e commitar**
 
 Run: `git diff --check`
 
 Stage somente `start.ps1`, o teste e estes documentos; excluir `next-env.d.ts`. Commit sugerido:
 `fix: estabiliza launcher local na porta 3001`.
+
+## Resultado da execução
+
+- `http://127.0.0.1:3001/`: `200`.
+- `http://127.0.0.1:3001/painel`: `200`.
+- CSS do Next.js: dois arquivos carregados com `200`.
+- `http://127.0.0.1:8000/api/health/`: `200`.
+- `/api/startups` pelo proxy: `401` JSON sem sessão, confirmando que a chamada chegou ao endpoint
+  correto sob `/api` e não ao antigo `/startups/` que retornava `404`.

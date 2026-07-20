@@ -15,6 +15,11 @@ $Compose   = Join-Path $Root "docker-compose.yml"
 $VenvPy    = Join-Path $Backend ".venv\Scripts\python.exe"
 $NodeDir   = "C:\Program Files\nodejs"
 $FrontendCache = Join-Path $Frontend ".next"
+$BackendPort = 8000
+$FrontendPort = 3001
+$BackendApiBaseUrl = "http://127.0.0.1:$BackendPort/api"
+$BackendHealthUrl = "$BackendApiBaseUrl/health/"
+$FrontendUrl = "http://127.0.0.1:$FrontendPort"
 
 function Write-Step($msg) { Write-Host "`n==> $msg" -ForegroundColor Cyan }
 function Write-Ok($msg)   { Write-Host "    [ok] $msg" -ForegroundColor Green }
@@ -87,21 +92,21 @@ Write-Step "Aplicando migrations do backend..."
 & $VenvPy (Join-Path $Backend "manage.py") migrate | Out-Null
 Write-Ok "Migrations aplicadas."
 
-$backendListener = Get-NetTCPConnection -State Listen -LocalPort 8000 -ErrorAction SilentlyContinue |
+$backendListener = Get-NetTCPConnection -State Listen -LocalPort $BackendPort -ErrorAction SilentlyContinue |
     Select-Object -First 1
 
 if ($backendListener) {
-    if (Test-HttpOk "http://127.0.0.1:8000/api/health/") {
-        Write-Ok "Backend ja estava rodando na porta 8000."
+    if (Test-HttpOk $BackendHealthUrl) {
+        Write-Ok "Backend ja estava rodando na porta $BackendPort."
     } else {
-        Write-Err "A porta 8000 esta sendo usada por outro programa. Feche-o e execute novamente."
+        Write-Err "A porta $BackendPort esta sendo usada por outro programa. Feche-o e execute novamente."
         exit 1
     }
 } else {
-    Write-Step "Ligando o backend Django (janela propria, porta 8000)..."
+    Write-Step "Ligando o backend Django (janela propria, porta $BackendPort)..."
     Start-Process powershell -ArgumentList @(
         "-NoExit","-Command",
-        "cd '$Backend'; Write-Host 'BACKEND - Startup Quest (http://127.0.0.1:8000)' -ForegroundColor Green; & '$VenvPy' manage.py runserver 127.0.0.1:8000"
+        "cd '$Backend'; Write-Host 'BACKEND - Startup Quest (http://127.0.0.1:$BackendPort)' -ForegroundColor Green; & '$VenvPy' manage.py runserver 127.0.0.1:$BackendPort"
     )
 }
 
@@ -112,7 +117,7 @@ if ($backendListener) {
 # arvore antiga de rotas no Turbopack. Nao podemos considerar essa porta
 # simplesmente como "pronta": encerramos apenas o Next deste projeto e
 # descartamos o cache gerado antes de subir uma instancia limpa.
-$frontendListener = Get-NetTCPConnection -State Listen -LocalPort 3000 -ErrorAction SilentlyContinue |
+$frontendListener = Get-NetTCPConnection -State Listen -LocalPort $FrontendPort -ErrorAction SilentlyContinue |
     Select-Object -First 1
 
 if ($frontendListener) {
@@ -120,7 +125,7 @@ if ($frontendListener) {
     $frontendCommand = [string]$frontendProcess.CommandLine
 
     if ($frontendCommand.IndexOf($Frontend, [System.StringComparison]::OrdinalIgnoreCase) -lt 0) {
-        Write-Err "A porta 3000 esta sendo usada por outro programa. Feche-o e execute novamente."
+        Write-Err "A porta $FrontendPort esta sendo usada por outro programa. Feche-o e execute novamente."
         exit 1
     }
 
@@ -129,7 +134,7 @@ if ($frontendListener) {
 
     $deadline = (Get-Date).AddSeconds(20)
     while ((Get-Date) -lt $deadline) {
-        $stillListening = Get-NetTCPConnection -State Listen -LocalPort 3000 -ErrorAction SilentlyContinue
+        $stillListening = Get-NetTCPConnection -State Listen -LocalPort $FrontendPort -ErrorAction SilentlyContinue
         if (-not $stillListening) { break }
         Start-Sleep -Milliseconds 500
     }
@@ -140,21 +145,21 @@ if (Test-Path -LiteralPath $FrontendCache) {
     Remove-Item -LiteralPath $FrontendCache -Recurse -Force
 }
 
-Write-Step "Ligando o frontend Next.js (janela propria, porta 3000)..."
+Write-Step "Ligando o frontend Next.js (janela propria, porta $FrontendPort)..."
 Start-Process powershell -ArgumentList @(
     "-NoExit","-Command",
-    "`$env:Path = '$NodeDir;' + `$env:Path; cd '$Frontend'; Write-Host 'FRONTEND - Startup Quest (http://127.0.0.1:3000)' -ForegroundColor Green; npm run dev"
+    "`$env:Path = '$NodeDir;' + `$env:Path; `$env:BACKEND_API_BASE_URL = '$BackendApiBaseUrl'; cd '$Frontend'; Write-Host 'FRONTEND - Startup Quest ($FrontendUrl)' -ForegroundColor Green; npm run dev -- --port $FrontendPort"
 )
 
 # ------------------------------------------------------------
 # 5) Esperar o frontend responder e abrir o navegador
 # ------------------------------------------------------------
-Write-Step "Aguardando o frontend responder em http://127.0.0.1:3000 ..."
+Write-Step "Aguardando o frontend responder em $FrontendUrl ..."
 $deadline = (Get-Date).AddMinutes(3)
 $up = $false
 while ((Get-Date) -lt $deadline) {
     try {
-        $r = Invoke-WebRequest "http://127.0.0.1:3000" -UseBasicParsing -TimeoutSec 5
+        $r = Invoke-WebRequest $FrontendUrl -UseBasicParsing -TimeoutSec 5
         if ($r.StatusCode -eq 200) { $up = $true; break }
     } catch { }
     Start-Sleep -Seconds 3
@@ -162,12 +167,12 @@ while ((Get-Date) -lt $deadline) {
 
 if ($up) {
     Write-Ok "Frontend no ar. Abrindo o navegador..."
-    Start-Process "http://127.0.0.1:3000"
+    Start-Process "http://127.0.0.1:$FrontendPort"
 } else {
-    Write-Warn "O frontend demorou a responder. Abra manualmente: http://127.0.0.1:3000 (a janela do frontend ainda esta compilando)."
-    Start-Process "http://127.0.0.1:3000"
+    Write-Warn "O frontend demorou a responder. Abra manualmente: $FrontendUrl (a janela do frontend ainda esta compilando)."
+    Start-Process "http://127.0.0.1:$FrontendPort"
 }
 
 Write-Host "`nTudo ligado! " -ForegroundColor Green -NoNewline
-Write-Host "Frontend: http://127.0.0.1:3000  |  Backend: http://127.0.0.1:8000/api/health/"
+Write-Host "Frontend: $FrontendUrl  |  Backend: $BackendHealthUrl"
 Write-Host "As janelas do backend e do frontend ficam abertas com os logs. Feche-as para parar os servidores." -ForegroundColor DarkGray
