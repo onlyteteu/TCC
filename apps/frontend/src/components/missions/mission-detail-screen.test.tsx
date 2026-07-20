@@ -129,6 +129,19 @@ afterEach(() => {
 });
 
 describe("MissionDetailScreen", () => {
+  it("leaves the workspace shell as the only main landmark", async () => {
+    mockDetail();
+    const view = render(
+      <main id="workspace-content">
+        <MissionDetailScreen missionKey={detail.mission.key} startupId={7} />
+      </main>
+    );
+
+    await screen.findByRole("heading", { name: detail.mission.title });
+
+    expect(view.container.querySelectorAll("main")).toHaveLength(1);
+  });
+
   it("submits problem evidence and shows the next recommendation", async () => {
     const onWorkspaceChanged = vi.fn();
     const fetchMock = vi
@@ -208,12 +221,61 @@ describe("MissionDetailScreen", () => {
     );
     render(<MissionDetailScreen missionKey="refine_problem_with_evidence" startupId={7} />);
 
+    const control = await screen.findByLabelText("Problema refinado");
+    const hint = screen.getAllByText("Minimo de 40 caracteres.")[0];
+    expect(hint.id).not.toBe("");
+    expect(control).toHaveAttribute("aria-describedby", hint.id);
+
     fireEvent.click(await screen.findByRole("button", { name: "Salvar e concluir missao" }));
     const error = await screen.findByText("O problema deve ter pelo menos 40 caracteres.");
-    const control = screen.getByLabelText("Problema refinado");
 
     expect(control).toHaveAttribute("aria-invalid", "true");
-    expect(control).toHaveAttribute("aria-describedby", error.id);
+    expect(control.getAttribute("aria-describedby")?.split(" ")).toEqual([hint.id, error.id]);
+  });
+
+  it("freezes every form control while a submission is pending", async () => {
+    const audience = detailFor("audience_validation");
+    let resolveSubmission!: (response: Response) => void;
+    const pendingSubmission = new Promise<Response>((resolve) => {
+      resolveSubmission = resolve;
+    });
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValueOnce(new Response(JSON.stringify(audience), { status: 200 }))
+        .mockReturnValueOnce(pendingSubmission)
+    );
+    render(<MissionDetailScreen missionKey={audience.mission.key} startupId={7} />);
+
+    const audienceControl = await screen.findByLabelText("Publico prioritario");
+    const signalsControl = screen.getByLabelText("Sinais observados");
+    const decisionControl = screen.getByLabelText("Decisao");
+    fireEvent.change(audienceControl, {
+      target: { value: "Donos de restaurantes independentes com controle manual de estoque." },
+    });
+    fireEvent.change(signalsControl, {
+      target: { value: "Relatam perda semanal e decidem diretamente as compras do negocio." },
+    });
+    fireEvent.change(decisionControl, { target: { value: "keep" } });
+    fireEvent.click(screen.getByRole("button", { name: "Salvar e concluir missao" }));
+
+    expect(await screen.findByRole("button", { name: "Salvando missao..." })).toBeDisabled();
+    expect(audienceControl).toBeDisabled();
+    expect(signalsControl).toBeDisabled();
+    expect(decisionControl).toBeDisabled();
+
+    resolveSubmission(
+      new Response(
+        JSON.stringify({
+          ...audience,
+          mission: { ...audience.mission, status: "completed", statusLabel: "Concluida" },
+          message: "Publico validado.",
+        }),
+        { status: 200 }
+      )
+    );
+    await screen.findByText("Publico validado.");
   });
 
   it("keeps a completed mission read-only", async () => {

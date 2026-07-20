@@ -90,6 +90,7 @@ function MissionDetailSkeleton() {
 }
 
 type TextareaControlProps = {
+  disabled: boolean;
   draft: SubmissionDraft;
   field: string;
   fieldErrors: FieldErrors;
@@ -100,6 +101,7 @@ type TextareaControlProps = {
 };
 
 function TextareaControl({
+  disabled,
   draft,
   field,
   fieldErrors,
@@ -110,13 +112,15 @@ function TextareaControl({
 }: TextareaControlProps) {
   const error = fieldErrors[field]?.[0];
   const errorId = `mission-${field}-error`;
+  const hintId = `mission-${field}-hint`;
 
   return (
     <div className={styles.field}>
       <label htmlFor={`mission-${field}`}>{label}</label>
       <textarea
-        aria-describedby={error ? errorId : undefined}
+        aria-describedby={error ? `${hintId} ${errorId}` : hintId}
         aria-invalid={error ? true : undefined}
+        disabled={disabled}
         id={`mission-${field}`}
         minLength={minLength}
         name={field}
@@ -125,7 +129,9 @@ function TextareaControl({
         rows={rows}
         value={draft[field] ?? ""}
       />
-      <span className={styles.fieldHint}>Minimo de {minLength} caracteres.</span>
+      <span className={styles.fieldHint} id={hintId}>
+        Minimo de {minLength} caracteres.
+      </span>
       {error ? (
         <span className={styles.fieldError} id={errorId} role="alert">
           {error}
@@ -137,6 +143,7 @@ function TextareaControl({
 
 type StructuredFieldsProps = {
   actionType: StructuredActionType;
+  disabled: boolean;
   draft: SubmissionDraft;
   fieldErrors: FieldErrors;
   onChange: (event: ChangeEvent<HTMLTextAreaElement | HTMLSelectElement>) => void;
@@ -144,6 +151,7 @@ type StructuredFieldsProps = {
 
 function StructuredMissionFields({
   actionType,
+  disabled,
   draft,
   fieldErrors,
   onChange,
@@ -152,6 +160,7 @@ function StructuredMissionFields({
     return (
       <>
         <TextareaControl
+          disabled={disabled}
           draft={draft}
           field="problemStatement"
           fieldErrors={fieldErrors}
@@ -160,6 +169,7 @@ function StructuredMissionFields({
           onChange={onChange}
         />
         <TextareaControl
+          disabled={disabled}
           draft={draft}
           field="evidenceSummary"
           fieldErrors={fieldErrors}
@@ -178,6 +188,7 @@ function StructuredMissionFields({
     return (
       <>
         <TextareaControl
+          disabled={disabled}
           draft={draft}
           field="audienceStatement"
           fieldErrors={fieldErrors}
@@ -186,6 +197,7 @@ function StructuredMissionFields({
           onChange={onChange}
         />
         <TextareaControl
+          disabled={disabled}
           draft={draft}
           field="observedSignals"
           fieldErrors={fieldErrors}
@@ -198,6 +210,7 @@ function StructuredMissionFields({
           <select
             aria-describedby={error ? errorId : undefined}
             aria-invalid={error ? true : undefined}
+            disabled={disabled}
             id="mission-decision"
             name="decision"
             onChange={onChange}
@@ -222,6 +235,7 @@ function StructuredMissionFields({
     return (
       <>
         <TextareaControl
+          disabled={disabled}
           draft={draft}
           field="valueProposition"
           fieldErrors={fieldErrors}
@@ -230,6 +244,7 @@ function StructuredMissionFields({
           onChange={onChange}
         />
         <TextareaControl
+          disabled={disabled}
           draft={draft}
           field="rationale"
           fieldErrors={fieldErrors}
@@ -244,6 +259,7 @@ function StructuredMissionFields({
   return (
     <>
       <TextareaControl
+        disabled={disabled}
         draft={draft}
         field="alternatives"
         fieldErrors={fieldErrors}
@@ -252,6 +268,7 @@ function StructuredMissionFields({
         onChange={onChange}
       />
       <TextareaControl
+        disabled={disabled}
         draft={draft}
         field="limitations"
         fieldErrors={fieldErrors}
@@ -260,6 +277,7 @@ function StructuredMissionFields({
         onChange={onChange}
       />
       <TextareaControl
+        disabled={disabled}
         draft={draft}
         field="opportunity"
         fieldErrors={fieldErrors}
@@ -457,7 +475,7 @@ export function MissionDetailScreen({
   const locked = mission.status === "locked";
 
   return (
-    <main className={styles.page}>
+    <div className={styles.page}>
       <Link className={styles.backLink} href={startupMissionsHref(startupId)}>
         <span aria-hidden="true">&larr;</span>
         Voltar para missoes
@@ -584,6 +602,7 @@ export function MissionDetailScreen({
           <form noValidate onSubmit={submitMission}>
             <StructuredMissionFields
               actionType={structuredAction}
+              disabled={isSubmitting}
               draft={drafts[structuredAction]}
               fieldErrors={fieldErrors}
               onChange={(event) => handleFieldChange(structuredAction, event)}
@@ -609,6 +628,6 @@ export function MissionDetailScreen({
           </form>
         </section>
       ) : null}
-    </main>
+    </div>
   );
 }
