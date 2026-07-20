@@ -15,8 +15,22 @@ describe("contrato do inicializador local", () => {
     expect(cacheCleanup).toBeLessThan(frontendStart);
   });
 
-  it("nao aceita silenciosamente um processo desconhecido na porta 3000", () => {
-    expect(script).toContain("Get-NetTCPConnection -State Listen -LocalPort 3000");
-    expect(script).toContain("A porta 3000 esta sendo usada por outro programa");
+  it("fixa o frontend em 3001 e recusa um processo desconhecido nessa porta", () => {
+    expect(script).toContain("$FrontendPort = 3001");
+    expect(script).toContain(
+      "Get-NetTCPConnection -State Listen -LocalPort $FrontendPort",
+    );
+    expect(script).toContain(
+      "A porta $FrontendPort esta sendo usada por outro programa",
+    );
+  });
+
+  it("inicia o Next com o prefixo correto da API", () => {
+    expect(script).toContain(
+      '$BackendApiBaseUrl = "http://127.0.0.1:$BackendPort/api"',
+    );
+    expect(script).toContain(
+      "`$env:BACKEND_API_BASE_URL = '$BackendApiBaseUrl'",
+    );
   });
 });
