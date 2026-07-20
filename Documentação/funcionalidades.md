@@ -121,7 +121,9 @@ conclusao, nao premia login isolado e nao cria progresso apenas visual.
 - pagina completa de Conquistas;
 - Configuracoes.
 
-Eles permanecem desabilitados na sidebar e nao possuem links falsos.
+Na sidebar, somente Experimentos, Aprendizados, Metricas, Documentos e Conquistas aparecem
+desabilitados e sem links falsos. Configuracoes permanece futura e ainda nao aparece na navegacao;
+os demais itens desta lista tambem nao sao apresentados como modulos ativos.
 
 ## Proximo ciclo recomendado
 

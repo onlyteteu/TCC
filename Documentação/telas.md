@@ -56,10 +56,11 @@ prioridade desta versão é desktop.
 
 ### Modulos visiveis, mas desabilitados
 
-Experimentos, Aprendizados, Metricas, Documentos, Conquistas e Configuracoes continuam na
-navegacao como arquitetura futura. Eles aparecem como `em breve`, sem links falsos ou conteudo de
-demonstracao apresentado como funcional. Missoes deixou esse grupo: a Central e o detalhe do
-Incremento 1 estao ativos.
+Experimentos, Aprendizados, Metricas, Documentos e Conquistas continuam visiveis na navegacao
+como arquitetura futura. Eles aparecem como `em breve`, sem links falsos ou conteudo de
+demonstracao apresentado como funcional. Configuracoes tambem permanece futura, mas ainda nao
+aparece na sidebar. Missoes deixou o grupo desabilitado: a Central e o detalhe do Incremento 1
+estao ativos.
 
 ### Validação de interface do Incremento 1
 

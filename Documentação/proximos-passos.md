@@ -44,8 +44,10 @@ Depois da validação do arco atual:
 ## Itens ainda futuros
 
 Experimentos, Decisões, biblioteca independente de Aprendizados, Métricas, Documentos, página
-completa de Conquistas, Configurações e missões dinâmicas não estão implementados. Os módulos
-visíveis na sidebar continuam desabilitados até possuírem dados, regras, estados vazios e testes.
+completa de Conquistas, Configurações e missões dinâmicas não estão implementados. Entre esses
+itens, Experimentos, Aprendizados, Métricas, Documentos e Conquistas estão visíveis na sidebar e
+continuam desabilitados até possuírem dados, regras, estados vazios e testes. Configurações
+permanece futura e ainda não aparece na navegação.
 
 ## Itens que devem acompanhar cada ciclo
 
