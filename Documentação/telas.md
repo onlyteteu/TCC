@@ -30,7 +30,9 @@ prioridade desta versão é desktop.
 ### Detalhe e execução da missão
 
 - rota `/painel/startup/<id>/missoes/<missionKey>`;
-- apresenta orientações, motivo, critério, progresso e recompensa;
+- apresenta orientações, motivo, critério, recompensa e uma leitura real do progresso;
+- mostra barra de progresso semântica, requisitos com contagem e etapas de execução vindas do
+  mesmo avaliador do backend;
 - oferece formulários explícitos para problema, público, proposta de valor e alternativas;
 - associa dicas e erros aos campos e congela controles durante o envio;
 - explica todos os pré-requisitos quando bloqueada;

@@ -97,6 +97,12 @@ describe("MissionCenterScreen", () => {
     expect(screen.queryByRole("heading", { name: "Tambem disponivel" })).not.toBeInTheDocument();
     expect(screen.getByText("Conclua: Converse com 5 potenciais clientes")).toBeInTheDocument();
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
+    const arcProgress = screen.getByRole("progressbar", {
+      name: "Progresso do arco Descoberta",
+    });
+    expect(arcProgress).toHaveAttribute("aria-valuemin", "0");
+    expect(arcProgress).toHaveAttribute("aria-valuemax", "100");
+    expect(arcProgress).toHaveAttribute("aria-valuenow", "0");
 
     const trail = screen.getByRole("region", { name: "Trilha completa" });
     expect(within(trail).getByRole("link", { name: new RegExp(recommended.title) })).toHaveAttribute(

@@ -225,3 +225,50 @@ o refresh inicial.
 - `npm run build`: passou; 12 paginas geradas e rotas esperadas listadas.
 - Backend nao foi alterado neste fechamento.
 - `git diff --check`: executado antes do commit.
+
+## Fechamento do Motor de Missões 2.0 em 2026-07-20
+
+Base desta correção: `c856218`.
+
+### Proteção das rotas legadas
+
+- As rotas `/evidence/` e `/learning/` agora aceitam exclusivamente missões com
+  `ActionType.INTERVIEWS` e `CompletionRule.INTERVIEWS_AND_LEARNING`.
+- Tentativas nas quatro action types estruturadas retornam `409` antes de qualquer escrita.
+- O teste repete as duas chamadas para cada tipo e confirma imutabilidade de missão, evidências,
+  aprendizados, eventos, XP, fogo e Jornada.
+- A regra foi centralizada no motor, evitando diferença de contrato entre os dois endpoints.
+
+### Minors resolvidos
+
+- A Central expõe o progresso do arco com `role="progressbar"` e valores ARIA completos.
+- O detalhe mostra progresso semântico, requisitos com contagem e etapas avaliadas pelo backend;
+  `Documentação/telas.md` descreve exatamente esse estado.
+- `MissionEvidence.__str__` usa nome da pessoa, título genérico ou tipo da evidência como fallback.
+- `serialize_mission_detail()` reutiliza uma única avaliação sem alterar o contrato JSON.
+
+### RED / GREEN
+
+- RED backend: as rotas legadas aceitaram evidência estruturada com `201`; o `__str__` terminou em
+  sufixo vazio; o serializer chamou o avaliador duas vezes.
+- RED frontend: a Central não tinha progressbar do arco e o detalhe não renderizava o progresso,
+  requisitos ou etapas presentes no payload.
+- GREEN focado: 3/3 testes backend e 18/18 testes frontend aprovados.
+
+### Verificação fresca
+
+- `manage.py test --keepdb accounts startups`: 74/74 testes aprovados.
+- `manage.py makemigrations --check --dry-run`: nenhuma mudança detectada.
+- `manage.py check`: sem problemas.
+- `npm test -- --maxWorkers=1`: 103/103 testes em 24 arquivos aprovados.
+- `npx tsc --noEmit --pretty false`: aprovado.
+- `npm run lint`: aprovado.
+- `npm run build`: aprovado no Next.js 16.2.10; 12 páginas geradas.
+- detector Impeccable nos componentes/CSS alterados: nenhum finding.
+- `git diff --check`: aprovado.
+- frontend `http://127.0.0.1:3001` e backend `http://127.0.0.1:8000/api/health/`: HTTP 200
+  depois do build e da religação.
+
+O aviso conhecido do jsdom sobre navegação para outro documento continua sem falhar a suíte.
+Concorrência real de transações não foi simulada, pois ampliaria o risco deste fechamento; os
+contratos de repetição e idempotência permanecem cobertos de forma determinística.

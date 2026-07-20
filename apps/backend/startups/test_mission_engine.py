@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
@@ -12,6 +14,7 @@ from .mission_engine import (
     sync_mission_catalog,
 )
 from .mission_submissions import SubmissionValidationError, apply_mission_submission
+from .mission_serializers import serialize_mission_detail
 from .models import (
     ActivityEvent,
     JourneyStep,
@@ -50,6 +53,27 @@ class MissionSchemaTests(TestCase):
 
     def test_activity_supports_generic_evidence_event(self):
         self.assertIn("evidence_recorded", ActivityEvent.Kind.values)
+
+    def test_generic_evidence_string_uses_title_when_interviewee_is_absent(self):
+        user = User.objects.create_user(username="generic-evidence@example.com")
+        startup = Startup.objects.create(owner=user, name="Aurora Labs")
+        mission = Mission.objects.create(
+            startup=startup,
+            key="generic",
+            phase="Descoberta",
+            title="Missao generica",
+            objective="Registrar um entregavel.",
+            why_it_matters="Preservar contexto.",
+            instructions=[],
+            completion_criteria="Entregavel registrado.",
+        )
+        evidence = MissionEvidence.objects.create(
+            mission=mission,
+            evidence_type=MissionEvidence.Type.DOCUMENT,
+            title="Problema refinado",
+        )
+
+        self.assertEqual(str(evidence), "Missao generica - Problema refinado")
 
 
 class MissionCatalogTests(TestCase):
@@ -150,6 +174,20 @@ class MissionCatalogTests(TestCase):
 
         self.assertEqual(evaluation.progress, 100)
         self.assertTrue(evaluation.can_complete)
+
+    def test_detail_serializer_evaluates_mission_only_once(self):
+        sync_mission_catalog(self.startup)
+        mission = self.startup.missions.get(key="customer_interviews_5")
+        by_key = {item.key: item for item in self.startup.missions.all()}
+
+        with patch(
+            "startups.mission_serializers.evaluate_mission",
+            wraps=evaluate_mission,
+        ) as evaluator:
+            payload = serialize_mission_detail(mission, by_key=by_key)
+
+        self.assertEqual(payload["key"], mission.key)
+        evaluator.assert_called_once_with(mission)
 
     def test_completion_unlocks_only_satisfied_dependents_and_is_idempotent(self):
         sync_mission_catalog(self.startup)

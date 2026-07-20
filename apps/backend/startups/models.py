@@ -223,7 +223,8 @@ class MissionEvidence(models.Model):
         verbose_name_plural = "Evidencias de missao"
 
     def __str__(self) -> str:
-        return f"{self.mission.title} - {self.interviewee_name}"
+        label = self.interviewee_name or self.title or self.get_evidence_type_display()
+        return f"{self.mission.title} - {label}"
 
 
 class Learning(models.Model):

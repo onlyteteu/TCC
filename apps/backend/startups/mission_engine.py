@@ -20,6 +20,17 @@ class MissionRuleError(ValueError):
     pass
 
 
+def ensure_interview_workflow_mission(mission):
+    if (
+        mission.action_type != Mission.ActionType.INTERVIEWS
+        or mission.completion_rule
+        != Mission.CompletionRule.INTERVIEWS_AND_LEARNING
+    ):
+        raise MissionRuleError(
+            "Esta rota aceita apenas a missao de entrevistas e aprendizado."
+        )
+
+
 def reconcile_mission_states(startup):
     missions = list(startup.missions.order_by("order", "key"))
     by_key = {mission.key: mission for mission in missions}

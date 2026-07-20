@@ -68,6 +68,13 @@ function displayDetailValue(key: string, value: string) {
   return value;
 }
 
+function missionStepStatusLabel(status: MissionDetailPayload["mission"]["steps"][number]["status"]) {
+  if (status === "completed") return "Concluida";
+  if (status === "locked") return "Bloqueada";
+  if (status === "current") return "Atual";
+  return "Disponivel";
+}
+
 function MissionDetailSkeleton() {
   return (
     <div
@@ -511,6 +518,49 @@ export function MissionDetailScreen({
         <div>
           <h2>Criterio de conclusao</h2>
           <p>{mission.completionCriteria}</p>
+        </div>
+      </section>
+
+      <section className={styles.missionState} aria-labelledby="mission-state-title">
+        <div className={styles.stateSummary}>
+          <div className={styles.stateHeading}>
+            <h2 id="mission-state-title">Progresso da missao</h2>
+            <strong>{mission.progress}%</strong>
+          </div>
+          <div
+            aria-label="Progresso da missao"
+            aria-valuemax={100}
+            aria-valuemin={0}
+            aria-valuenow={mission.progress}
+            className={styles.stateTrack}
+            role="progressbar"
+          >
+            <span style={{ width: `${mission.progress}%` }} />
+          </div>
+          <h3>Requisitos</h3>
+          <ul className={styles.requirementList}>
+            {mission.requirements.map((requirement) => (
+              <li key={requirement.key}>
+                <span>{requirement.label}</span>
+                <strong>{requirement.current} de {requirement.target}</strong>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className={styles.executionSteps}>
+          <h2>Etapas da missao</h2>
+          <ol>
+            {mission.steps.map((step) => (
+              <li key={step.key}>
+                <span aria-hidden="true" className={styles.stepMarker} />
+                <div>
+                  <strong>{step.title}</strong>
+                  <p>{step.description}</p>
+                </div>
+                <small>{missionStepStatusLabel(step.status)}</small>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 

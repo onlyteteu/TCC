@@ -5,7 +5,14 @@ from django.utils import timezone
 from accounts.tokens import issue_auth_token
 
 from .mission_engine import reconcile_mission_states, sync_mission_catalog
-from .models import ActivityEvent, Mission, MissionEvidence, Startup
+from .models import (
+    ActivityEvent,
+    Learning,
+    Mission,
+    MissionEvidence,
+    Startup,
+    ensure_journey,
+)
 
 User = get_user_model()
 
@@ -179,6 +186,99 @@ class MissionV2ApiTests(TestCase):
 
         self.assertEqual(detail.status_code, 404)
         self.assertEqual(submission.status_code, 404)
+
+    def test_legacy_interview_routes_reject_every_structured_action_without_side_effects(self):
+        ensure_journey(self.startup)
+        structured_actions = (
+            Mission.ActionType.PROBLEM_REFINEMENT,
+            Mission.ActionType.AUDIENCE_VALIDATION,
+            Mission.ActionType.VALUE_PROPOSITION,
+            Mission.ActionType.ALTERNATIVES_MAP,
+        )
+        interview_body = {
+            "intervieweeName": "Pessoa entrevistada",
+            "notes": "Relato suficientemente detalhado para uma entrevista valida.",
+        }
+        learning_body = {
+            "content": "Padrao recorrente observado nas conversas.",
+            "impact": "O problema precisa ser refinado com esse contexto.",
+            "nextAction": "Revisar o entregavel estruturado.",
+            "confidence": "high",
+        }
+
+        prerequisite_keys = {
+            Mission.ActionType.PROBLEM_REFINEMENT: ("customer_interviews_5",),
+            Mission.ActionType.AUDIENCE_VALIDATION: (
+                "customer_interviews_5",
+                "refine_problem_with_evidence",
+            ),
+            Mission.ActionType.VALUE_PROPOSITION: (
+                "customer_interviews_5",
+                "refine_problem_with_evidence",
+                "validate_priority_audience",
+            ),
+            Mission.ActionType.ALTERNATIVES_MAP: (
+                "customer_interviews_5",
+                "refine_problem_with_evidence",
+                "validate_priority_audience",
+            ),
+        }
+
+        for action_type in structured_actions:
+            self.complete_directly(*prerequisite_keys[action_type])
+            mission = self.startup.missions.get(action_type=action_type)
+            self.assertEqual(mission.status, Mission.Status.AVAILABLE)
+            initial_status = mission.status
+            initial_started_at = mission.started_at
+            initial_completed_at = mission.completed_at
+            initial_evidence_count = MissionEvidence.objects.count()
+            initial_learning_count = Learning.objects.count()
+            initial_event_count = ActivityEvent.objects.count()
+            initial_xp = sum(
+                ActivityEvent.objects.values_list("xp_awarded", flat=True)
+            )
+            initial_journey = list(
+                self.startup.journey_steps.order_by("order").values_list(
+                    "key", "status", "answer", "completed_at"
+                )
+            )
+
+            for _ in range(2):
+                evidence_response = self.client.post(
+                    f"/api/startups/{self.startup.pk}/missions/{mission.key}/evidence/",
+                    data=interview_body,
+                    content_type="application/json",
+                    **self.auth,
+                )
+                learning_response = self.client.post(
+                    f"/api/startups/{self.startup.pk}/missions/{mission.key}/learning/",
+                    data=learning_body,
+                    content_type="application/json",
+                    **self.auth,
+                )
+
+                self.assertEqual(evidence_response.status_code, 409)
+                self.assertEqual(learning_response.status_code, 409)
+
+            mission.refresh_from_db()
+            self.assertEqual(mission.status, initial_status)
+            self.assertEqual(mission.started_at, initial_started_at)
+            self.assertEqual(mission.completed_at, initial_completed_at)
+            self.assertEqual(MissionEvidence.objects.count(), initial_evidence_count)
+            self.assertEqual(Learning.objects.count(), initial_learning_count)
+            self.assertEqual(ActivityEvent.objects.count(), initial_event_count)
+            self.assertEqual(
+                sum(ActivityEvent.objects.values_list("xp_awarded", flat=True)),
+                initial_xp,
+            )
+            self.assertEqual(
+                list(
+                    self.startup.journey_steps.order_by("order").values_list(
+                        "key", "status", "answer", "completed_at"
+                    )
+                ),
+                initial_journey,
+            )
 
     def test_today_and_center_share_the_same_recommendation_and_progress(self):
         center = self.client.get(

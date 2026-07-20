@@ -17,6 +17,7 @@ from accounts.tokens import get_user_from_token
 from .mission_engine import (
     MissionRuleError,
     complete_mission_record,
+    ensure_interview_workflow_mission,
     recommendation_reason,
     select_recommended_mission,
     sync_mission_catalog,
@@ -863,6 +864,10 @@ def mission_evidence(request, startup_id, mission_key):
         mission = _mission_for_startup(startup, mission_key, for_update=True)
         if mission is None:
             return _error_response("Missao nao encontrada.", status=404)
+        try:
+            ensure_interview_workflow_mission(mission)
+        except MissionRuleError as error:
+            return _error_response(str(error), status=409)
         if mission.status == Mission.Status.LOCKED:
             return _error_response("Essa missao ainda nao foi desbloqueada.", status=409)
         if mission.status == Mission.Status.COMPLETED:
@@ -947,6 +952,10 @@ def mission_learning(request, startup_id, mission_key):
         mission = _mission_for_startup(startup, mission_key, for_update=True)
         if mission is None:
             return _error_response("Missao nao encontrada.", status=404)
+        try:
+            ensure_interview_workflow_mission(mission)
+        except MissionRuleError as error:
+            return _error_response(str(error), status=409)
         if mission.status == Mission.Status.COMPLETED:
             return _error_response(
                 "Essa missao ja foi concluida. O aprendizado pode ser consultado no historico.",

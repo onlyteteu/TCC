@@ -142,6 +142,23 @@ describe("MissionDetailScreen", () => {
     expect(view.container.querySelectorAll("main")).toHaveLength(1);
   });
 
+  it("shows semantic progress, requirements and execution steps from the API", async () => {
+    mockDetail();
+    render(<MissionDetailScreen missionKey={detail.mission.key} startupId={7} />);
+
+    await screen.findByRole("heading", { name: detail.mission.title });
+    expect(screen.getByRole("progressbar", { name: "Progresso da missao" })).toHaveAttribute(
+      "aria-valuenow",
+      "0"
+    );
+    expect(screen.getByRole("heading", { name: "Requisitos" })).toBeInTheDocument();
+    expect(screen.getByText("Entregavel registrado")).toBeInTheDocument();
+    expect(screen.getByText("0 de 1")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Etapas da missao" })).toBeInTheDocument();
+    expect(screen.getByText("Refine o problema")).toBeInTheDocument();
+    expect(screen.getByText("Conecte as entrevistas.")).toBeInTheDocument();
+  });
+
   it("submits problem evidence and shows the next recommendation", async () => {
     const onWorkspaceChanged = vi.fn();
     const fetchMock = vi

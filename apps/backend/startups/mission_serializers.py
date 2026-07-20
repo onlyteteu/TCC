@@ -57,8 +57,8 @@ def locked_reasons(mission, by_key):
     ]
 
 
-def serialize_mission_card(mission, *, by_key, reason=None):
-    evaluation = evaluate_mission(mission)
+def serialize_mission_card(mission, *, by_key, reason=None, evaluation=None):
+    evaluation = evaluation or evaluate_mission(mission)
     return {
         "key": mission.key,
         "definitionVersion": mission.definition_version,
@@ -86,8 +86,13 @@ def serialize_mission_card(mission, *, by_key, reason=None):
 
 
 def serialize_mission_detail(mission, *, by_key, reason=None):
-    card = serialize_mission_card(mission, by_key=by_key, reason=reason)
     evaluation = evaluate_mission(mission)
+    card = serialize_mission_card(
+        mission,
+        by_key=by_key,
+        reason=reason,
+        evaluation=evaluation,
+    )
     learning = mission.learnings.first()
     return {
         **card,

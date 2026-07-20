@@ -217,15 +217,19 @@ export function MissionCenterScreen({ startupId }: MissionCenterScreenProps) {
           <h1>Missoes</h1>
           <p>Transforme a proxima duvida da startup em acao.</p>
         </div>
-        <div
-          aria-label={`${payload.arc.progress}% do arco concluido`}
-          className={styles.arcProgress}
-        >
+        <div className={styles.arcProgress}>
           <strong>{payload.arc.title}</strong>
           <span>
             {payload.arc.completed} de {payload.arc.total}
           </span>
-          <div aria-hidden="true" className={styles.arcTrack}>
+          <div
+            aria-label={`Progresso do arco ${payload.arc.title}`}
+            aria-valuemax={100}
+            aria-valuemin={0}
+            aria-valuenow={boundedProgress(payload.arc.progress)}
+            className={styles.arcTrack}
+            role="progressbar"
+          >
             <span style={{ width: `${boundedProgress(payload.arc.progress)}%` }} />
           </div>
         </div>
