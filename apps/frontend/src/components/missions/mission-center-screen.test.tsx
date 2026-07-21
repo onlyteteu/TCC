@@ -31,6 +31,7 @@ const recommended = {
   title: "Converse com 5 potenciais clientes",
   objective: "Entender como o problema acontece na vida real.",
   xpReward: 150,
+  estimatedMinutes: 150,
   status: "in_progress",
   statusLabel: "Em andamento",
   progress: 40,

@@ -8,6 +8,12 @@ export function startupJourneyHref(startupId: number) {
   return `${startupHomeHref(startupId)}/jornada`;
 }
 
+export function startupJourneyMapHref(startupId: number, field?: string) {
+  const params = new URLSearchParams({ view: "map" });
+  if (field) params.set("field", field);
+  return `${startupJourneyHref(startupId)}?${params.toString()}`;
+}
+
 export function startupMissionsHref(startupId: number) {
   return `${startupHomeHref(startupId)}/missoes`;
 }

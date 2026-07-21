@@ -23,6 +23,7 @@ const recommended = {
   title: "Converse com 5 potenciais clientes",
   objective: "Entender como o problema acontece na vida real.",
   xpReward: 150,
+  estimatedMinutes: 150,
   status: "available",
   statusLabel: "Disponivel",
   progress: 0,

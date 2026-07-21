@@ -80,10 +80,59 @@ export interface JourneyStepSummary {
   completedAt: string | null;
 }
 
+export type JourneyChapterStatus = "done" | "current" | "locked";
+export type JourneyChapterKey =
+  | "foundation"
+  | "proposal"
+  | "validation"
+  | "construction";
+
+export interface JourneyChapterSummary {
+  key: JourneyChapterKey;
+  title: string;
+  question: string;
+  status: JourneyChapterStatus;
+  completedSteps: number;
+  totalSteps: number;
+  steps: JourneyStepSummary[];
+}
+
+export interface JourneyStrategicItem {
+  key: string;
+  label: string;
+  value: string;
+  field: "problem" | "audience" | null;
+}
+
+export interface JourneyMissionSummary {
+  key: string;
+  title: string;
+  objective: string;
+  href: string;
+  estimatedMinutes: number;
+  xpReward: number;
+  status: MissionStatus;
+  canContinue: boolean;
+}
+
+export interface JourneyMilestoneSummary {
+  key: string;
+  chapterKey: JourneyChapterKey;
+  title: string;
+  description: string;
+  alreadyBuilt: JourneyStrategicItem[];
+  nextUnlock: { title: string; description: string } | null;
+  mission: JourneyMissionSummary | null;
+  message: string | null;
+}
+
 export interface JourneyPayload {
   journey: JourneyStepSummary[];
   progress: number;
   startup: StartupSummary;
+  chapters: JourneyChapterSummary[];
+  currentMilestone: JourneyMilestoneSummary | null;
+  strategicSummary: JourneyStrategicItem[];
   message?: string;
 }
 
@@ -107,6 +156,7 @@ export interface MissionCardSummary {
   title: string;
   objective: string;
   xpReward: number;
+  estimatedMinutes: number;
   status: MissionStatus;
   statusLabel: string;
   progress: number;

@@ -6,6 +6,7 @@ import {
   missionExecutionHref,
   resolvePanelDestination,
   startupHomeHref,
+  startupJourneyMapHref,
   startupMissionHref,
   startupMissionsHref,
 } from "./startup-navigation";
@@ -23,6 +24,13 @@ describe("startup navigation", () => {
 
   it("builds the canonical Home URL", () => {
     expect(startupHomeHref(9)).toBe("/painel/startup/9");
+  });
+
+  it("builds the secondary startup map URL with an optional focused field", () => {
+    expect(startupJourneyMapHref(9)).toBe("/painel/startup/9/jornada?view=map");
+    expect(startupJourneyMapHref(9, "initialGoal")).toBe(
+      "/painel/startup/9/jornada?view=map&field=initialGoal"
+    );
   });
 
   it("builds the mission center and detail URLs", () => {

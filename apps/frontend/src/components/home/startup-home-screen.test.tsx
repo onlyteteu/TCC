@@ -51,6 +51,7 @@ const payload: TodayPayload = {
     requiredEvidenceCount: 5,
     evidenceCount: 1,
     xpReward: 150,
+    estimatedMinutes: 150,
     status: "in_progress",
     statusLabel: "Em andamento",
     progress: 20,

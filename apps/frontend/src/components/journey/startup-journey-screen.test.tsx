@@ -47,6 +47,9 @@ const payload: JourneyPayload = {
       completedAt: null,
     },
   ],
+  chapters: [],
+  currentMilestone: null,
+  strategicSummary: [],
 };
 
 describe("StartupJourneyScreen", () => {
