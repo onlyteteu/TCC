@@ -222,6 +222,7 @@ export interface MissionDetailSummary extends MissionCardSummary {
   requirements: MissionRequirement[];
   steps: MissionStepSummary[];
   evidences: MissionEvidenceSummary[];
+  sourceEvidences: MissionEvidenceSummary[];
   learning: MissionLearningSummary | null;
 }
 

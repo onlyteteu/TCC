@@ -49,6 +49,19 @@ def serialize_learning(learning):
     }
 
 
+def serialize_source_evidences(mission, by_key):
+    source_evidences = []
+    for key in mission.prerequisite_keys:
+        prerequisite = by_key.get(key)
+        if prerequisite is None:
+            continue
+        source_evidences.extend(
+            serialize_evidence(item)
+            for item in prerequisite.evidences.order_by("created_at", "pk")
+        )
+    return source_evidences
+
+
 def locked_reasons(mission, by_key):
     return [
         f"Conclua: {by_key[key].title}"
@@ -108,6 +121,7 @@ def serialize_mission_detail(mission, *, by_key, reason=None):
         "requirements": evaluation.requirements,
         "steps": evaluation.steps,
         "evidences": [serialize_evidence(item) for item in mission.evidences.all()],
+        "sourceEvidences": serialize_source_evidences(mission, by_key),
         "learning": serialize_learning(learning),
     }
 

@@ -38,7 +38,12 @@ const recommended = {
 } satisfies MissionCardSummary;
 
 const detail: MissionDetailPayload = {
-  startup: { id: 7, name: "Aurora Labs" } as StartupSummary,
+  startup: {
+    id: 7,
+    name: "Aurora Labs",
+    audience: "Donos de restaurantes pequenos",
+    problem: "Compras duplicadas de ingredientes",
+  } as StartupSummary,
   gamification: {
     xp: 250,
     level: 1,
@@ -52,6 +57,7 @@ const detail: MissionDetailPayload = {
     key: "refine_problem_with_evidence",
     title: "Refine o problema com evidencias",
     actionType: "problem_refinement",
+    xpReward: 100,
     status: "available",
     statusLabel: "Disponivel",
     order: 20,
@@ -81,6 +87,19 @@ const detail: MissionDetailPayload = {
       },
     ],
     evidences: [],
+    sourceEvidences: [1, 2, 3, 4, 5].map((id) => ({
+      id,
+      type: "interview",
+      title: `Entrevista ${id}`,
+      summary: `Restaurante ${id} relatou compras duplicadas.`,
+      details: {},
+      intervieweeName: `Pessoa ${id}`,
+      intervieweeProfile: "Dono de restaurante",
+      context: "Controle semanal de estoque",
+      notes: `Relato ${id}: comprou ingredientes que ainda estavam guardados.`,
+      occurredOn: "2026-07-20",
+      createdAt: "2026-07-20T12:00:00Z",
+    })),
     learning: null,
   },
 };
@@ -124,6 +143,29 @@ function mockDetail(payload: MissionDetailPayload = detail) {
   return fetchMock;
 }
 
+async function reachProblemDiscoveryCard() {
+  await screen.findByRole("heading", {
+    name: "Qual formulação descreve um problema observável?",
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Ir direto para minhas evidências" }));
+  fireEvent.click(screen.getByRole("button", { name: /Pessoa 1/ }));
+  fireEvent.click(screen.getByRole("button", { name: /Pessoa 2/ }));
+  fireEvent.click(screen.getByRole("button", { name: "Montar meu problema" }));
+  fireEvent.change(screen.getByLabelText("Quem enfrenta esse problema?"), {
+    target: { value: "Restaurantes pequenos" },
+  });
+  fireEvent.change(screen.getByLabelText("Em qual situação isso acontece?"), {
+    target: { value: "controlam o estoque no fim da semana" },
+  });
+  fireEvent.change(screen.getByLabelText("Qual dificuldade aparece?"), {
+    target: { value: "saber o que ainda está disponível" },
+  });
+  fireEvent.change(screen.getByLabelText("Qual consequência pode ser observada?"), {
+    target: { value: "compras duplicadas e perda de margem" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Revisar descoberta" }));
+}
+
 afterEach(() => {
   vi.clearAllMocks();
   vi.unstubAllGlobals();
@@ -143,11 +185,12 @@ describe("MissionDetailScreen", () => {
     expect(view.container.querySelectorAll("main")).toHaveLength(1);
   });
 
-  it("shows semantic progress, requirements and execution steps from the API", async () => {
-    mockDetail();
-    render(<MissionDetailScreen missionKey={detail.mission.key} startupId={7} />);
+  it("keeps semantic progress and requirements for the remaining structured missions", async () => {
+    const audience = detailFor("audience_validation");
+    mockDetail(audience);
+    render(<MissionDetailScreen missionKey={audience.mission.key} startupId={7} />);
 
-    await screen.findByRole("heading", { name: detail.mission.title });
+    await screen.findByRole("heading", { name: audience.mission.title });
     expect(screen.getByRole("progressbar", { name: "Progresso da missao" })).toHaveAttribute(
       "aria-valuenow",
       "0"
@@ -158,6 +201,21 @@ describe("MissionDetailScreen", () => {
     expect(screen.getByRole("heading", { name: "Etapas da missao" })).toBeInTheDocument();
     expect(screen.getByText("Refine o problema")).toBeInTheDocument();
     expect(screen.getByText("Conecte as entrevistas.")).toBeInTheDocument();
+  });
+
+  it("replaces the problem form and corporate progress blocks with the decision challenge", async () => {
+    mockDetail();
+    render(<MissionDetailScreen missionKey={detail.mission.key} startupId={7} />);
+
+    expect(
+      await screen.findByRole("heading", {
+        name: "Qual formulação descreve um problema observável?",
+      })
+    ).toBeInTheDocument();
+    expect(screen.queryByLabelText("Problema refinado")).not.toBeInTheDocument();
+    expect(screen.queryByRole("progressbar", { name: "Progresso da missao" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Requisitos" })).not.toBeInTheDocument();
+    expect(screen.getByLabelText("Recompensa: 100 XP")).toBeInTheDocument();
   });
 
   it("submits problem evidence and shows the next recommendation", async () => {
@@ -171,6 +229,11 @@ describe("MissionDetailScreen", () => {
             ...detail,
             mission: { ...detail.mission, status: "completed", statusLabel: "Concluida" },
             message: "Missao concluida.",
+            celebration: {
+              title: "Missão cumprida",
+              xpAwarded: 100,
+              unlocked: "Validação de público liberada",
+            },
             nextRecommendedMission: {
               ...recommended,
               key: "validate_priority_audience",
@@ -191,26 +254,17 @@ describe("MissionDetailScreen", () => {
       />
     );
 
-    fireEvent.change(await screen.findByLabelText("Problema refinado"), {
-      target: {
-        value:
-          "Restaurantes pequenos perdem margem quando compram ingredientes sem visibilidade do estoque.",
-      },
-    });
-    fireEvent.change(screen.getByLabelText("Evidencias que sustentam o problema"), {
-      target: {
-        value:
-          "Quatro de cinco entrevistados relataram compras duplicadas e descarte semanal de ingredientes.",
-      },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Salvar e concluir missao" }));
+    await reachProblemDiscoveryCard();
+    fireEvent.click(screen.getByRole("button", { name: "Registrar descoberta" }));
 
-    await screen.findByText("Missao concluida.");
+    await screen.findByText("Você transformou relatos em um problema observável");
     expect(JSON.parse(String(fetchMock.mock.calls[1][1]?.body))).toEqual({
       problemStatement:
-        "Restaurantes pequenos perdem margem quando compram ingredientes sem visibilidade do estoque.",
+        "Restaurantes pequenos, quando controlam o estoque no fim da semana, há dificuldade para " +
+        "saber o que ainda está disponível, o que provoca compras duplicadas e perda de margem.",
       evidenceSummary:
-        "Quatro de cinco entrevistados relataram compras duplicadas e descarte semanal de ingredientes.",
+        "2 entrevistas sustentam este recorte. Pessoa 1: Relato 1: comprou ingredientes que ainda " +
+        "estavam guardados. | Pessoa 2: Relato 2: comprou ingredientes que ainda estavam guardados.",
     });
     expect(screen.getByRole("link", { name: /Valide o publico prioritario/ })).toHaveAttribute(
       "href",
@@ -239,16 +293,10 @@ describe("MissionDetailScreen", () => {
     );
     render(<MissionDetailScreen missionKey="refine_problem_with_evidence" startupId={7} />);
 
-    const control = await screen.findByLabelText("Problema refinado");
-    const hint = screen.getAllByText("Minimo de 40 caracteres.")[0];
-    expect(hint.id).not.toBe("");
-    expect(control).toHaveAttribute("aria-describedby", hint.id);
+    await reachProblemDiscoveryCard();
+    fireEvent.click(screen.getByRole("button", { name: "Registrar descoberta" }));
 
-    fireEvent.click(await screen.findByRole("button", { name: "Salvar e concluir missao" }));
-    const error = await screen.findByText("O problema deve ter pelo menos 40 caracteres.");
-
-    expect(control).toHaveAttribute("aria-invalid", "true");
-    expect(control.getAttribute("aria-describedby")?.split(" ")).toEqual([hint.id, error.id]);
+    expect(await screen.findByRole("alert")).toHaveTextContent("Revise");
   });
 
   it("freezes every form control while a submission is pending", async () => {
@@ -332,13 +380,6 @@ describe("MissionDetailScreen", () => {
 
   it("renders every structured mission as an explicit form with backend limits", async () => {
     const cases = [
-      {
-        actionType: "problem_refinement" as const,
-        fields: [
-          ["Problema refinado", "40"],
-          ["Evidencias que sustentam o problema", "40"],
-        ],
-      },
       {
         actionType: "audience_validation" as const,
         fields: [

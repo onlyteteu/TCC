@@ -7,6 +7,10 @@
   color: #f7efe3;
 }
 
+.challengePage {
+  max-width: 1280px;
+}
+
 .backLink {
   display: inline-flex;
   min-height: 40px;

@@ -105,6 +105,35 @@ class MissionV2ApiTests(TestCase):
         self.assertIn("instructions", response.json()["mission"])
         self.assertIn("evidences", response.json()["mission"])
 
+    def test_problem_refinement_detail_returns_interviews_as_source_evidence(self):
+        interviews = self.startup.missions.get(key="customer_interviews_5")
+        for index in range(5):
+            MissionEvidence.objects.create(
+                mission=interviews,
+                evidence_type=MissionEvidence.Type.INTERVIEW,
+                title=f"Entrevista {index + 1}",
+                summary=f"Restaurante {index + 1} relatou compra duplicada.",
+                interviewee_name=f"Pessoa {index + 1}",
+                interviewee_profile="Dono de restaurante",
+                context="Controle semanal de estoque",
+                notes="Comprou ingredientes que ainda estavam guardados.",
+                occurred_on=timezone.localdate(),
+            )
+        self.complete_directly("customer_interviews_5")
+
+        response = self.client.get(
+            f"/api/startups/{self.startup.pk}/missions/"
+            "refine_problem_with_evidence/",
+            **self.auth,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        mission_payload = response.json()["mission"]
+        self.assertIn("sourceEvidences", mission_payload)
+        source = mission_payload["sourceEvidences"]
+        self.assertEqual(len(source), 5)
+        self.assertEqual(source[0]["intervieweeName"], "Pessoa 1")
+
     def test_submission_is_idempotent_and_returns_the_next_recommendation(self):
         self.complete_directly("customer_interviews_5")
         url = (

@@ -418,10 +418,62 @@
 }
 
 .content {
+  position: relative;
+  isolation: isolate;
   min-width: 0;
   min-height: 0;
   overflow-y: auto;
+  background:
+    radial-gradient(circle at 86% -6%, rgba(34, 104, 132, 0.13), transparent 32%),
+    radial-gradient(circle at 42% -14%, rgba(242, 165, 26, 0.055), transparent 28%),
+    #070b13;
   scrollbar-gutter: stable;
+}
+
+.content > :not(.atmosphere) {
+  position: relative;
+  z-index: 1;
+}
+
+.atmosphere {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: min(620px, 82vh);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.atmosphere::before,
+.atmosphere::after {
+  position: absolute;
+  content: "";
+}
+
+.atmosphere::before {
+  inset: 0;
+  opacity: 0.34;
+  background-image:
+    radial-gradient(circle, rgba(255, 218, 149, 0.85) 0 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(111, 191, 210, 0.66) 0 1px, transparent 1.6px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.45) 0 0.8px, transparent 1.3px);
+  background-position: 8% 19%, 63% 8%, 88% 31%;
+  background-size: 157px 131px, 223px 179px, 281px 211px;
+  mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.72) 48%, transparent 100%);
+}
+
+.atmosphere::after {
+  top: -360px;
+  right: -190px;
+  width: 720px;
+  height: 720px;
+  border: 1px solid rgba(242, 165, 26, 0.08);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 62px rgba(55, 137, 159, 0.025),
+    0 0 0 128px rgba(242, 165, 26, 0.018);
 }
 
 .feedback,
