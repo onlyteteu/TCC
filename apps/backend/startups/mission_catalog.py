@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from .models import Mission
 
-CATALOG_VERSION = 2
+CATALOG_VERSION = 3
 
 
 @dataclass(frozen=True)
@@ -19,6 +19,7 @@ class MissionDefinition:
     contextual_tip: str
     required_evidence_count: int
     xp_reward: int
+    estimated_minutes: int
     order: int
     priority: int
     prerequisites: tuple[str, ...]
@@ -43,6 +44,7 @@ class MissionDefinition:
             contextual_tip="",
             required_evidence_count=1,
             xp_reward=0,
+            estimated_minutes=15,
             order=0,
             priority=100,
             prerequisites=prerequisites,
@@ -66,6 +68,7 @@ class MissionDefinition:
             "contextual_tip": self.contextual_tip,
             "required_evidence_count": self.required_evidence_count,
             "xp_reward": self.xp_reward,
+            "estimated_minutes": self.estimated_minutes,
             "order": self.order,
             "priority": self.priority,
             "prerequisite_keys": list(self.prerequisites),
@@ -80,7 +83,7 @@ class MissionDefinition:
 MISSION_DEFINITIONS = (
     MissionDefinition(
         key="customer_interviews_5",
-        version=2,
+        version=3,
         mission_type=Mission.Type.MAIN,
         phase="Descoberta",
         title="Converse com 5 potenciais clientes",
@@ -95,6 +98,7 @@ MISSION_DEFINITIONS = (
         contextual_tip="Pergunte sobre situações reais do passado, sem vender a solução.",
         required_evidence_count=5,
         xp_reward=150,
+        estimated_minutes=150,
         order=10,
         priority=100,
         prerequisites=(),
@@ -109,7 +113,7 @@ MISSION_DEFINITIONS = (
     ),
     MissionDefinition(
         key="refine_problem_with_evidence",
-        version=2,
+        version=3,
         mission_type=Mission.Type.MAIN,
         phase="Descoberta",
         title="Refine o problema com evidências",
@@ -120,6 +124,7 @@ MISSION_DEFINITIONS = (
         contextual_tip="Descreva quem sofre, em qual situação e qual consequência aparece.",
         required_evidence_count=1,
         xp_reward=100,
+        estimated_minutes=20,
         order=20,
         priority=100,
         prerequisites=("customer_interviews_5",),
@@ -130,7 +135,7 @@ MISSION_DEFINITIONS = (
     ),
     MissionDefinition(
         key="validate_priority_audience",
-        version=2,
+        version=3,
         mission_type=Mission.Type.MAIN,
         phase="Descoberta",
         title="Valide o público prioritário",
@@ -141,6 +146,7 @@ MISSION_DEFINITIONS = (
         contextual_tip="Prefira um grupo pequeno e alcançável a uma categoria ampla.",
         required_evidence_count=1,
         xp_reward=120,
+        estimated_minutes=20,
         order=30,
         priority=100,
         prerequisites=("refine_problem_with_evidence",),
@@ -151,7 +157,7 @@ MISSION_DEFINITIONS = (
     ),
     MissionDefinition(
         key="reframe_value_proposition",
-        version=2,
+        version=3,
         mission_type=Mission.Type.MAIN,
         phase="Proposta",
         title="Reformule a proposta de valor",
@@ -162,6 +168,7 @@ MISSION_DEFINITIONS = (
         contextual_tip="Explique o valor antes de listar funcionalidades.",
         required_evidence_count=1,
         xp_reward=100,
+        estimated_minutes=15,
         order=40,
         priority=100,
         prerequisites=("validate_priority_audience",),
@@ -172,7 +179,7 @@ MISSION_DEFINITIONS = (
     ),
     MissionDefinition(
         key="map_current_alternatives",
-        version=2,
+        version=3,
         mission_type=Mission.Type.MAIN,
         phase="Proposta",
         title="Mapeie as alternativas atuais",
@@ -183,6 +190,7 @@ MISSION_DEFINITIONS = (
         contextual_tip="Inclua soluções manuais e o comportamento de não fazer nada.",
         required_evidence_count=1,
         xp_reward=100,
+        estimated_minutes=25,
         order=50,
         priority=100,
         prerequisites=("validate_priority_audience",),

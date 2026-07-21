@@ -71,6 +71,7 @@ def serialize_mission_card(mission, *, by_key, reason=None, evaluation=None):
         "title": mission.title,
         "objective": mission.objective,
         "xpReward": mission.xp_reward,
+        "estimatedMinutes": mission.estimated_minutes,
         "status": mission.status,
         "statusLabel": mission.get_status_display(),
         "progress": evaluation.progress,

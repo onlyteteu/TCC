@@ -137,6 +137,7 @@ class Mission(models.Model):
     contextual_tip = models.TextField(blank=True)
     required_evidence_count = models.PositiveSmallIntegerField(default=0)
     xp_reward = models.PositiveIntegerField(default=0)
+    estimated_minutes = models.PositiveSmallIntegerField(default=15)
     definition_version = models.PositiveSmallIntegerField(default=1)
     origin = models.CharField(max_length=20, choices=Origin.choices, default=Origin.CATALOG)
     is_required = models.BooleanField(default=True)

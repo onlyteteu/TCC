@@ -14,7 +14,7 @@ from .mission_engine import (
     sync_mission_catalog,
 )
 from .mission_submissions import SubmissionValidationError, apply_mission_submission
-from .mission_serializers import serialize_mission_detail
+from .mission_serializers import serialize_mission_card, serialize_mission_detail
 from .models import (
     ActivityEvent,
     JourneyStep,
@@ -29,6 +29,30 @@ User = get_user_model()
 
 
 class MissionSchemaTests(TestCase):
+    def test_catalog_snapshot_persists_estimated_minutes(self):
+        definition = MissionDefinition.minimal("duration_contract")
+
+        self.assertEqual(definition.estimated_minutes, 15)
+        self.assertEqual(definition.snapshot()["estimated_minutes"], 15)
+
+    def test_serializer_exposes_estimated_minutes(self):
+        user = User.objects.create_user(username="mission-duration@example.com")
+        startup = Startup.objects.create(owner=user, name="Aurora Labs")
+        mission = Mission.objects.create(
+            startup=startup,
+            key="duration_contract",
+            phase="Teste",
+            title="Contrato de duracao",
+            objective="Expor duracao curada.",
+            why_it_matters="Evita estimativa no cliente.",
+            completion_criteria="Contrato serializado.",
+            estimated_minutes=25,
+        )
+
+        card = serialize_mission_card(mission, by_key={mission.key: mission})
+
+        self.assertEqual(card["estimatedMinutes"], 25)
+
     def test_mission_has_catalog_snapshot_fields(self):
         field_names = {field.name for field in Mission._meta.get_fields()}
 
@@ -99,6 +123,12 @@ class MissionCatalogTests(TestCase):
                 "reframe_value_proposition",
                 "map_current_alternatives",
             ],
+        )
+
+    def test_catalog_defines_curated_estimated_minutes(self):
+        self.assertEqual(
+            [definition.estimated_minutes for definition in MISSION_DEFINITIONS],
+            [150, 20, 20, 15, 25],
         )
 
     def test_sync_creates_five_missions_with_real_dependencies(self):

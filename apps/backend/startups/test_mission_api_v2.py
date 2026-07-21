@@ -49,7 +49,7 @@ class MissionV2ApiTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         payload = response.json()
-        self.assertEqual(payload["catalogVersion"], 2)
+        self.assertEqual(payload["catalogVersion"], 3)
         self.assertEqual(
             payload["arc"],
             {
