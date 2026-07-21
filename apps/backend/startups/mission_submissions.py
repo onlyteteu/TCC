@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from django.db import transaction
 from django.utils import timezone
 
+from .journey_service import reconcile_completed_journey_missions
 from .mission_engine import complete_mission_record, reconcile_mission_states
 from .models import (
     ActivityEvent,
@@ -170,6 +171,9 @@ def _alternatives_map(payload):
             "limitations": limitations,
             "opportunity": opportunity,
         },
+        journey_key=Startup.Stage.DIFFERENTIATORS,
+        journey_answer=opportunity,
+        complete_journey_step=True,
     )
 
 
@@ -267,5 +271,6 @@ def apply_mission_submission(startup, mission, payload):
         mission.save(update_fields=["started_at", "status", "updated_at"])
 
     mission, completed_now = complete_mission_record(mission)
+    reconcile_completed_journey_missions(startup)
     reconcile_mission_states(startup)
     return SubmissionMutation(mission, evidence, created, completed_now)

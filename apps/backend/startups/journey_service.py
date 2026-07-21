@@ -1,3 +1,6 @@
+from django.db import transaction
+from django.utils import timezone
+
 from .mission_engine import sync_mission_catalog
 from .models import JourneyStep, Mission, Startup
 
@@ -32,6 +35,11 @@ CHAPTERS = (
 MISSION_BY_STEP = {
     Startup.Stage.PROBLEM: "refine_problem_with_evidence",
     Startup.Stage.AUDIENCE: "validate_priority_audience",
+    Startup.Stage.VALUE: "reframe_value_proposition",
+    Startup.Stage.DIFFERENTIATORS: "map_current_alternatives",
+}
+
+COMPLETION_MISSION_BY_STEP = {
     Startup.Stage.VALUE: "reframe_value_proposition",
     Startup.Stage.DIFFERENTIATORS: "map_current_alternatives",
 }
@@ -157,6 +165,51 @@ def _serialize_milestone(startup, current, steps, chapters, missions_by_key):
             else "A missão deste marco ainda não foi liberada."
         ),
     }
+
+
+def _complete_current_step(startup, step):
+    step.status = JourneyStep.Status.DONE
+    step.completed_at = timezone.now()
+    step.save(update_fields=["status", "completed_at", "updated_at"])
+
+    next_step = (
+        startup.journey_steps.select_for_update()
+        .filter(status=JourneyStep.Status.PENDING, order__gt=step.order)
+        .order_by("order")
+        .first()
+    )
+    if next_step:
+        next_step.status = JourneyStep.Status.CURRENT
+        next_step.save(update_fields=["status", "updated_at"])
+        startup.current_stage = next_step.key
+    else:
+        startup.current_stage = step.key
+    startup.save(update_fields=["current_stage", "updated_at"])
+
+
+@transaction.atomic
+def reconcile_completed_journey_missions(startup):
+    changed = False
+    while True:
+        current = (
+            startup.journey_steps.select_for_update()
+            .filter(status=JourneyStep.Status.CURRENT)
+            .order_by("order")
+            .first()
+        )
+        mission_key = COMPLETION_MISSION_BY_STEP.get(current.key) if current else None
+        mission_completed = (
+            startup.missions.filter(
+                key=mission_key,
+                status=Mission.Status.COMPLETED,
+            ).exists()
+            if mission_key
+            else False
+        )
+        if current is None or not mission_completed:
+            return changed
+        _complete_current_step(startup, current)
+        changed = True
 
 
 def build_journey_context(startup, steps):

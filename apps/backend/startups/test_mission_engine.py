@@ -418,7 +418,7 @@ class MissionCatalogTests(TestCase):
         self.assertFalse(revised.evidence_created)
         self.assertFalse(revised.completed_now)
 
-    def test_alternatives_submission_does_not_advance_an_unrelated_journey_step(self):
+    def test_alternatives_submission_records_future_step_without_advancing_value(self):
         self.complete_prerequisites(
             "customer_interviews_5",
             "refine_problem_with_evidence",
@@ -445,8 +445,45 @@ class MissionCatalogTests(TestCase):
         differentiators.refresh_from_db()
         self.assertEqual(value_step.status, JourneyStep.Status.CURRENT)
         self.assertEqual(differentiators.status, JourneyStep.Status.PENDING)
-        self.assertEqual(differentiators.answer, "")
+        self.assertEqual(
+            differentiators.answer,
+            mutation.evidence.details["opportunity"],
+        )
         self.assertEqual(
             mutation.evidence.details["opportunity"],
             "Oferecer visibilidade simples e preventiva sem exigir um ERP completo do restaurante.",
         )
+
+    def test_completed_alternatives_advance_when_differentiators_becomes_current(self):
+        self.complete_prerequisites(
+            "customer_interviews_5",
+            "refine_problem_with_evidence",
+            "validate_priority_audience",
+        )
+        alternatives = self.startup.missions.get(key="map_current_alternatives")
+        apply_mission_submission(
+            self.startup,
+            alternatives,
+            {
+                "alternatives": "Caderno, planilha, memoria do comprador e conferencia visual feita apenas na hora da compra.",
+                "limitations": "As alternativas dependem de disciplina manual e nao alertam duplicidade antes do pedido.",
+                "opportunity": "Centralizar o estoque e alertar compras duplicadas antes do pedido ao fornecedor.",
+            },
+        )
+
+        value = self.startup.missions.get(key="reframe_value_proposition")
+        apply_mission_submission(
+            self.startup,
+            value,
+            {
+                "valueProposition": "Ajudamos restaurantes pequenos a evitar compras duplicadas e preservar margem toda semana.",
+                "rationale": "A promessa conecta o publico validado, a perda recorrente e o resultado esperado nas compras.",
+            },
+        )
+
+        differentiators = self.startup.journey_steps.get(
+            key=Startup.Stage.DIFFERENTIATORS
+        )
+        validation = self.startup.journey_steps.get(key=Startup.Stage.VALIDATION)
+        self.assertEqual(differentiators.status, JourneyStep.Status.DONE)
+        self.assertEqual(validation.status, JourneyStep.Status.CURRENT)

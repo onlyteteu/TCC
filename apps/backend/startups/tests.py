@@ -539,7 +539,7 @@ class JourneyApiTests(TestCase):
             ["problem", "audience"],
         )
 
-    def test_completing_current_step_opens_next_door(self):
+    def test_journey_rejects_direct_completion_but_keeps_current_step(self):
         startup_id = self.create_startup_via_api()
 
         response = self.client.patch(
@@ -549,15 +549,18 @@ class JourneyApiTests(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.token}",
         )
 
-        self.assertEqual(response.status_code, 200)
-        payload = response.json()
-        steps_by_key = {step["key"]: step for step in payload["journey"]}
-        self.assertEqual(steps_by_key["value"]["status"], "done")
-        self.assertEqual(steps_by_key["differentiators"]["status"], "current")
-        self.assertEqual(payload["progress"], 38)
+        self.assertEqual(response.status_code, 409)
+        value = JourneyStep.objects.get(startup_id=startup_id, key=Startup.Stage.VALUE)
+        differentiators = JourneyStep.objects.get(
+            startup_id=startup_id,
+            key=Startup.Stage.DIFFERENTIATORS,
+        )
+        self.assertEqual(value.status, JourneyStep.Status.CURRENT)
+        self.assertEqual(value.answer, "")
+        self.assertEqual(differentiators.status, JourneyStep.Status.PENDING)
         self.assertEqual(
             Startup.objects.get(pk=startup_id).current_stage,
-            Startup.Stage.DIFFERENTIATORS,
+            Startup.Stage.VALUE,
         )
 
     def test_cannot_complete_step_with_empty_answer(self):
@@ -565,7 +568,7 @@ class JourneyApiTests(TestCase):
 
         response = self.client.patch(
             f"/api/startups/{startup_id}/journey/value/",
-            data={"answer": "   ", "complete": True},
+            data={"answer": "   "},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {self.token}",
         )
@@ -618,20 +621,41 @@ class JourneyApiTests(TestCase):
         unlocked = {a["key"] for a in progress["achievements"] if a["unlocked"]}
         self.assertEqual(unlocked, {"founder", "named"})
 
-        # concluir proposta de valor destrava "primeira porta" e sobe nivel
-        self.client.patch(
-            f"/api/startups/{startup_id}/journey/value/",
-            data={"answer": "Promessa central da startup.", "complete": True},
+        # a missao de valor concede 25 XP pela evidencia e 100 XP pela conclusao;
+        # a Jornada muda de marco, mas nao soma outros 100 XP.
+        self.client.get(
+            f"/api/startups/{startup_id}/missions/",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+        startup = Startup.objects.get(pk=startup_id)
+        startup.missions.filter(
+            key__in=[
+                "customer_interviews_5",
+                "refine_problem_with_evidence",
+                "validate_priority_audience",
+            ]
+        ).update(status=Mission.Status.COMPLETED, completed_at=timezone.now())
+        startup.missions.filter(key="reframe_value_proposition").update(
+            status=Mission.Status.AVAILABLE
+        )
+
+        submission = self.client.post(
+            f"/api/startups/{startup_id}/missions/reframe_value_proposition/submission/",
+            data={
+                "valueProposition": "Ajudamos restaurantes pequenos a evitar compras duplicadas e preservar margem toda semana.",
+                "rationale": "A promessa conecta o publico validado, a perda recorrente e o resultado esperado nas compras.",
+            },
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {self.token}",
         )
+        self.assertEqual(submission.status_code, 200)
 
         response = self.client.get(
             "/api/startups/",
             HTTP_AUTHORIZATION=f"Bearer {self.token}",
         )
         progress = response.json()["accountProgress"]
-        self.assertEqual(progress["xp"], 300)
+        self.assertEqual(progress["xp"], 325)
         self.assertEqual(progress["level"], 2)
         unlocked = {a["key"] for a in progress["achievements"] if a["unlocked"]}
         self.assertIn("first_door", unlocked)
@@ -647,6 +671,33 @@ class JourneyApiTests(TestCase):
         self.assertEqual(progress["xp"], 0)
         self.assertEqual(progress["level"], 1)
         self.assertEqual(progress["unlockedCount"], 0)
+
+    def test_legacy_completed_mission_without_reward_event_keeps_journey_xp(self):
+        startup_id = self.create_startup_via_api()
+        self.client.get(
+            f"/api/startups/{startup_id}/missions/",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+        JourneyStep.objects.filter(
+            startup_id=startup_id,
+            key=Startup.Stage.VALUE,
+        ).update(status=JourneyStep.Status.DONE, completed_at=timezone.now())
+        JourneyStep.objects.filter(
+            startup_id=startup_id,
+            key=Startup.Stage.DIFFERENTIATORS,
+        ).update(status=JourneyStep.Status.CURRENT)
+        Mission.objects.filter(
+            startup_id=startup_id,
+            key="reframe_value_proposition",
+        ).update(status=Mission.Status.COMPLETED, completed_at=timezone.now())
+
+        response = self.client.get(
+            "/api/startups/",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["accountProgress"]["xp"], 300)
 
     def test_journey_requires_owner(self):
         other_user = User.objects.create_user(

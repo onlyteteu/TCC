@@ -14,7 +14,11 @@ from django.utils import timezone
 
 from accounts.tokens import get_user_from_token
 
-from .journey_service import build_journey_context
+from .journey_service import (
+    COMPLETION_MISSION_BY_STEP,
+    build_journey_context,
+    reconcile_completed_journey_missions,
+)
 from .mission_engine import (
     MissionRuleError,
     complete_mission_record,
@@ -200,7 +204,38 @@ def _build_account_progress(startups_with_steps):
     startup_ids = [startup.pk for startup, _, _ in startups_with_steps]
     activity_events = ActivityEvent.objects.filter(startup_id__in=startup_ids)
     activity_xp = activity_events.aggregate(total=Sum("xp_awarded"))["total"] or 0
-    xp = total_done * XP_PER_STEP + activity_xp
+    mapped_completed_missions = list(
+        Mission.objects.filter(
+            startup_id__in=startup_ids,
+            key__in=COMPLETION_MISSION_BY_STEP.values(),
+            status=Mission.Status.COMPLETED,
+        ).values("pk", "startup_id", "key")
+    )
+    rewarded_completion_keys = set(
+        activity_events.filter(
+            kind=ActivityEvent.Kind.MISSION_COMPLETED,
+            dedupe_key__in=[
+                f"mission_completed:{mission['pk']}"
+                for mission in mapped_completed_missions
+            ],
+        ).values_list("dedupe_key", flat=True)
+    )
+    rewarded_mission_pairs = set(
+        (mission["startup_id"], mission["key"])
+        for mission in mapped_completed_missions
+        if f"mission_completed:{mission['pk']}" in rewarded_completion_keys
+    )
+    mission_driven_done = sum(
+        (startup_id, COMPLETION_MISSION_BY_STEP[step_key])
+        in rewarded_mission_pairs
+        for startup_id, step_key in JourneyStep.objects.filter(
+            startup_id__in=startup_ids,
+            key__in=COMPLETION_MISSION_BY_STEP,
+            status=JourneyStep.Status.DONE,
+        ).values_list("startup_id", "key")
+    )
+    journey_xp = max(total_done - mission_driven_done, 0) * XP_PER_STEP
+    xp = journey_xp + activity_xp
     level = 1 + xp // XP_PER_LEVEL
 
     interview_count = MissionEvidence.objects.filter(
@@ -648,6 +683,7 @@ def _today_payload(user, startup, *, message=None, celebration=None):
 
 
 def _journey_payload(startup, message=None):
+    reconcile_completed_journey_missions(startup)
     steps = list(startup.journey_steps.all())
     done_count = sum(1 for step in steps if step.status == JourneyStep.Status.DONE)
     payload = {
@@ -1092,8 +1128,13 @@ def journey_step(request, startup_id, step_key):
     except ValueError as error:
         return _error_response(str(error))
 
+    if payload.get("complete"):
+        return _error_response(
+            "Conclua o trabalho pela missao relacionada a este marco.",
+            status=409,
+        )
+
     answer = (payload.get("answer") or "").strip()
-    complete = bool(payload.get("complete"))
 
     if step.status == JourneyStep.Status.PENDING:
         return _error_response(
@@ -1110,45 +1151,8 @@ def journey_step(request, startup_id, step_key):
     step.answer = answer
     update_fields = ["answer", "updated_at"]
     message = "Resposta da etapa atualizada."
-    completed_now = False
-
-    if complete and step.status == JourneyStep.Status.CURRENT:
-        completed_now = True
-        step.status = JourneyStep.Status.DONE
-        step.completed_at = timezone.now()
-        update_fields += ["status", "completed_at"]
-        message = f"{step.get_key_display()} concluida. A proxima porta abriu."
-
-        next_step = (
-            startup.journey_steps.filter(status=JourneyStep.Status.PENDING)
-            .order_by("order")
-            .first()
-        )
-
-        if next_step:
-            next_step.status = JourneyStep.Status.CURRENT
-            next_step.save(update_fields=["status", "updated_at"])
-            startup.current_stage = next_step.key
-        else:
-            message = f"{step.get_key_display()} concluida. Jornada inicial completa!"
-            startup.current_stage = step.key
-
-        startup.save(update_fields=["current_stage", "updated_at"])
 
     step.save(update_fields=update_fields)
-
-    if completed_now:
-        ActivityEvent.objects.get_or_create(
-            startup=startup,
-            dedupe_key=f"journey_step_completed:{step.pk}",
-            defaults={
-                "kind": ActivityEvent.Kind.JOURNEY_STEP_COMPLETED,
-                "description": f"Etapa concluida: {step.get_key_display()}",
-                # Os 100 XP da etapa ja sao calculados a partir do JourneyStep.
-                "xp_awarded": 0,
-                "metadata": {"stepKey": step.key},
-            },
-        )
 
     # Problema e publico tambem vivem como campos da startup; manter em sincronia.
     field_by_stage = {Startup.Stage.PROBLEM: "problem", Startup.Stage.AUDIENCE: "audience"}
