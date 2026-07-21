@@ -24,6 +24,7 @@ import type {
   MissionEvidenceSummary,
 } from "@/lib/startup-types";
 
+import { ProblemRefinementChallenge } from "./problem-refinement-challenge";
 import styles from "./mission-detail-screen.module.css";
 
 type StructuredActionType = Exclude<MissionActionType, "interviews">;
@@ -413,11 +414,9 @@ export function MissionDetailScreen({
     });
   };
 
-  const submitMission = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const submitMissionDraft = async (submissionDraft: SubmissionDraft) => {
     if (!payload || payload.mission.actionType === "interviews" || isSubmitting) return;
 
-    const actionType = payload.mission.actionType;
     setIsSubmitting(true);
     setFieldErrors({});
     setSubmissionError(null);
@@ -429,7 +428,7 @@ export function MissionDetailScreen({
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(drafts[actionType]),
+          body: JSON.stringify(submissionDraft),
         }
       );
 
@@ -460,6 +459,12 @@ export function MissionDetailScreen({
     }
   };
 
+  const submitMission = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!payload || payload.mission.actionType === "interviews") return;
+    await submitMissionDraft(drafts[payload.mission.actionType]);
+  };
+
   if (isLoading) return <MissionDetailSkeleton />;
 
   if (loadError || !payload) {
@@ -480,6 +485,51 @@ export function MissionDetailScreen({
     mission.actionType === "interviews" ? null : (mission.actionType as StructuredActionType);
   const completed = mission.status === "completed";
   const locked = mission.status === "locked";
+  const problemPilotActive =
+    mission.actionType === "problem_refinement" &&
+    !locked &&
+    (!completed || Boolean(payload.celebration));
+
+  if (problemPilotActive) {
+    return (
+      <div className={`${styles.page} ${styles.challengePage}`}>
+        <Link className={styles.backLink} href={startupMissionsHref(startupId)}>
+          <span aria-hidden="true">&larr;</span>
+          Voltar para missoes
+        </Link>
+
+        <ProblemRefinementChallenge
+          celebration={payload.celebration}
+          isSubmitting={isSubmitting}
+          mission={mission}
+          onSubmit={submitMissionDraft}
+          startup={payload.startup}
+          startupId={startupId}
+          submissionError={submissionError}
+        />
+
+        {payload.nextRecommendedMission ? (
+          <section className={styles.nextFocus} aria-labelledby="next-focus-title">
+            <div>
+              <h2 id="next-focus-title">Proximo foco</h2>
+              <p>{payload.nextRecommendedMission.objective}</p>
+            </div>
+            <Link
+              className={styles.primaryLink}
+              href={missionExecutionHref(
+                startupId,
+                payload.nextRecommendedMission.key,
+                payload.nextRecommendedMission.actionType
+              )}
+            >
+              {payload.nextRecommendedMission.title}
+              <ProductIcon name="chevron" />
+            </Link>
+          </section>
+        ) : null}
+      </div>
+    );
+  }
 
   return (
     <div className={styles.page}>

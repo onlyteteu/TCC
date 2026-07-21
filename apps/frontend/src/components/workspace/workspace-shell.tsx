@@ -55,6 +55,11 @@ function WorkspaceFrame({ activeSection: section, children }: WorkspaceFrameProp
         <div className={styles.workspace}>
           <WorkspaceTopbar />
           <main className={styles.content} id="workspace-content" tabIndex={-1}>
+            <div
+              aria-hidden="true"
+              className={styles.atmosphere}
+              data-workspace-atmosphere="ritual"
+            />
             {error ? (
               <div className={styles.feedback} role="alert">
                 <strong>Workspace indisponivel</strong>
