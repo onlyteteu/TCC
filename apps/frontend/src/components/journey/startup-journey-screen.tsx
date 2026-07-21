@@ -185,9 +185,19 @@ export function StartupJourneyScreen({
     return (
       <div className={styles.page}>
         {header}
-        <div aria-busy="true" aria-live="polite" className={styles.statePanel}>
-          <span className={styles.loadingMark} aria-hidden="true" />
-          <strong>Preparando a jornada da startup...</strong>
+        <div
+          aria-busy="true"
+          aria-label="Carregando Mapa de Capítulos"
+          aria-live="polite"
+          className={styles.journeySkeleton}
+        >
+          {Array.from({ length: 4 }, (_, index) => (
+            <span
+              aria-hidden="true"
+              data-testid="journey-skeleton-block"
+              key={index}
+            />
+          ))}
         </div>
       </div>
     );
@@ -228,6 +238,7 @@ export function StartupJourneyScreen({
         <StartupMapSummary
           initialField={requestedField}
           isSaving={isSavingField}
+          key={requestedField ?? "startup-map"}
           onSaveField={patchStartup}
           startup={payload.startup}
         />

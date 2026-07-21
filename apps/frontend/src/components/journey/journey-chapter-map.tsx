@@ -24,8 +24,6 @@ export function JourneyChapterMap({
   return (
     <ol aria-label="Mapa da evolução" className={styles.chapterTrack}>
       {chapters.map((chapter, chapterIndex) => (
-        // O estado pertence ao capítulo inteiro e precisa chegar ao leitor de tela.
-        // eslint-disable-next-line jsx-a11y/role-supports-aria-props
         <li
           aria-current={chapter.status === "current" ? "step" : undefined}
           aria-disabled={chapter.status === "locked" ? "true" : undefined}

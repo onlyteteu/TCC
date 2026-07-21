@@ -71,24 +71,17 @@ export function StartupMapSummary({
   onSaveField,
   startup,
 }: StartupMapSummaryProps) {
-  const [editingField, setEditingField] = useState<StartupMapField | null>(null);
-  const [draft, setDraft] = useState("");
+  const [editingField, setEditingField] = useState<StartupMapField | null>(
+    initialField
+  );
+  const [draft, setDraft] = useState(
+    initialField ? startup[initialField] : ""
+  );
   const [error, setError] = useState<string | null>(null);
   const editButtonRefs = useRef<
     Partial<Record<StartupMapField, HTMLButtonElement | null>>
   >({});
   const focusReturnFieldRef = useRef<StartupMapField | null>(null);
-  const initialFieldAppliedRef = useRef(false);
-
-  useLayoutEffect(() => {
-    if (initialField && !initialFieldAppliedRef.current) {
-      initialFieldAppliedRef.current = true;
-      setEditingField(initialField);
-      setDraft(startup[initialField]);
-      setError(null);
-    }
-  }, [initialField, startup]);
-
   useLayoutEffect(() => {
     if (!editingField && focusReturnFieldRef.current) {
       editButtonRefs.current[focusReturnFieldRef.current]?.focus();

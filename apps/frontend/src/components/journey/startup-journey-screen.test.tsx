@@ -144,6 +144,19 @@ describe("StartupJourneyScreen", () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
+  it("keeps four stable Journey regions while loading", () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => undefined)));
+
+    render(<StartupJourneyScreen startupId={1} />);
+
+    expect(screen.getByLabelText("Carregando Mapa de Capítulos")).toHaveAttribute(
+      "aria-busy",
+      "true"
+    );
+    expect(screen.getAllByTestId("journey-skeleton-block")).toHaveLength(4);
+    expect(screen.queryByRole("main")).not.toBeInTheDocument();
+  });
+
   it("keeps the edited value and reports a connection error in the map", async () => {
     navigation.params.get.mockImplementation((key: string) =>
       key === "view" ? "map" : key === "field" ? "problem" : null
