@@ -81,6 +81,7 @@ const detail: MissionDetailPayload = {
       },
     ],
     evidences: [],
+    sourceEvidences: [],
     learning: null,
   },
 };
