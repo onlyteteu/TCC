@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ProductIcon } from "@/components/product-icon";
 import type { MissionSummary } from "@/lib/startup-types";
 
+import { InterviewEvidenceCollection } from "./interview-evidence-collection";
 import styles from "./startup-home-screen.module.css";
 
 type MissionFocusPanelProps = {
@@ -119,25 +120,31 @@ export function MissionFocusPanel({
         <p>{mission.contextualTip}</p>
       </div>
 
+      {isInterviewMission && mission.evidences.length > 0 ? (
+        <InterviewEvidenceCollection
+          evidences={mission.evidences}
+          requiredCount={mission.requiredEvidenceCount}
+        />
+      ) : null}
+
       {isCompleted ? (
         <>
           <div className={styles.completedMissionDetails}>
-            <section aria-labelledby="completed-evidences-title">
-              <h3 id="completed-evidences-title">Evidencias registradas</h3>
-              <ul className={styles.completedEvidenceList}>
-                {mission.evidences.map((evidence) => (
-                  <li key={evidence.id}>
-                    <article>
-                      <strong>{evidence.intervieweeName}</strong>
-                      <span>{evidence.intervieweeProfile}</span>
-                      <p>{evidence.context}</p>
-                      <p>{evidence.notes}</p>
-                      <time dateTime={evidence.occurredOn}>{evidence.occurredOn}</time>
-                    </article>
-                  </li>
-                ))}
-              </ul>
-            </section>
+            {!isInterviewMission ? (
+              <section aria-labelledby="completed-evidences-title">
+                <h3 id="completed-evidences-title">Evidencias registradas</h3>
+                <ul className={styles.completedEvidenceList}>
+                  {mission.evidences.map((evidence) => (
+                    <li key={evidence.id}>
+                      <article>
+                        <strong>{evidence.title || evidence.intervieweeName}</strong>
+                        <p>{evidence.summary || evidence.notes}</p>
+                      </article>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
 
             {mission.learning ? (
               <section aria-labelledby="completed-learning-title">

@@ -1,0 +1,129 @@
+.collection {
+  border-top: 1px solid #e3e8ef;
+  display: grid;
+  gap: 16px;
+  padding-top: 22px;
+}
+
+.header {
+  align-items: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.header span {
+  color: #9a6200;
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.11em;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.header h3,
+.header p {
+  margin: 0;
+}
+
+.header h3 {
+  color: #132238;
+  font-size: 1.1rem;
+}
+
+.header p {
+  color: #637083;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card {
+  background: linear-gradient(145deg, #f8fafc, #fff);
+  border: 1px solid #dde4ed;
+  border-radius: 15px;
+  display: grid;
+  gap: 11px;
+  height: 100%;
+  padding: 15px;
+}
+
+.cardHeader {
+  align-items: center;
+  color: #738095;
+  display: flex;
+  font-size: 0.76rem;
+  justify-content: space-between;
+}
+
+.cardHeader > span {
+  align-items: center;
+  background: #132238;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  font-size: 0.68rem;
+  font-weight: 850;
+  height: 27px;
+  justify-content: center;
+  width: 27px;
+}
+
+.person {
+  display: grid;
+  gap: 2px;
+}
+
+.person strong {
+  color: #132238;
+}
+
+.person span,
+.context {
+  color: #637083;
+  font-size: 0.86rem;
+}
+
+.context,
+.card blockquote {
+  margin: 0;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chips span {
+  background: #eaf2fa;
+  border-radius: 999px;
+  color: #1f5d91;
+  font-size: 0.72rem;
+  font-weight: 750;
+  padding: 4px 8px;
+}
+
+.card blockquote {
+  border-left: 3px solid #f2a51a;
+  color: #33445a;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  padding-left: 10px;
+}
+
+@media (max-width: 680px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

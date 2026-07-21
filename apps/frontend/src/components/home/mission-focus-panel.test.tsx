@@ -140,6 +140,42 @@ describe("MissionFocusPanel", () => {
     );
   });
 
+  it("shows the evidence collection while the interview mission is in progress", () => {
+    render(
+      <MissionFocusPanel
+        mission={{
+          ...mission,
+          evidences: [
+            {
+              context: "Conversa durante o fechamento mensal",
+              createdAt: "2026-07-14T12:00:00Z",
+              details: {
+                currentAlternative: "spreadsheet",
+                frequency: "weekly",
+              },
+              id: 31,
+              intervieweeName: "Marina Costa",
+              intervieweeProfile: "Gestora financeira",
+              notes: "Perde duas horas conciliando planilhas antes de emitir o relatorio.",
+              occurredOn: "2026-07-13",
+              summary: "",
+              title: "",
+              type: "customer_interview",
+            },
+          ],
+        }}
+        isPrimaryActionPending={false}
+        onOpenStep={vi.fn()}
+        onPrimaryAction={vi.fn()}
+        startupId={7}
+      />
+    );
+
+    expect(screen.getByText("1 de 5 entrevistas registradas")).toBeInTheDocument();
+    expect(screen.getByText("Marina Costa")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Registrar entrevista" })).toBeEnabled();
+  });
+
   it("renders completed evidence and learning content without mutation actions", () => {
     const completedMission: MissionSummary = {
       ...mission,
@@ -190,7 +226,7 @@ describe("MissionFocusPanel", () => {
       />
     );
 
-    expect(screen.getByText("Marina Costa")).toBeInTheDocument();
+    expect(screen.getAllByText("Marina Costa")).toHaveLength(1);
     expect(screen.getByText("Gestora financeira de pequena empresa")).toBeInTheDocument();
     expect(
       screen.getByText("Perde duas horas conciliando planilhas antes de emitir o relatorio.")
