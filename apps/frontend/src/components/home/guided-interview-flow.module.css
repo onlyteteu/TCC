@@ -1,0 +1,377 @@
+.flow,
+.guide,
+.success {
+  display: grid;
+  gap: 20px;
+}
+
+.eyebrow {
+  color: #9a6200;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.guide h3,
+.stage h3,
+.success strong {
+  color: #132238;
+  margin: 0;
+}
+
+.guide h3,
+.stage h3 {
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+}
+
+.guideLead,
+.stage > p,
+.success p {
+  color: #536071;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.questionList {
+  counter-reset: guide-question;
+  display: grid;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.questionList li {
+  align-items: center;
+  background: #f7f9fc;
+  border: 1px solid #e2e7ef;
+  border-radius: 14px;
+  color: #26384d;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 32px 1fr;
+  padding: 12px 14px;
+}
+
+.questionList li::before {
+  align-items: center;
+  background: #132238;
+  border-radius: 50%;
+  color: #fff;
+  content: counter(guide-question);
+  counter-increment: guide-question;
+  display: flex;
+  font-size: 0.78rem;
+  font-weight: 800;
+  height: 32px;
+  justify-content: center;
+  width: 32px;
+}
+
+.avoidCard {
+  background: #fff7e6;
+  border: 1px solid #f3d28b;
+  border-radius: 14px;
+  color: #6f4a08;
+  padding: 14px 16px;
+}
+
+.avoidCard p {
+  line-height: 1.5;
+  margin: 5px 0 0;
+}
+
+.progressHeader,
+.actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.progressHeader p {
+  color: #637083;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.progressTrack {
+  background: #e8edf4;
+  border-radius: 999px;
+  height: 7px;
+  overflow: hidden;
+}
+
+.progressTrack span {
+  background: #f2a51a;
+  display: block;
+  height: 100%;
+  transition: width 180ms ease;
+}
+
+.guideButton {
+  background: transparent;
+  border: 0;
+  color: #1f5d91;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 750;
+  min-height: 44px;
+  padding: 6px 10px;
+}
+
+.stage {
+  display: grid;
+  gap: 16px;
+  min-height: 280px;
+}
+
+.stage h3:focus {
+  outline: none;
+}
+
+.fieldGrid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.fieldGrid label,
+.fullField {
+  color: #26384d;
+  display: grid;
+  font-size: 0.9rem;
+  font-weight: 700;
+  gap: 7px;
+}
+
+.fieldGrid label:last-child {
+  grid-column: 1 / -1;
+  max-width: 240px;
+}
+
+.fieldGrid input,
+.fullField input {
+  background: #fff;
+  border: 1px solid #cfd7e3;
+  border-radius: 12px;
+  color: #132238;
+  font: inherit;
+  min-height: 48px;
+  padding: 0 13px;
+}
+
+.fullField small {
+  color: #738095;
+  font-weight: 500;
+}
+
+.optionGroup {
+  border: 0;
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.optionGroup legend {
+  color: #26384d;
+  font-size: 0.9rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.optionGrid {
+  display: grid;
+  gap: 9px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.optionButton {
+  background: #f7f9fc;
+  border: 1px solid #dce3ed;
+  border-radius: 12px;
+  color: #35465b;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  min-height: 48px;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.optionButton[aria-pressed="true"] {
+  background: #fff6e2;
+  border-color: #f2a51a;
+  box-shadow: inset 0 0 0 1px #f2a51a;
+  color: #704800;
+}
+
+.preview {
+  background: linear-gradient(145deg, #f7f9fc, #fff);
+  border: 1px solid #dce3ed;
+  border-radius: 16px;
+  display: grid;
+  gap: 8px;
+  padding: 17px;
+}
+
+.preview > span {
+  color: #9a6200;
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.preview h4,
+.preview p,
+.preview blockquote {
+  margin: 0;
+}
+
+.preview h4 {
+  color: #132238;
+}
+
+.preview small,
+.preview p {
+  color: #637083;
+}
+
+.preview blockquote {
+  border-left: 3px solid #f2a51a;
+  color: #33445a;
+  font-style: normal;
+  line-height: 1.5;
+  padding-left: 11px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.chips span {
+  background: #eaf2fa;
+  border-radius: 999px;
+  color: #1f5d91;
+  font-size: 0.78rem;
+  font-weight: 750;
+  padding: 5px 9px;
+}
+
+.primaryButton,
+.secondaryButton {
+  border-radius: 11px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  min-height: 44px;
+  padding: 10px 16px;
+}
+
+.primaryButton {
+  background: #132238;
+  border: 1px solid #132238;
+  color: #fff;
+}
+
+.secondaryButton {
+  background: #fff;
+  border: 1px solid #cfd7e3;
+  color: #35465b;
+}
+
+.primaryButton:disabled,
+.secondaryButton:disabled,
+.optionButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible,
+.guideButton:focus-visible,
+.optionButton:focus-visible,
+.fieldGrid input:focus-visible,
+.fullField input:focus-visible {
+  outline: 2px solid #f2a51a;
+  outline-offset: 3px;
+}
+
+.error {
+  background: #fff0f0;
+  border: 1px solid #efb7b7;
+  border-radius: 11px;
+  color: #9d2424;
+  margin: 0;
+  padding: 11px 13px;
+}
+
+.success {
+  align-items: start;
+  background: #f5faf7;
+  border: 1px solid #cde5d5;
+  border-radius: 16px;
+  grid-template-columns: auto 1fr;
+  padding: 20px;
+}
+
+.successMark {
+  align-items: center;
+  background: #1e7a49;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  font-weight: 900;
+  height: 38px;
+  justify-content: center;
+  width: 38px;
+}
+
+.success .primaryButton {
+  grid-column: 2;
+  justify-self: start;
+}
+
+@media (max-width: 620px) {
+  .fieldGrid,
+  .optionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .fieldGrid label:last-child {
+    grid-column: auto;
+    max-width: none;
+  }
+
+  .stage {
+    min-height: 0;
+  }
+
+  .actions > button {
+    width: 100%;
+  }
+
+  .success {
+    grid-template-columns: 1fr;
+  }
+
+  .success .primaryButton {
+    grid-column: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progressTrack span {
+    transition: none;
+  }
+}
