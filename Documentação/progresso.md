@@ -579,3 +579,21 @@ clique surtia efeito.
 
 Esta secao registra definicao e documentacao, nao implementacao. O codigo do Motor 2.0 so deve ser
 iniciado depois da revisao da especificacao e da criacao do plano tecnico.
+
+## 2026-07-21
+
+### Redesenho aprovado da Jornada
+
+- pesquisa de referências sobre rastreadores de progresso, caminhos guiados, motivação e
+  gamificação significativa;
+- diagnóstico da Jornada atual como lista mestre-detalhe com formulário em destaque;
+- comparação visual entre `Atual otimizada`, `Timeline narrativa` e `Mapa de Capítulos`;
+- escolha do usuário pela opção `Mapa de Capítulos`;
+- aprovação da separação: Home orienta, Missões executa e Jornada explica evolução;
+- agrupamento aprovado das oito etapas em Fundamento, Proposta, Validação e Construção;
+- aprovação do CTA `Continuar missão` e de `Revisar registro` como ação secundária;
+- aprovação dos estados concluído, atual, futuro e missão ainda indisponível;
+- consolidação da especificação em `design/2026-07-21-jornada-mapa-capitulos.md`.
+
+Esta seção registra pesquisa, decisão e documentação. O Mapa de Capítulos ainda não foi
+implementado e a Jornada funcional continua sendo a versão mestre-detalhe descrita acima.

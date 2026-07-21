@@ -1,6 +1,6 @@
 # Handoff do projeto
 
-Data de revisão: 20 de julho de 2026
+Data de revisão: 21 de julho de 2026
 
 ## Dados principais
 
@@ -83,11 +83,15 @@ O produto não deve terminar depois da fundação. A visão aprovada combina:
 
 ## Próxima evolução recomendada
 
-O Incremento 1 do `Motor de Missões 2.0` está implementado. Antes de ampliar o catálogo, validar
-o arco atual com usuários e observar compreensão, abandono e qualidade das respostas. Depois
-disso, o próximo plano recomendado é o Incremento 2: missões 6 a 8, Experimentos, Decisões e
-biblioteca consultável de Aprendizados. Missões 9 e 10, recorte do MVP e gestão semanal permanecem
-no Incremento 3.
+O Incremento 1 do `Motor de Missões 2.0` está implementado. O próximo redesenho de produto aprovado
+é a Jornada como `Mapa de Capítulos`, ainda não implementada. Ela organiza as oito etapas existentes
+em Fundamento, Proposta, Validação e Construção e separa consulta estratégica da execução em
+Missões.
+
+Depois desse redesenho, validar o arco atual com usuários e observar compreensão, abandono e
+qualidade das respostas. O Incremento 2 continua previsto para missões 6 a 8, Experimentos,
+Decisões e biblioteca consultável de Aprendizados. Missões 9 e 10, recorte do MVP e gestão semanal
+permanecem no Incremento 3.
 
 A especificação completa está em
 [2026-07-15-motor-missoes-2.md](design/2026-07-15-motor-missoes-2.md).
@@ -108,6 +112,7 @@ Fontes principais:
 - [proximos-passos.md](proximos-passos.md): ordem dos próximos ciclos;
 - [design/2026-07-14-workspace-principal-startup-quest.md](design/2026-07-14-workspace-principal-startup-quest.md): workspace aprovado;
 - [design/2026-07-15-motor-missoes-2.md](design/2026-07-15-motor-missoes-2.md): especificação dos três incrementos.
+- [design/2026-07-21-jornada-mapa-capitulos.md](design/2026-07-21-jornada-mapa-capitulos.md): redesenho aprovado da Jornada, ainda não implementado.
 
 `funcionalidades.md` deve continuar sendo a fonte do estado real. Uma especificação não transforma
 uma funcionalidade em implementada.

@@ -16,13 +16,14 @@ estruturar, validar e administrar a evolução de uma startup. O produto transfo
 
 ## Estado atual
 
-Em 15 de julho de 2026, o projeto possui:
+Em 21 de julho de 2026, o projeto possui:
 
 - autenticação e sessão reais;
 - criação guiada da startup em cinco etapas;
 - workspace autenticado com sidebar e topbar compartilhadas;
 - abertura automática da startup usada mais recentemente;
 - Home orientada por missão;
+- Central de missão e cinco missões operacionais do primeiro arco;
 - missão de cinco entrevistas com evidências e aprendizado;
 - XP, nível, sequência e atividade baseados em ações significativas;
 - Jornada com oito etapas e Mapa inicial editável;
@@ -30,10 +31,11 @@ Em 15 de julho de 2026, o projeto possui:
 - frontend e backend cobertos por testes automatizados;
 - documentação de produto, arquitetura, decisões, design e progresso.
 
-A próxima evolução aprovada é o `Motor de Missões 2.0`, ainda não implementado. Ele adicionará uma
-trilha inicial de 10 missões, catálogo versionado, recomendação determinística e a tela
-`Central de missão`. Consulte a
-[especificação do Motor de Missões 2.0](Documentação/design/2026-07-15-motor-missoes-2.md).
+O primeiro incremento do `Motor de Missões 2.0` está implementado. A próxima evolução de produto
+aprovada é o redesenho da Jornada como `Mapa de Capítulos`, ainda não implementado. Ele organizará
+as oito etapas existentes em Fundamento, Proposta, Validação e Construção, mantendo a execução em
+Missões. Consulte a
+[especificação da Jornada](Documentação/design/2026-07-21-jornada-mapa-capitulos.md).
 
 ## Estrutura do repositório
 

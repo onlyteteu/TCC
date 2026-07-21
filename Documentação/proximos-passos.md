@@ -12,7 +12,11 @@
 
 ## Antes de ampliar o motor
 
-O passo recomendado é validar o Incremento 1 em uso real. Observar especialmente:
+O primeiro passo aprovado é implementar o redesenho da Jornada como `Mapa de Capítulos`, descrito em
+`design/2026-07-21-jornada-mapa-capitulos.md`. A mudança deve preservar as oito etapas e fazer do
+backend a fonte de verdade para progresso, bloqueios e XP.
+
+Depois, validar o Incremento 1 em uso real. Observar especialmente:
 
 - se o fundador entende por que uma missão foi recomendada;
 - se consegue concluir as cinco missões sem explicação externa;

@@ -246,3 +246,27 @@ competir com a prioridade principal.
 - a Central explica contexto, opcoes, dependencias e historico;
 - secoes sem conteudo real ficam ocultas;
 - a trilha inicial termina no recorte do MVP e sera seguida por ciclos de gestao recorrente.
+
+## DEC-014: Redesenhar a Jornada como Mapa de Capítulos
+
+### Decisao
+
+A Jornada será organizada como um `Mapa de Capítulos`, agrupando as oito etapas existentes em
+Fundamento, Proposta, Validação e Construção. A tela apresentará percurso, marco atual, registros
+construídos e próximo desbloqueio. A execução permanecerá em Missões.
+
+### Motivo
+
+O layout mestre-detalhe atual é funcional, mas se comporta como lista e formulário, compete com a
+Central de missão e comunica pouco da transformação acumulada da startup. O Mapa de Capítulos cria
+uma responsabilidade própria para a Jornada sem duplicar progresso ou domínio.
+
+### Impacto
+
+- os quatro capítulos serão derivados das oito etapas existentes;
+- o CTA principal do marco atual será `Continuar missão`;
+- `Revisar registro` será secundário e não concluirá etapa;
+- o backend continuará decidindo bloqueios, conclusão e XP;
+- o Mapa inicial passará a se chamar `Mapa da startup` na interface;
+- a especificação aprovada está em `design/2026-07-21-jornada-mapa-capitulos.md`;
+- esta decisão ainda não está implementada.
