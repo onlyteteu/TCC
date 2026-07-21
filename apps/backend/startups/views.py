@@ -14,6 +14,7 @@ from django.utils import timezone
 
 from accounts.tokens import get_user_from_token
 
+from .journey_service import build_journey_context
 from .mission_engine import (
     MissionRuleError,
     complete_mission_record,
@@ -653,6 +654,7 @@ def _journey_payload(startup, message=None):
         "journey": [_serialize_step(step) for step in steps],
         "progress": round((done_count / len(steps)) * 100) if steps else 0,
         "startup": _serialize_startup(startup),
+        **build_journey_context(startup, steps),
     }
 
     if message:

@@ -516,6 +516,29 @@ class JourneyApiTests(TestCase):
         self.assertEqual(len(payload["journey"]), 8)
         self.assertEqual(payload["progress"], 25)
 
+    def test_journey_payload_adds_chapters_current_milestone_and_summary(self):
+        startup_id = self.create_startup_via_api()
+
+        response = self.client.get(
+            f"/api/startups/{startup_id}/journey/",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(len(payload["journey"]), 8)
+        self.assertEqual(payload["progress"], 25)
+        self.assertEqual(len(payload["chapters"]), 4)
+        self.assertEqual(payload["currentMilestone"]["key"], Startup.Stage.VALUE)
+        self.assertEqual(
+            payload["currentMilestone"]["mission"]["key"],
+            "reframe_value_proposition",
+        )
+        self.assertEqual(
+            [item["key"] for item in payload["strategicSummary"]],
+            ["problem", "audience"],
+        )
+
     def test_completing_current_step_opens_next_door(self):
         startup_id = self.create_startup_via_api()
 
