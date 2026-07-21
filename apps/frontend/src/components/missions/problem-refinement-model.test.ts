@@ -40,7 +40,7 @@ describe("problem refinement model", () => {
 
     expect(buildProblemStatement(draft)).toBe(
       "Restaurantes pequenos, quando controlam o estoque no fim da semana, " +
-        "tem dificuldade em saber o que ainda esta disponivel, o que provoca " +
+        "há dificuldade para saber o que ainda esta disponivel, o que provoca " +
         "compras duplicadas e perda de margem."
     );
   });

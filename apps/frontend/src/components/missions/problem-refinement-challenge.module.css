@@ -152,7 +152,7 @@
   line-height: 1.45;
   text-align: left;
   cursor: pointer;
-  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+  transition: transform 160ms ease;
 }
 
 .choice:hover {
@@ -209,7 +209,7 @@
   font: inherit;
   text-align: left;
   cursor: pointer;
-  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+  transition: transform 160ms ease;
 }
 
 .evidenceCard:hover {
@@ -231,7 +231,7 @@
   font-weight: 750;
 }
 
-.evidenceCard p {
+.evidenceExcerpt {
   display: -webkit-box;
   margin: 4px 0 0;
   overflow: hidden;

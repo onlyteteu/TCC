@@ -230,7 +230,7 @@ describe("MissionDetailScreen", () => {
             mission: { ...detail.mission, status: "completed", statusLabel: "Concluida" },
             message: "Missao concluida.",
             celebration: {
-              title: "Você transformou relatos em um problema observável",
+              title: "Missão cumprida",
               xpAwarded: 100,
               unlocked: "Validação de público liberada",
             },
@@ -260,7 +260,7 @@ describe("MissionDetailScreen", () => {
     await screen.findByText("Você transformou relatos em um problema observável");
     expect(JSON.parse(String(fetchMock.mock.calls[1][1]?.body))).toEqual({
       problemStatement:
-        "Restaurantes pequenos, quando controlam o estoque no fim da semana, tem dificuldade em " +
+        "Restaurantes pequenos, quando controlam o estoque no fim da semana, há dificuldade para " +
         "saber o que ainda está disponível, o que provoca compras duplicadas e perda de margem.",
       evidenceSummary:
         "2 entrevistas sustentam este recorte. Pessoa 1: Relato 1: comprou ingredientes que ainda " +

@@ -32,11 +32,14 @@ function cleanPart(value: string, prefix?: RegExp) {
 export function buildProblemStatement(draft: ProblemRefinementDraft) {
   const audience = cleanPart(draft.audience);
   const situation = cleanPart(draft.situation, /^quando\s+/i);
-  const difficulty = cleanPart(draft.difficulty, /^(?:tem|têm) dificuldade em\s+/i);
+  const difficulty = cleanPart(
+    draft.difficulty,
+    /^(?:(?:tem|têm) dificuldade em|há dificuldade para)\s+/i
+  );
   const consequence = cleanPart(draft.consequence, /^(?:o que provoca|provocando)\s+/i);
 
   if (!audience || !situation || !difficulty || !consequence) return "";
-  return `${audience}, quando ${situation}, tem dificuldade em ${difficulty}, o que provoca ${consequence}.`;
+  return `${audience}, quando ${situation}, há dificuldade para ${difficulty}, o que provoca ${consequence}.`;
 }
 
 function compactExcerpt(value: string) {
@@ -59,8 +62,11 @@ export function buildEvidenceSummary(evidences: MissionEvidenceSummary[]) {
   return `${evidences.length} ${noun} este recorte. ${entries.join(" | ")}`;
 }
 
-export function canReviewProblem(draft: ProblemRefinementDraft) {
-  return draft.selectedEvidenceIds.length >= 2 && buildProblemStatement(draft).length >= 40;
+export function canReviewProblem(
+  draft: ProblemRefinementDraft,
+  validEvidenceCount = draft.selectedEvidenceIds.length
+) {
+  return validEvidenceCount >= 2 && buildProblemStatement(draft).length >= 40;
 }
 
 export function problemRefinementStorageKey(startupId: number) {

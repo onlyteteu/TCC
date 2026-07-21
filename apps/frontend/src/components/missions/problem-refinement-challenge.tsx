@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type {
   MissionDetailPayload,
@@ -49,20 +49,27 @@ type ProblemRefinementChallengeProps = {
   submissionError: string | null;
 };
 
-function readStoredDraft(startupId: number): ProblemRefinementDraft | null {
+function readStoredDraft(
+  startupId: number,
+  sourceEvidences: MissionDetailSummary["sourceEvidences"]
+): ProblemRefinementDraft | null {
   try {
     const raw = window.localStorage.getItem(problemRefinementStorageKey(startupId));
     if (!raw) return null;
     const stored = JSON.parse(raw) as Partial<ProblemRefinementDraft>;
     const stage = Number(stored.stage);
     if (![1, 2, 3, 4].includes(stage)) return null;
+    const availableEvidenceIds = new Set(sourceEvidences.map((evidence) => evidence.id));
+    const selectedEvidenceIds = Array.isArray(stored.selectedEvidenceIds)
+      ? stored.selectedEvidenceIds.filter(
+          (id): id is number => Number.isInteger(id) && availableEvidenceIds.has(id)
+        )
+      : [];
     return {
       ...createProblemRefinementDraft(),
-      stage: stage as ProblemRefinementDraft["stage"],
+      stage: stage > 2 && selectedEvidenceIds.length < 2 ? 2 : (stage as ProblemRefinementDraft["stage"]),
       warmupAnswer: typeof stored.warmupAnswer === "string" ? stored.warmupAnswer : null,
-      selectedEvidenceIds: Array.isArray(stored.selectedEvidenceIds)
-        ? stored.selectedEvidenceIds.filter((id): id is number => Number.isInteger(id))
-        : [],
+      selectedEvidenceIds,
       audience: typeof stored.audience === "string" ? stored.audience : "",
       situation: typeof stored.situation === "string" ? stored.situation : "",
       difficulty: typeof stored.difficulty === "string" ? stored.difficulty : "",
@@ -70,6 +77,22 @@ function readStoredDraft(startupId: number): ProblemRefinementDraft | null {
     };
   } catch {
     return null;
+  }
+}
+
+function removeStoredDraft(startupId: number) {
+  try {
+    window.localStorage.removeItem(problemRefinementStorageKey(startupId));
+  } catch {
+    // Autosave is best-effort and must never block the mission.
+  }
+}
+
+function writeStoredDraft(startupId: number, draft: ProblemRefinementDraft) {
+  try {
+    window.localStorage.setItem(problemRefinementStorageKey(startupId), JSON.stringify(draft));
+  } catch {
+    // Autosave is best-effort and must never block the mission.
   }
 }
 
@@ -84,43 +107,58 @@ export function ProblemRefinementChallenge({
 }: ProblemRefinementChallengeProps) {
   const [draft, setDraft] = useState(createProblemRefinementDraft);
   const autosaveReady = useRef(false);
+  const hydratedStartupId = useRef<number | null>(null);
+  const focusStageAfterChange = useRef(false);
+  const stageHeadingRef = useRef<HTMLHeadingElement>(null);
+  const sourceEvidences = useMemo(
+    () => mission.sourceEvidences.slice(0, 5),
+    [mission.sourceEvidences]
+  );
   const selectedWarmup = WARMUP_OPTIONS.find((option) => option.id === draft.warmupAnswer);
   const warmupPassed = draft.warmupAnswer === "observed";
-  const selectedEvidences = mission.sourceEvidences.filter((evidence) =>
+  const selectedEvidences = sourceEvidences.filter((evidence) =>
     draft.selectedEvidenceIds.includes(evidence.id)
   );
   const problemStatement = buildProblemStatement(draft);
 
   useEffect(() => {
+    autosaveReady.current = false;
     let active = true;
     queueMicrotask(() => {
       if (!active) return;
-      const key = problemRefinementStorageKey(startupId);
       if (celebration) {
-        window.localStorage.removeItem(key);
+        removeStoredDraft(startupId);
+        hydratedStartupId.current = startupId;
         autosaveReady.current = true;
         return;
       }
-      const stored = readStoredDraft(startupId);
+      const stored = readStoredDraft(startupId, sourceEvidences);
+      hydratedStartupId.current = startupId;
       autosaveReady.current = true;
-      if (stored) setDraft(stored);
+      setDraft(stored ?? createProblemRefinementDraft());
     });
     return () => {
       active = false;
     };
-  }, [celebration, startupId]);
+  }, [celebration, sourceEvidences, startupId]);
 
   useEffect(() => {
-    if (!autosaveReady.current) return;
-    const key = problemRefinementStorageKey(startupId);
+    if (!autosaveReady.current || hydratedStartupId.current !== startupId) return;
     if (celebration) {
-      window.localStorage.removeItem(key);
+      removeStoredDraft(startupId);
       return;
     }
-    window.localStorage.setItem(key, JSON.stringify(draft));
+    writeStoredDraft(startupId, draft);
   }, [celebration, draft, startupId]);
 
+  useEffect(() => {
+    if (!focusStageAfterChange.current) return;
+    focusStageAfterChange.current = false;
+    stageHeadingRef.current?.focus();
+  }, [draft.stage]);
+
   const setStage = (stage: 1 | 2 | 3 | 4) => {
+    focusStageAfterChange.current = true;
     setDraft((current) => ({ ...current, stage }));
   };
 
@@ -144,7 +182,7 @@ export function ProblemRefinementChallenge({
   };
 
   const submitDiscovery = () => {
-    if (!canReviewProblem(draft)) return;
+    if (!canReviewProblem(draft, selectedEvidences.length)) return;
     void onSubmit({
       problemStatement,
       evidenceSummary: buildEvidenceSummary(selectedEvidences),
@@ -168,6 +206,9 @@ export function ProblemRefinementChallenge({
 
       <div className={styles.progressRow}>
         <span>{draft.stage} de 4</span>
+        <span aria-live="polite" className="sr-only">
+          Rodada {draft.stage} de 4
+        </span>
         <ol aria-label="Progresso do desafio">
           {[1, 2, 3, 4].map((step) => (
             <li
@@ -186,7 +227,9 @@ export function ProblemRefinementChallenge({
           <>
             <div className={styles.stageHeading}>
               <span>Reconhecer</span>
-              <h2>Qual formulação descreve um problema observável?</h2>
+              <h2 ref={stageHeadingRef} tabIndex={-1}>
+                Qual formulação descreve um problema observável?
+              </h2>
               <p>Escolha uma opção. Errar aqui faz parte do treino.</p>
             </div>
             <div className={styles.choiceList}>
@@ -230,21 +273,23 @@ export function ProblemRefinementChallenge({
           <>
             <div className={styles.stageHeading}>
               <span>Conectar</span>
-              <h2>Quais relatos sustentam melhor o padrão?</h2>
+              <h2 ref={stageHeadingRef} tabIndex={-1}>
+                Quais relatos sustentam melhor o padrão?
+              </h2>
               <p>Escolha pelo menos duas entrevistas para formar sua base de evidência.</p>
             </div>
-            {mission.sourceEvidences.length ? (
+            {sourceEvidences.length ? (
               <>
                 <div className={styles.evidenceMeta}>
                   <strong>
-                    {draft.selectedEvidenceIds.length <= 2
-                      ? `${draft.selectedEvidenceIds.length} de 2 sinais conectados`
-                      : `${draft.selectedEvidenceIds.length} sinais conectados`}
+                    {selectedEvidences.length <= 2
+                      ? `${selectedEvidences.length} de 2 sinais conectados`
+                      : `${selectedEvidences.length} sinais conectados`}
                   </strong>
                   <span>Selecione os relatos mais específicos, não apenas os mais longos.</span>
                 </div>
                 <div className={styles.evidenceGrid}>
-                  {mission.sourceEvidences.map((evidence) => {
+                  {sourceEvidences.map((evidence) => {
                     const selected = draft.selectedEvidenceIds.includes(evidence.id);
                     return (
                       <button
@@ -259,12 +304,14 @@ export function ProblemRefinementChallenge({
                         </span>
                         <strong>{evidence.intervieweeName || evidence.title}</strong>
                         <small>{evidence.intervieweeProfile || evidence.context}</small>
-                        <p>{evidence.notes || evidence.summary}</p>
+                        <span className={styles.evidenceExcerpt}>
+                          {evidence.notes || evidence.summary}
+                        </span>
                       </button>
                     );
                   })}
                 </div>
-                {draft.selectedEvidenceIds.length >= 2 ? (
+                {selectedEvidences.length >= 2 ? (
                   <p className={styles.feedbackSuccess} role="status">
                     Evidências conectadas. Você já tem base para formular o problema.
                   </p>
@@ -283,7 +330,7 @@ export function ProblemRefinementChallenge({
               </button>
               <button
                 className={styles.primaryAction}
-                disabled={draft.selectedEvidenceIds.length < 2}
+                disabled={selectedEvidences.length < 2}
                 onClick={() => setStage(3)}
                 type="button"
               >
@@ -295,7 +342,9 @@ export function ProblemRefinementChallenge({
           <>
             <div className={styles.stageHeading}>
               <span>Construir</span>
-              <h2>Monte o problema em quatro partes curtas</h2>
+              <h2 ref={stageHeadingRef} tabIndex={-1}>
+                Monte o problema em quatro partes curtas
+              </h2>
               <p>Você escreve os blocos; a Carta organiza a frase em tempo real.</p>
             </div>
 
@@ -356,17 +405,11 @@ export function ProblemRefinementChallenge({
               </p>
             </div>
 
-            <div className={styles.qualityChecks} aria-label="Critérios de qualidade">
-              <span className={draft.audience.trim() ? styles.checkDone : undefined}>
-                Público específico
-              </span>
-              <span className={draft.situation.trim() ? styles.checkDone : undefined}>
-                Situação concreta
-              </span>
-              <span className={draft.consequence.trim() ? styles.checkDone : undefined}>
-                Consequência observável
-              </span>
-              <span className={styles.checkDone}>Sem solução embutida</span>
+            <div className={styles.qualityChecks} aria-label="Perguntas de revisão">
+              <span>Está claro quem enfrenta o problema?</span>
+              <span>A situação descreve um momento concreto?</span>
+              <span>A dificuldade está descrita sem antecipar uma solução?</span>
+              <span>A consequência pode ser observada?</span>
             </div>
 
             <div className={styles.actions}>
@@ -375,7 +418,7 @@ export function ProblemRefinementChallenge({
               </button>
               <button
                 className={styles.primaryAction}
-                disabled={!canReviewProblem(draft)}
+                disabled={!canReviewProblem(draft, selectedEvidences.length)}
                 onClick={() => setStage(4)}
                 type="button"
               >
@@ -387,7 +430,9 @@ export function ProblemRefinementChallenge({
           <>
             <div className={styles.stageHeading}>
               <span>Consolidar</span>
-              <h2>Sua Carta da Descoberta</h2>
+              <h2 ref={stageHeadingRef} tabIndex={-1}>
+                Sua Carta da Descoberta
+              </h2>
               <p>Este é o artefato que passa a fazer parte da memória da startup.</p>
             </div>
 
@@ -410,10 +455,10 @@ export function ProblemRefinementChallenge({
 
             {celebration ? (
               <div className={styles.celebration} role="status">
-                <span>Descoberta registrada</span>
-                <strong>{celebration.title}</strong>
+                <span>Competência conquistada</span>
+                <strong>Você transformou relatos em um problema observável</strong>
                 <p>
-                  +{celebration.xpAwarded} XP · {celebration.unlocked}
+                  {celebration.title} · +{celebration.xpAwarded} XP · {celebration.unlocked}
                 </p>
               </div>
             ) : null}

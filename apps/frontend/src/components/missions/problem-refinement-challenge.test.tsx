@@ -45,6 +45,7 @@ type ChallengeProps = {
   celebration?: MissionDetailPayload["celebration"];
   isSubmitting?: boolean;
   mission?: MissionDetailSummary;
+  startupId?: number;
   submissionError?: string | null;
 };
 
@@ -57,7 +58,7 @@ function renderChallenge(props: ChallengeProps = {}) {
       mission={next.mission ?? mission}
       onSubmit={onSubmit}
       startup={startup}
-      startupId={7}
+      startupId={next.startupId ?? 7}
       submissionError={next.submissionError ?? null}
     />
   );
@@ -91,7 +92,7 @@ function reachDiscoveryCard() {
 
 afterEach(() => {
   localStorage.clear();
-  vi.clearAllMocks();
+  vi.restoreAllMocks();
 });
 
 describe("ProblemRefinementChallenge", () => {
@@ -141,6 +142,26 @@ describe("ProblemRefinementChallenge", () => {
     expect(continueButton).toBeEnabled();
   });
 
+  it("moves focus to the next round after a keyboard action", () => {
+    renderChallenge();
+
+    fireEvent.click(screen.getByRole("button", { name: "Ir direto para minhas evidências" }));
+
+    expect(
+      screen.getByRole("heading", { name: "Quais relatos sustentam melhor o padrão?" })
+    ).toHaveFocus();
+  });
+
+  it("keeps the evidence round limited to five stable interview cards", () => {
+    renderChallenge({
+      mission: { ...mission, sourceEvidences: [1, 2, 3, 4, 5, 6, 7].map(interview) },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Ir direto para minhas evidências" }));
+
+    expect(screen.getByRole("button", { name: /Pessoa 5/ })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Pessoa 6/ })).not.toBeInTheDocument();
+  });
+
   it("builds and submits a discovery card from four short answers", () => {
     const { onSubmit } = renderChallenge();
     fireEvent.click(screen.getByRole("button", { name: "Ir direto para minhas evidências" }));
@@ -167,6 +188,9 @@ describe("ProblemRefinementChallenge", () => {
       "Restaurantes pequenos, quando controlam o estoque no fim da semana"
     );
     expect(reviewButton).toBeEnabled();
+    expect(screen.getByLabelText("Perguntas de revisão")).toHaveTextContent(
+      "A dificuldade está descrita sem antecipar uma solução?"
+    );
     fireEvent.click(reviewButton);
 
     expect(screen.getByRole("heading", { name: "Sua Carta da Descoberta" })).toBeInTheDocument();
@@ -175,7 +199,7 @@ describe("ProblemRefinementChallenge", () => {
 
     expect(onSubmit).toHaveBeenCalledWith({
       problemStatement:
-        "Restaurantes pequenos, quando controlam o estoque no fim da semana, tem dificuldade em " +
+        "Restaurantes pequenos, quando controlam o estoque no fim da semana, há dificuldade para " +
         "saber o que ainda está disponível, o que provoca compras duplicadas e perda de margem.",
       evidenceSummary:
         "2 entrevistas sustentam este recorte. Pessoa 1: Relato 1: comprou ingredientes que ainda " +
@@ -211,6 +235,69 @@ describe("ProblemRefinementChallenge", () => {
     firstView.unmount();
     renderChallenge();
     expect(await screen.findByDisplayValue("Pequenos restaurantes familiares")).toBeInTheDocument();
+  });
+
+  it("returns to evidence selection when a saved draft references interviews that no longer exist", async () => {
+    localStorage.setItem(
+      "startup-quest:problem-refinement:7",
+      JSON.stringify({
+        stage: 4,
+        warmupAnswer: "observed",
+        selectedEvidenceIds: [98, 99],
+        audience: "Restaurantes de bairro",
+        situation: "fecham o estoque da semana",
+        difficulty: "conferir os ingredientes restantes",
+        consequence: "compras repetidas",
+      })
+    );
+
+    renderChallenge();
+
+    expect(
+      await screen.findByRole("heading", { name: "Quais relatos sustentam melhor o padrão?" })
+    ).toBeInTheDocument();
+    expect(screen.getByText("0 de 2 sinais conectados")).toBeInTheDocument();
+    await waitFor(() =>
+      expect(localStorage.getItem("startup-quest:problem-refinement:7")).toContain(
+        '"selectedEvidenceIds":[]'
+      )
+    );
+  });
+
+  it("does not copy a draft over another startup when the route changes", async () => {
+    const draftFor = (audience: string) => ({
+      stage: 3,
+      warmupAnswer: "observed",
+      selectedEvidenceIds: [1, 2],
+      audience,
+      situation: "fecha o estoque da semana",
+      difficulty: "conferir os ingredientes restantes",
+      consequence: "compras repetidas",
+    });
+    localStorage.setItem("startup-quest:problem-refinement:7", JSON.stringify(draftFor("Startup sete")));
+    localStorage.setItem("startup-quest:problem-refinement:8", JSON.stringify(draftFor("Startup oito")));
+
+    const view = renderChallenge({ startupId: 7 });
+    expect(await screen.findByDisplayValue("Startup sete")).toBeInTheDocument();
+
+    view.rerenderChallenge({ startupId: 8 });
+    expect(await screen.findByDisplayValue("Startup oito")).toBeInTheDocument();
+    expect(localStorage.getItem("startup-quest:problem-refinement:7")).toContain("Startup sete");
+    expect(localStorage.getItem("startup-quest:problem-refinement:8")).toContain("Startup oito");
+  });
+
+  it("keeps the challenge usable when the browser blocks autosave", async () => {
+    const storageSpy = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("Storage blocked", "SecurityError");
+    });
+
+    renderChallenge();
+    await waitFor(() => expect(storageSpy).toHaveBeenCalled());
+    fireEvent.click(screen.getByRole("button", { name: "Ir direto para minhas evidências" }));
+
+    expect(
+      await screen.findByRole("heading", { name: "Quais relatos sustentam melhor o padrão?" })
+    ).toBeInTheDocument();
   });
 
   it("clears the autosave after the discovery is registered", async () => {
@@ -256,7 +343,7 @@ describe("ProblemRefinementChallenge", () => {
 
     view.rerenderChallenge({
       celebration: {
-        title: "Você transformou relatos em um problema observável",
+        title: "Missão cumprida",
         xpAwarded: 100,
         unlocked: "Validação de público liberada",
       },
