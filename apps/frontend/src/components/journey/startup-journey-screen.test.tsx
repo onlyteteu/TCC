@@ -1,162 +1,193 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { waitFor } from "@testing-library/react";
-import type { ComponentType } from "react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { JourneyPayload } from "@/lib/startup-types";
+import type { JourneyPayload, JourneyStepSummary } from "@/lib/startup-types";
 
 import { StartupJourneyScreen } from "./startup-journey-screen";
 
-const router = vi.hoisted(() => ({ replace: vi.fn() }));
+const navigation = vi.hoisted(() => ({
+  params: { get: vi.fn() },
+  router: { replace: vi.fn() },
+}));
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => router,
+  useRouter: () => navigation.router,
+  useSearchParams: () => navigation.params,
 }));
+
+const steps: JourneyStepSummary[] = [
+  { key: "problem", title: "Problema", status: "done", answer: "Fila longa", order: 0, completedAt: "2026-07-10T10:00:00Z" },
+  { key: "audience", title: "Público-alvo", status: "done", answer: "Clínicas pequenas", order: 1, completedAt: "2026-07-10T10:00:00Z" },
+  { key: "value", title: "Proposta de valor", status: "current", answer: "", order: 2, completedAt: null },
+  { key: "differentiators", title: "Diferenciais", status: "pending", answer: "", order: 3, completedAt: null },
+  { key: "validation", title: "Validação inicial", status: "pending", answer: "", order: 4, completedAt: null },
+  { key: "business_model", title: "Modelo de negócio", status: "pending", answer: "", order: 5, completedAt: null },
+  { key: "mvp", title: "Planejamento do MVP", status: "pending", answer: "", order: 6, completedAt: null },
+  { key: "goals", title: "Metas iniciais", status: "pending", answer: "", order: 7, completedAt: null },
+];
 
 const payload: JourneyPayload = {
   startup: {
     id: 1,
     name: "Viva",
     description: "Uma ideia inicial",
-    segment: "Saude",
+    segment: "Saúde",
     problem: "Fila longa",
-    audience: "Clinicas pequenas",
+    audience: "Clínicas pequenas",
     initialGoal: "Validar a dor",
-    currentStage: "foundation",
-    currentStageLabel: "Fundacao",
+    currentStage: "value",
+    currentStageLabel: "Proposta de valor",
     createdAt: "2026-07-10T10:00:00Z",
     updatedAt: "2026-07-10T10:00:00Z",
     lastOpenedAt: null,
   },
-  progress: 50,
-  journey: [
-    {
-      key: "problem",
-      title: "Definicao do problema",
-      status: "done",
-      answer: "Fila longa",
-      order: 0,
-      completedAt: "2026-07-10T10:00:00Z",
-    },
-    {
-      key: "audience",
-      title: "Publico inicial",
-      status: "current",
-      answer: "",
-      order: 1,
-      completedAt: null,
-    },
+  progress: 25,
+  journey: steps,
+  chapters: [
+    { key: "foundation", title: "Fundamento", question: "Para quem e para qual dor esta startup existe?", status: "done", completedSteps: 2, totalSteps: 2, steps: steps.slice(0, 2) },
+    { key: "proposal", title: "Proposta", question: "Por que essa startup merece existir?", status: "current", completedSteps: 0, totalSteps: 2, steps: steps.slice(2, 4) },
+    { key: "validation", title: "Validação", question: "O que prova que a proposta é desejável e viável?", status: "locked", completedSteps: 0, totalSteps: 2, steps: steps.slice(4, 6) },
+    { key: "construction", title: "Construção", question: "Qual é a menor entrega e como medir o avanço?", status: "locked", completedSteps: 0, totalSteps: 2, steps: steps.slice(6, 8) },
   ],
-  chapters: [],
-  currentMilestone: null,
-  strategicSummary: [],
+  currentMilestone: {
+    key: "value",
+    chapterKey: "proposal",
+    title: "Proposta de valor",
+    description: "Transforme problema e público em uma promessa clara.",
+    alreadyBuilt: [],
+    nextUnlock: { title: "Diferenciais", description: "Compare alternativas." },
+    mission: {
+      key: "reframe_value_proposition",
+      title: "Reformule a proposta de valor",
+      objective: "Conectar público, problema e resultado.",
+      href: "/painel/startup/1/missoes/reframe_value_proposition",
+      estimatedMinutes: 15,
+      xpReward: 100,
+      status: "available",
+      canContinue: true,
+    },
+    message: null,
+  },
+  strategicSummary: [
+    { key: "problem", label: "Problema", value: "Fila longa", field: "problem" },
+    { key: "audience", label: "Público-alvo", value: "Clínicas pequenas", field: "audience" },
+  ],
 };
 
 describe("StartupJourneyScreen", () => {
   beforeEach(() => {
-    router.replace.mockReset();
+    navigation.router.replace.mockReset();
+    navigation.params.get.mockReturnValue(null);
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => payload })
     );
   });
 
-  it("loads the current step and switches tabs with the keyboard", async () => {
+  it("renders the approved strategic Journey without direct completion", async () => {
     render(<StartupJourneyScreen startupId={1} />);
 
-    expect(await screen.findByRole("heading", { name: "Publico inicial" })).toBeInTheDocument();
-    expect(screen.queryByRole("main")).not.toBeInTheDocument();
-
-    const journeyTab = screen.getByRole("tab", { name: "Jornada" });
-    const mapTab = screen.getByRole("tab", { name: "Mapa inicial" });
-    journeyTab.focus();
-    fireEvent.keyDown(journeyTab, { key: "ArrowRight" });
-
-    expect(mapTab).toHaveAttribute("aria-selected", "true");
-    expect(mapTab).toHaveFocus();
-    expect(screen.getByRole("heading", { name: "Mapa inicial" })).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Publico inicial" })).not.toBeInTheDocument();
-
-    fireEvent.keyDown(mapTab, { key: "Home" });
-    expect(journeyTab).toHaveAttribute("aria-selected", "true");
-    expect(journeyTab).toHaveFocus();
-
-    fireEvent.keyDown(journeyTab, { key: "End" });
-    expect(mapTab).toHaveAttribute("aria-selected", "true");
-    expect(mapTab).toHaveFocus();
-  });
-
-  it("does not create a nested main landmark while loading", () => {
-    vi.stubGlobal("fetch", vi.fn(() => new Promise(() => undefined)));
-
-    render(<StartupJourneyScreen startupId={1} />);
-
-    expect(screen.getByText("Preparando a jornada da startup...")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Visão estratégica" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Por que essa startup merece existir?" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Continuar missão" })).toHaveAttribute(
+      "href",
+      "/painel/startup/1/missoes/reframe_value_proposition"
+    );
+    expect(screen.queryByRole("button", { name: "Concluir etapa" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
     expect(screen.queryByRole("main")).not.toBeInTheDocument();
   });
 
-  it("does not create a nested main landmark in the error state", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({ ok: false, status: 500, json: async () => ({}) })
+  it("opens the secondary Startup Map route from the header", async () => {
+    render(<StartupJourneyScreen startupId={1} />);
+
+    fireEvent.click(await screen.findByRole("button", { name: "Abrir Mapa da startup" }));
+    expect(navigation.router.replace).toHaveBeenCalledWith(
+      "/painel/startup/1/jornada?view=map"
+    );
+  });
+
+  it("renders the map view and focuses the field from the query string", async () => {
+    navigation.params.get.mockImplementation((key: string) =>
+      key === "view" ? "map" : key === "field" ? "problem" : null
     );
 
     render(<StartupJourneyScreen startupId={1} />);
 
-    expect(await screen.findByRole("heading", { name: "Jornada indisponivel" })).toBeInTheDocument();
-    expect(screen.queryByRole("main")).not.toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Mapa da startup" })).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "Problema" })).toHaveFocus();
+    expect(screen.queryByRole("heading", { name: "Visão estratégica" })).not.toBeInTheDocument();
   });
 
-  it("shows a friendly error when a map update loses the connection", async () => {
+  it("sends strategic review to the focused map field", async () => {
     render(<StartupJourneyScreen startupId={1} />);
 
-    await screen.findByRole("heading", { name: "Publico inicial" });
-    fireEvent.click(screen.getByRole("tab", { name: "Mapa inicial" }));
-    fireEvent.click(screen.getByRole("button", { name: "Editar Nome" }));
-    fireEvent.change(screen.getByRole("textbox", { name: "Nome" }), {
-      target: { value: "Viva Bem" },
-    });
-    vi.mocked(fetch).mockRejectedValueOnce(new Error("network down"));
-    fireEvent.click(screen.getByRole("button", { name: "Salvar Nome" }));
-
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      "Nao foi possivel salvar agora."
+    fireEvent.click(await screen.findByRole("button", { name: "Revisar Problema" }));
+    expect(navigation.router.replace).toHaveBeenCalledWith(
+      "/painel/startup/1/jornada?view=map&field=problem"
     );
   });
 
-  it("shows a friendly error when a journey update loses the connection", async () => {
-    render(<StartupJourneyScreen startupId={1} />);
-
-    await screen.findByRole("heading", { name: "Publico inicial" });
-    fireEvent.change(screen.getByRole("textbox", { name: "Sua resposta" }), {
-      target: { value: "Consultorios com agenda cheia" },
-    });
-    vi.mocked(fetch).mockRejectedValueOnce(new Error("network down"));
-    fireEvent.click(screen.getByRole("button", { name: "Concluir etapa" }));
-
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      "Nao foi possivel salvar a etapa agora."
-    );
-  });
-
-  it("reconciles the workspace after completing a journey step", async () => {
-    const onWorkspaceChanged = vi.fn().mockResolvedValue(true);
+  it("keeps the shell landmark clean during loading and supports retry after errors", async () => {
     const fetchMock = vi
       .fn()
-      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => payload })
+      .mockResolvedValueOnce({ ok: false, status: 500, json: async () => ({}) })
       .mockResolvedValueOnce({ ok: true, status: 200, json: async () => payload });
     vi.stubGlobal("fetch", fetchMock);
-    const ReconciledJourney = StartupJourneyScreen as unknown as ComponentType<{
-      onWorkspaceChanged: () => Promise<boolean>;
-      startupId: number;
-    }>;
-    render(<ReconciledJourney onWorkspaceChanged={onWorkspaceChanged} startupId={1} />);
 
-    await screen.findByRole("heading", { name: "Publico inicial" });
-    fireEvent.change(screen.getByRole("textbox", { name: "Sua resposta" }), {
-      target: { value: "Consultorios com agenda cheia" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Concluir etapa" }));
+    render(<StartupJourneyScreen startupId={1} />);
+
+    expect(await screen.findByRole("heading", { name: "Jornada indisponível" })).toBeInTheDocument();
+    expect(screen.queryByRole("main")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Tentar novamente" }));
+    expect(await screen.findByRole("heading", { name: "Visão estratégica" })).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("keeps the edited value and reports a connection error in the map", async () => {
+    navigation.params.get.mockImplementation((key: string) =>
+      key === "view" ? "map" : key === "field" ? "problem" : null
+    );
+    vi.mocked(fetch)
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify(payload), { status: 200 })
+      )
+      .mockRejectedValueOnce(new Error("network down"));
+    render(<StartupJourneyScreen startupId={1} />);
+
+    const field = await screen.findByRole("textbox", { name: "Problema" });
+    fireEvent.change(field, { target: { value: "Fila longa em horários de pico" } });
+    fireEvent.click(screen.getByRole("button", { name: "Salvar Problema" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Nao foi possivel salvar agora.");
+    expect(field).toHaveValue("Fila longa em horários de pico");
+  });
+
+  it("reconciles the workspace after revising a strategic field", async () => {
+    navigation.params.get.mockImplementation((key: string) =>
+      key === "view" ? "map" : key === "field" ? "problem" : null
+    );
+    const onWorkspaceChanged = vi.fn().mockResolvedValue(true);
+    vi.mocked(fetch)
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify(payload), { status: 200 })
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({ message: "Atualizada", startup: payload.startup }),
+          { status: 200 }
+        )
+      );
+    render(
+      <StartupJourneyScreen
+        onWorkspaceChanged={onWorkspaceChanged}
+        startupId={1}
+      />
+    );
+
+    const field = await screen.findByRole("textbox", { name: "Problema" });
+    fireEvent.change(field, { target: { value: "Fila longa em horários de pico" } });
+    fireEvent.click(screen.getByRole("button", { name: "Salvar Problema" }));
 
     await waitFor(() => expect(onWorkspaceChanged).toHaveBeenCalledTimes(1));
   });

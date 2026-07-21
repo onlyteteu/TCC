@@ -21,6 +21,20 @@ const startup: StartupSummary = {
 };
 
 describe("StartupMapSummary", () => {
+  it("opens the requested field with focus in the Startup Map", () => {
+    render(
+      <StartupMapSummary
+        initialField="problem"
+        isSaving={false}
+        onSaveField={vi.fn()}
+        startup={startup}
+      />
+    );
+
+    expect(screen.getByRole("heading", { name: "Mapa da startup" })).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "Problema" })).toHaveFocus();
+  });
+
   it("edits one field at a time and cancels with Escape", () => {
     render(<StartupMapSummary isSaving={false} onSaveField={vi.fn()} startup={startup} />);
 

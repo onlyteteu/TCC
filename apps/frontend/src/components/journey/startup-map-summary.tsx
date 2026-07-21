@@ -15,6 +15,7 @@ export type StartupMapField =
   | "initialGoal";
 
 type StartupMapSummaryProps = {
+  initialField?: StartupMapField | null;
   isSaving: boolean;
   onSaveField: (field: StartupMapField, value: string) => Promise<void>;
   startup: StartupSummary;
@@ -65,6 +66,7 @@ const mapFields: Array<{
 ];
 
 export function StartupMapSummary({
+  initialField = null,
   isSaving,
   onSaveField,
   startup,
@@ -76,6 +78,16 @@ export function StartupMapSummary({
     Partial<Record<StartupMapField, HTMLButtonElement | null>>
   >({});
   const focusReturnFieldRef = useRef<StartupMapField | null>(null);
+  const initialFieldAppliedRef = useRef(false);
+
+  useLayoutEffect(() => {
+    if (initialField && !initialFieldAppliedRef.current) {
+      initialFieldAppliedRef.current = true;
+      setEditingField(initialField);
+      setDraft(startup[initialField]);
+      setError(null);
+    }
+  }, [initialField, startup]);
 
   useLayoutEffect(() => {
     if (!editingField && focusReturnFieldRef.current) {
@@ -124,7 +136,7 @@ export function StartupMapSummary({
     <section className={styles.mapSummary} aria-labelledby="map-summary-title">
       <div className={styles.mapHeading}>
         <div>
-          <h2 id="map-summary-title">Mapa inicial</h2>
+          <h2 id="map-summary-title">Mapa da startup</h2>
           <p>Revise a base da startup sem perder o contexto da jornada.</p>
         </div>
         <span>6 fundamentos</span>
