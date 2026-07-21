@@ -820,6 +820,55 @@ class MissionApiTests(TestCase):
         self.assertIn("notes", response.json()["fieldErrors"])
         self.assertEqual(MissionEvidence.objects.count(), 0)
 
+    def test_recording_interview_persists_guided_signals(self):
+        response = self.client.post(
+            self.evidence_url(),
+            data={
+                "intervieweeName": "Pessoa 1",
+                "intervieweeProfile": "Dona de restaurante",
+                "occurredOn": timezone.localdate().isoformat(),
+                "context": "Percebeu a falta durante o fechamento do estoque.",
+                "notes": (
+                    "Precisou conferir mensagens antigas antes de comprar novamente."
+                ),
+                "frequency": "weekly",
+                "currentAlternative": "messages",
+            },
+            content_type="application/json",
+            **self.auth,
+        )
+
+        self.assertEqual(response.status_code, 201)
+        evidence = MissionEvidence.objects.get()
+        self.assertEqual(
+            evidence.details,
+            {"frequency": "weekly", "currentAlternative": "messages"},
+        )
+        self.assertEqual(
+            response.json()["mission"]["evidences"][0]["details"],
+            {"frequency": "weekly", "currentAlternative": "messages"},
+        )
+
+    def test_recording_interview_rejects_unknown_guided_signals(self):
+        response = self.client.post(
+            self.evidence_url(),
+            data={
+                "intervieweeName": "Pessoa 1",
+                "notes": (
+                    "Relato suficientemente detalhado para ser uma evidencia valida."
+                ),
+                "frequency": "sometimes",
+                "currentAlternative": "carrier_pigeon",
+            },
+            content_type="application/json",
+            **self.auth,
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("frequency", response.json()["fieldErrors"])
+        self.assertIn("currentAlternative", response.json()["fieldErrors"])
+        self.assertEqual(MissionEvidence.objects.count(), 0)
+
     def test_recording_interview_awards_xp_and_keeps_streak(self):
         response = self.add_interview(1)
 

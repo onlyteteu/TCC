@@ -124,6 +124,15 @@ FOUNDATION_STEPS = 2  # problema e publico ja nascem concluidos na fundacao
 XP_PER_INTERVIEW = 10
 XP_PER_LEARNING = 25
 
+INTERVIEW_FREQUENCIES = {"rarely", "monthly", "weekly", "daily"}
+INTERVIEW_ALTERNATIVES = {
+    "manual",
+    "spreadsheet",
+    "messages",
+    "another_tool",
+    "none",
+}
+
 
 def _build_streak(events):
     activity_dates = sorted(
@@ -871,6 +880,8 @@ def mission_evidence(request, startup_id, mission_key):
     context = _clean_text(payload, "context")
     notes = _clean_text(payload, "notes")
     occurred_on_value = _clean_text(payload, "occurredOn")
+    frequency = _clean_text(payload, "frequency")
+    current_alternative = _clean_text(payload, "currentAlternative")
     occurred_on = parse_date(occurred_on_value) if occurred_on_value else timezone.localdate()
     field_errors = {}
 
@@ -891,6 +902,12 @@ def mission_evidence(request, startup_id, mission_key):
         field_errors["occurredOn"] = ["Use uma data valida."]
     elif occurred_on > timezone.localdate():
         field_errors["occurredOn"] = ["A entrevista nao pode estar no futuro."]
+    if frequency and frequency not in INTERVIEW_FREQUENCIES:
+        field_errors["frequency"] = ["Escolha uma frequencia valida."]
+    if current_alternative and current_alternative not in INTERVIEW_ALTERNATIVES:
+        field_errors["currentAlternative"] = [
+            "Escolha uma alternativa atual valida."
+        ]
 
     if field_errors:
         return _error_response(
@@ -914,6 +931,14 @@ def mission_evidence(request, startup_id, mission_key):
                 status=409,
             )
 
+        details = {
+            key: value
+            for key, value in {
+                "frequency": frequency,
+                "currentAlternative": current_alternative,
+            }.items()
+            if value
+        }
         evidence = MissionEvidence.objects.create(
             mission=mission,
             evidence_type=MissionEvidence.Type.INTERVIEW,
@@ -922,6 +947,7 @@ def mission_evidence(request, startup_id, mission_key):
             context=context,
             notes=notes,
             occurred_on=occurred_on,
+            details=details,
         )
 
         if mission.status == Mission.Status.AVAILABLE:
