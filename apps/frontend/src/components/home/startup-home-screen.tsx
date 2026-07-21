@@ -18,6 +18,8 @@ import { missionExecutionHref } from "@/lib/startup-navigation";
 import type { ActivitySummary, TodayPayload } from "@/lib/startup-types";
 
 import { FounderProgressRail } from "./founder-progress-rail";
+import { GuidedInterviewFlow } from "./guided-interview-flow";
+import type { InterviewEvidencePayload } from "./guided-interview-model";
 import { MissionFocusPanel } from "./mission-focus-panel";
 import styles from "./startup-home-screen.module.css";
 
@@ -29,36 +31,12 @@ type StartupHomeScreenProps = {
 
 type WorkMode = "overview" | "interview" | "learning" | "details";
 
-type InterviewDraft = {
-  intervieweeName: string;
-  intervieweeProfile: string;
-  context: string;
-  notes: string;
-  occurredOn: string;
-};
-
 type LearningDraft = {
   confidence: "low" | "medium" | "high";
   content: string;
   impact: string;
   nextAction: string;
 };
-
-function localDateValue() {
-  return new Intl.DateTimeFormat("en-CA", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(new Date());
-}
-
-const emptyInterview = (): InterviewDraft => ({
-  intervieweeName: "",
-  intervieweeProfile: "",
-  context: "",
-  notes: "",
-  occurredOn: localDateValue(),
-});
 
 const emptyLearning = (): LearningDraft => ({
   confidence: "medium",
@@ -163,7 +141,6 @@ export function StartupHomeScreen({
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [workMode, setWorkMode] = useState<WorkMode>("overview");
-  const [interview, setInterview] = useState<InterviewDraft>(emptyInterview);
   const [learning, setLearning] = useState<LearningDraft>(emptyLearning);
   const [formError, setFormError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -254,39 +231,45 @@ export function StartupHomeScreen({
     void onWorkspaceChanged?.();
   }
 
-  async function submitInterview(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function submitInterview(
+    nextInterview: InterviewEvidencePayload
+  ): Promise<string> {
     if (!mission) {
-      return;
+      throw new Error("A missão de entrevistas não está disponível.");
     }
 
     setIsSaving(true);
-    setFormError(null);
 
     try {
-      const response = await fetch(
-        `/api/startups/${startupId}/missions/${mission.key}/evidence`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(interview),
-        }
-      );
+      let response: Response;
+      try {
+        response = await fetch(
+          `/api/startups/${startupId}/missions/${mission.key}/evidence`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(nextInterview),
+          }
+        );
+      } catch {
+        throw new Error(
+          "A entrevista não foi registrada. Verifique sua conexão e tente novamente."
+        );
+      }
       const nextPayload = (await response.json()) as TodayPayload | AuthErrorPayload;
 
       if (response.status === 401) {
         router.replace("/");
-        return;
+        throw new Error("Sua sessão expirou. Entre novamente para continuar.");
       }
       if (!response.ok) {
-        setFormError(firstFieldError(nextPayload as AuthErrorPayload));
-        return;
+        throw new Error(firstFieldError(nextPayload as AuthErrorPayload));
       }
 
-      setInterview(emptyInterview());
-      applySuccess(nextPayload as TodayPayload);
-    } catch {
-      setFormError("A entrevista não foi registrada. Verifique sua conexão e tente novamente.");
+      const todayPayload = nextPayload as TodayPayload;
+      setPayload(todayPayload);
+      void onWorkspaceChanged?.();
+      return todayPayload.message ?? "Entrevista registrada. Você ganhou 10 XP.";
     } finally {
       setIsSaving(false);
     }
@@ -455,12 +438,9 @@ export function StartupHomeScreen({
             <div>
               <h2 id="work-dialog-title">{title}</h2>
               {workMode === "interview" ? (
-                <>
-                  <p>Registre o que aconteceu. A qualidade da evidência importa mais que a quantidade de texto.</p>
-                  <span className={styles.dialogContext}>
-                    {mission.evidenceCount + 1}ª entrevista
-                  </span>
-                </>
+                <span className={styles.dialogContext}>
+                  {mission.evidenceCount + 1}ª entrevista
+                </span>
               ) : workMode === "learning" ? (
                 <p>Transforme as cinco conversas em uma conclusão que oriente a próxima decisão.</p>
               ) : (
@@ -473,83 +453,14 @@ export function StartupHomeScreen({
           </div>
 
           {workMode === "interview" ? (
-            <form className={styles.workForm} onSubmit={submitInterview}>
-              <div className={styles.formGrid}>
-                <label>
-                  <span>Nome ou identificação</span>
-                  <input
-                    data-initial-focus
-                    disabled={isSaving}
-                    maxLength={120}
-                    onChange={(event) =>
-                      setInterview((current) => ({ ...current, intervieweeName: event.target.value }))
-                    }
-                    placeholder="Ex.: Cliente 01 ou João"
-                    required
-                    value={interview.intervieweeName}
-                  />
-                </label>
-                <label>
-                  <span>Perfil da pessoa</span>
-                  <input
-                    disabled={isSaving}
-                    maxLength={180}
-                    onChange={(event) =>
-                      setInterview((current) => ({ ...current, intervieweeProfile: event.target.value }))
-                    }
-                    placeholder="Ex.: dono de restaurante pequeno"
-                    value={interview.intervieweeProfile}
-                  />
-                </label>
-                <label>
-                  <span>Data da conversa</span>
-                  <input
-                    disabled={isSaving}
-                    max={localDateValue()}
-                    onChange={(event) =>
-                      setInterview((current) => ({ ...current, occurredOn: event.target.value }))
-                    }
-                    required
-                    type="date"
-                    value={interview.occurredOn}
-                  />
-                </label>
-                <label>
-                  <span>Contexto</span>
-                  <input
-                    disabled={isSaving}
-                    maxLength={300}
-                    onChange={(event) =>
-                      setInterview((current) => ({ ...current, context: event.target.value }))
-                    }
-                    placeholder="Ex.: conversa de 20 minutos por vídeo"
-                    value={interview.context}
-                  />
-                </label>
-              </div>
-              <label className={styles.fullField}>
-                <span>O que a pessoa contou?</span>
-                <textarea
-                  disabled={isSaving}
-                  onChange={(event) =>
-                    setInterview((current) => ({ ...current, notes: event.target.value }))
-                  }
-                  placeholder="Registre situações, frequência da dor, alternativas usadas e frases importantes."
-                  required
-                  rows={5}
-                  value={interview.notes}
-                />
-              </label>
-              {formError ? <p className={styles.formError}>{formError}</p> : null}
-              <div className={styles.formActions}>
-                <button className={styles.primaryButton} disabled={isSaving} type="submit">
-                  {isSaving ? "Registrando entrevista..." : "Registrar entrevista"}
-                </button>
-                <button className={styles.secondaryButton} disabled={isSaving} onClick={closeWorkDialog} type="button">
-                  Continuar depois
-                </button>
-              </div>
-            </form>
+            <GuidedInterviewFlow
+              evidenceCount={mission.evidenceCount}
+              isSaving={isSaving}
+              missionKey={mission.key}
+              onClose={closeWorkDialog}
+              onSubmit={submitInterview}
+              startupId={startupId}
+            />
           ) : workMode === "learning" ? (
             <form className={styles.workForm} onSubmit={submitLearning}>
               <label className={styles.fullField}>

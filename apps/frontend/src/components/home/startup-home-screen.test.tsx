@@ -148,10 +148,46 @@ function withMission(overrides: Partial<NonNullable<TodayPayload["mission"]>>) {
   } satisfies TodayPayload;
 }
 
+const recordedEvidence = {
+  context: "Percebeu a falta durante o fechamento do estoque.",
+  createdAt: "2026-07-21T12:00:00Z",
+  details: { currentAlternative: "messages", frequency: "weekly" },
+  id: 41,
+  intervieweeName: "Cliente 02",
+  intervieweeProfile: "Dona de restaurante",
+  notes: "Precisou conferir mensagens antigas antes de comprar novamente.",
+  occurredOn: "2026-07-21",
+  summary: "",
+  title: "",
+  type: "customer_interview",
+};
+
+function completeGuidedInterview() {
+  fireEvent.change(screen.getByLabelText("Nome ou identificação"), {
+    target: { value: "Cliente 02" },
+  });
+  fireEvent.change(screen.getByLabelText("Perfil da pessoa (opcional)"), {
+    target: { value: "Dona de restaurante" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
+  fireEvent.change(screen.getByLabelText("Em que situação isso aconteceu?"), {
+    target: { value: recordedEvidence.context },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
+  fireEvent.click(screen.getByRole("button", { name: "Toda semana" }));
+  fireEvent.click(screen.getByRole("button", { name: "Mensagens ou anotações" }));
+  fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
+  fireEvent.change(screen.getByLabelText("Qual foi a principal frase ou sinal?"), {
+    target: { value: recordedEvidence.notes },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Salvar evidência" }));
+}
+
 describe("StartupHomeScreen", () => {
   beforeEach(() => {
     navigation.push.mockReset();
     navigation.replace.mockReset();
+    window.localStorage.clear();
   });
 
   afterEach(() => {
@@ -159,7 +195,30 @@ describe("StartupHomeScreen", () => {
   });
 
   it("loads the mission-focused home and opens interview work from its current step", async () => {
-    const fetchMock = vi.fn().mockImplementation(() => jsonResponse(payload));
+    const firstInterviewPayload = withMission({
+      evidenceCount: 0,
+      evidences: [],
+      progress: 0,
+      status: "available",
+      steps: payload.mission!.steps.map((step) =>
+        step.key === "interviews"
+          ? { ...step, description: "0 de 5 concluidas." }
+          : step
+      ),
+    });
+    const recordedPayload: TodayPayload = {
+      ...withMission({
+        evidenceCount: 1,
+        evidences: [recordedEvidence],
+        progress: 20,
+        status: "in_progress",
+      }),
+      message: "Entrevista registrada. Você ganhou 10 XP.",
+    };
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(() => jsonResponse(firstInterviewPayload))
+      .mockImplementationOnce(() => jsonResponse(recordedPayload, 201));
     vi.stubGlobal("fetch", fetchMock);
 
     render(<StartupHomeScreen startupId={7} />);
@@ -171,20 +230,33 @@ describe("StartupHomeScreen", () => {
 
     fireEvent.click(screen.getByText("Registre 5 entrevistas"));
     expect(screen.getByRole("dialog", { name: "Registrar entrevista" })).toBeInTheDocument();
-
-    fireEvent.change(screen.getByLabelText("Nome ou identificação"), {
-      target: { value: "Cliente 02" },
-    });
-    fireEvent.change(screen.getByLabelText("O que a pessoa contou?"), {
-      target: { value: "Relatou o problema semanalmente." },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Registrar entrevista" }));
+    expect(screen.getByRole("heading", { name: "Antes da conversa" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Começar registro" }));
+    completeGuidedInterview();
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
-    expect(fetchMock).toHaveBeenLastCalledWith(
-      "/api/startups/7/missions/customer_interviews_5/evidence",
-      expect.objectContaining({ method: "POST" })
+    const [requestUrl, requestInit] = fetchMock.mock.calls[1];
+    expect(requestUrl).toBe(
+      "/api/startups/7/missions/customer_interviews_5/evidence"
     );
+    expect(requestInit).toEqual(expect.objectContaining({ method: "POST" }));
+    expect(JSON.parse(String(requestInit.body))).toEqual({
+      intervieweeName: "Cliente 02",
+      intervieweeProfile: "Dona de restaurante",
+      occurredOn: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
+      context: recordedEvidence.context,
+      notes: recordedEvidence.notes,
+      frequency: "weekly",
+      currentAlternative: "messages",
+    });
+    expect(
+      await screen.findByText(/transformou uma conversa em evidência observável/i)
+    ).toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "Registrar entrevista" })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Ver coleção" }));
+    expect(screen.queryByRole("dialog", { name: "Registrar entrevista" })).not.toBeInTheDocument();
+    expect(screen.getByText("1 de 5 entrevistas registradas")).toBeInTheDocument();
   }, 10_000);
 
   it("opens the structured recommended mission instead of the interview dialog", async () => {
@@ -411,13 +483,7 @@ describe("StartupHomeScreen", () => {
     render(<ReconciledHome onWorkspaceChanged={onWorkspaceChanged} startupId={7} />);
 
     fireEvent.click(await screen.findByText("Registre 5 entrevistas"));
-    fireEvent.change(screen.getByLabelText(/Nome ou identifica/), {
-      target: { value: "Cliente 02" },
-    });
-    fireEvent.change(screen.getByLabelText(/O que a pessoa contou/), {
-      target: { value: "Relatou o problema semanalmente." },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Registrar entrevista" }));
+    completeGuidedInterview();
 
     await waitFor(() => expect(onWorkspaceChanged).toHaveBeenCalledTimes(1));
   });
@@ -454,11 +520,7 @@ describe("StartupHomeScreen", () => {
         error: "A entrevista não foi registrada. Verifique sua conexão e tente novamente.",
         modePayload: payload,
         open: async () => fireEvent.click(await screen.findByText("Registre 5 entrevistas")),
-        submit: () => {
-          fireEvent.change(screen.getByLabelText("Nome ou identificação"), { target: { value: "Cliente" } });
-          fireEvent.change(screen.getByLabelText("O que a pessoa contou?"), { target: { value: "Relato" } });
-          fireEvent.click(screen.getByRole("button", { name: "Registrar entrevista" }));
-        },
+        submit: completeGuidedInterview,
       },
       {
         error: "O aprendizado não foi registrado. Verifique sua conexão e tente novamente.",
