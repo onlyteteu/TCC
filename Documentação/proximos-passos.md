@@ -3,7 +3,7 @@
 ## Núcleo atual concluído
 
 - entrada pela startup usada por último e workspace compartilhado;
-- Home, Jornada, Mapa inicial e gerenciamento de startups;
+- Home, Jornada em Mapa de Capítulos, Mapa da startup e gerenciamento de startups;
 - gamificação baseada em atividades significativas, com XP, nível e sequência;
 - Motor de Missões 2.0 com catálogo versionado e recomendação determinística;
 - Central de missão e detalhe operacional;
@@ -12,9 +12,9 @@
 
 ## Antes de ampliar o motor
 
-O primeiro passo aprovado é implementar o redesenho da Jornada como `Mapa de Capítulos`, descrito em
-`design/2026-07-21-jornada-mapa-capitulos.md`. A mudança deve preservar as oito etapas e fazer do
-backend a fonte de verdade para progresso, bloqueios e XP.
+O redesenho da Jornada como `Mapa de Capítulos`, descrito em
+`design/2026-07-21-jornada-mapa-capitulos.md`, está implementado. O backend é a fonte de verdade
+para capítulos, progresso, bloqueios, missão relacionada e XP.
 
 Depois, validar o Incremento 1 em uso real. Observar especialmente:
 

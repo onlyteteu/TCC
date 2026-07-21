@@ -1,7 +1,7 @@
 # Jornada — Mapa de Capítulos
 
 Data: 21 de julho de 2026
-Status: design aprovado; implementação pendente
+Status: implementado e validado
 
 ## Resumo da decisão
 

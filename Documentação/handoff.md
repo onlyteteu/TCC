@@ -44,7 +44,7 @@ O produto não deve terminar depois da fundação. A visão aprovada combina:
 - cadastro, login, perfil e logout reais;
 - sessão por cookie HTTP-only no frontend e token assinado no backend;
 - criação da startup em cinco etapas;
-- nome opcional e Mapa inicial com ideia, segmento, problema e público.
+- nome opcional e Mapa da startup com ideia, segmento, problema e público.
 
 ### Workspace
 
@@ -68,25 +68,25 @@ O produto não deve terminar depois da fundação. A visão aprovada combina:
 - síntese de aprendizado após cinco entrevistas;
 - formulários estruturados para problema, público, proposta de valor e alternativas;
 - conclusão, submissão e XP transacionais e idempotentes;
-- missões de problema e público atualizam Startup, Jornada e Mapa inicial;
+- missões de problema e público atualizam Startup, Jornada e Mapa da startup;
 - proposta atualiza e conclui sua etapa quando ela é a atual;
 - arco concluído possui estado honesto, sem falso bloqueio;
 - XP, nível, sequência, atividade recente e conquistas derivadas de eventos reais.
 
 ### Jornada e startups
 
-- oito etapas de Jornada;
-- etapas concluídas, atual e bloqueadas;
-- Mapa inicial editável;
+- oito marcos agrupados em Fundamento, Proposta, Validação e Construção;
+- mapa responsivo com estados concluído, atual e bloqueado;
+- painel estratégico conectado à missão relacionada, sem conclusão direta ou XP duplicado;
+- Mapa da startup editável por `?view=map` e foco por `?view=map&field=<campo>`;
 - troca, renomeação, criação e exclusão confirmada de startups;
 - isolamento dos dados entre contas e startups.
 
 ## Próxima evolução recomendada
 
-O Incremento 1 do `Motor de Missões 2.0` está implementado. O próximo redesenho de produto aprovado
-é a Jornada como `Mapa de Capítulos`, ainda não implementada. Ela organiza as oito etapas existentes
-em Fundamento, Proposta, Validação e Construção e separa consulta estratégica da execução em
-Missões.
+O Incremento 1 do `Motor de Missões 2.0` e a Jornada como `Mapa de Capítulos` estão implementados.
+As oito etapas estão organizadas em Fundamento, Proposta, Validação e Construção, separando consulta
+estratégica da execução em Missões.
 
 Depois desse redesenho, validar o arco atual com usuários e observar compreensão, abandono e
 qualidade das respostas. O Incremento 2 continua previsto para missões 6 a 8, Experimentos,
@@ -112,7 +112,7 @@ Fontes principais:
 - [proximos-passos.md](proximos-passos.md): ordem dos próximos ciclos;
 - [design/2026-07-14-workspace-principal-startup-quest.md](design/2026-07-14-workspace-principal-startup-quest.md): workspace aprovado;
 - [design/2026-07-15-motor-missoes-2.md](design/2026-07-15-motor-missoes-2.md): especificação dos três incrementos.
-- [design/2026-07-21-jornada-mapa-capitulos.md](design/2026-07-21-jornada-mapa-capitulos.md): redesenho aprovado da Jornada, ainda não implementado.
+- [design/2026-07-21-jornada-mapa-capitulos.md](design/2026-07-21-jornada-mapa-capitulos.md): Jornada em Mapa de Capítulos implementada.
 
 `funcionalidades.md` deve continuar sendo a fonte do estado real. Uma especificação não transforma
 uma funcionalidade em implementada.
@@ -170,14 +170,16 @@ npm.cmd run lint
 npm.cmd run build
 ```
 
-Validação completa de 20 de julho de 2026:
+Validação completa de 21 de julho de 2026:
 
 - `makemigrations --check --dry-run`: nenhuma mudança pendente;
 - `manage.py check`: sem problemas;
-- backend: `71/71` testes aprovados;
-- frontend: `102/102` testes em 24 arquivos aprovados;
+- backend: `84/84` testes aprovados;
+- frontend: `116/116` testes em 27 arquivos aprovados;
 - TypeScript e ESLint: aprovados;
-- build Next.js 16.2.10: aprovado, com 12 páginas geradas e as rotas de Central/detalhe listadas.
+- build Next.js 16.2.10: aprovado, com 12 páginas geradas;
+- smoke HTTP em frontend e backend isolados: cadastro, startup, payload com quatro capítulos,
+  Jornada e Mapa da startup em `200`, e conclusão direta rejeitada em `409`.
 
 A suíte frontend ainda imprime o aviso conhecido do jsdom `Not implemented: navigation to
 another Document`, sem falha e com código de saída 0. A inspeção visual manual final nos quatro

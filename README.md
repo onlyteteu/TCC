@@ -26,15 +26,14 @@ Em 21 de julho de 2026, o projeto possui:
 - Central de missão e cinco missões operacionais do primeiro arco;
 - missão de cinco entrevistas com evidências e aprendizado;
 - XP, nível, sequência e atividade baseados em ações significativas;
-- Jornada com oito etapas e Mapa inicial editável;
+- Jornada em Mapa de Capítulos, com oito marcos e Mapa da startup editável;
 - criação, troca, renomeação e exclusão de startups;
 - frontend e backend cobertos por testes automatizados;
 - documentação de produto, arquitetura, decisões, design e progresso.
 
-O primeiro incremento do `Motor de Missões 2.0` está implementado. A próxima evolução de produto
-aprovada é o redesenho da Jornada como `Mapa de Capítulos`, ainda não implementado. Ele organizará
-as oito etapas existentes em Fundamento, Proposta, Validação e Construção, mantendo a execução em
-Missões. Consulte a
+O primeiro incremento do `Motor de Missões 2.0` e o redesenho da Jornada como `Mapa de Capítulos`
+estão implementados. A Jornada organiza as oito etapas existentes em Fundamento, Proposta,
+Validação e Construção, enquanto a execução e a conclusão continuam em Missões. Consulte a
 [especificação da Jornada](Documentação/design/2026-07-21-jornada-mapa-capitulos.md).
 
 ## Estrutura do repositório

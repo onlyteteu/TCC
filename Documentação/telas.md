@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-Em 2026-07-20, o workspace principal inclui Home, Central de missão, detalhe de missão, Jornada
+Em 2026-07-21, o workspace principal inclui Home, Central de missão, detalhe de missão, Jornada
 e gerenciamento. Depois da autenticação, o produto resolve a startup mais recente e abre uma
 experiência única com sidebar fixa, topbar, seletor e somente a área de conteúdo rolável. A
 prioridade desta versão é desktop.
@@ -42,11 +42,13 @@ prioridade desta versão é desktop.
 ### Jornada
 
 - rota `/painel/startup/<id>/jornada`;
-- usa composicao mestre-detalhe: lista as oito etapas e abre uma por vez;
-- a etapa atual abre por padrao, etapas concluidas podem ser revisitadas e etapas futuras explicam
-  o pre-requisito sem oferecer uma acao falsa;
-- as abas `Etapa` e `Mapa inicial` preservam a mesma rota e possuem navegacao por teclado;
-- o Mapa inicial edita uma secao por vez: nome, ideia, segmento, problema, publico e objetivo.
+- apresenta Fundamento, Proposta, Validação e Construção em um mapa horizontal no desktop e vertical
+  no celular;
+- destaca o marco atual, mantém concluídos consultáveis e explica futuros bloqueados sem ação falsa;
+- o painel do marco reúne síntese estratégica, próximo desbloqueio e missão relacionada;
+- `Continuar missão` leva à execução existente e não existe conclusão direta na Jornada;
+- `Abrir Mapa da startup` usa `?view=map`; `Revisar registro` usa `?view=map&field=<campo>`;
+- o Mapa da startup edita uma secao por vez: nome, ideia, segmento, problema, publico e objetivo.
 
 ### Gerenciamento de startups
 
@@ -355,23 +357,23 @@ jornada.
 
 ### Funcao
 
-Apresentar as oito etapas em `/painel/startup/[id]/jornada`, com lista mestre-detalhe, etapa atual
-aberta, concluidas revisitaveis e futuras bloqueadas com pre-requisito explicito.
+Apresentar as oito etapas em `/painel/startup/[id]/jornada` como quatro capítulos, com posição,
+transformações acumuladas, próximo desbloqueio e conexão com a missão correta.
 
 ### Papel no projeto
 
-Concentrar a experiencia principal da plataforma.
+Ser a memória estratégica do percurso, distinta da Home que orienta e de Missões que executa.
 
-## 5. Detalhe da etapa integrado a Jornada
+## 5. Painel do marco integrado à Jornada
 
 ### Funcao
 
-Permitir preenchimento, leitura de orientacoes e conclusao dentro do painel de detalhe da Jornada,
-sem criar uma rota ou tela independente.
+Permitir consultar o registro acumulado, a transformação esperada, o próximo desbloqueio e a missão
+relacionada, sem duplicar formulários ou conclusão.
 
 ### Papel no projeto
 
-Traduzir cada etapa em acao concreta para o usuario.
+Explicar o significado do marco e encaminhar a ação concreta ao Motor de Missões.
 
 ## 6. Progresso e recompensas distribuidos no workspace
 

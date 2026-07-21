@@ -2,7 +2,7 @@
 
 Cada entrada abaixo e um retrato do projeto na data indicada. Quando uma entrada antiga menciona
 `painel`, `Suas startups`, `pagina de detalhe`, `Hoje` ou criacao direta em `/painel`, ela registra
-uma etapa superada; o estado vigente e o ciclo mais recente, de 2026-07-20.
+uma etapa superada; o estado vigente e o ciclo mais recente, de 2026-07-21.
 
 ## 2026-07-20 (Motor de Missões 2.0 — Incremento 1)
 
@@ -582,7 +582,7 @@ iniciado depois da revisao da especificacao e da criacao do plano tecnico.
 
 ## 2026-07-21
 
-### Redesenho aprovado da Jornada
+### Mapa de Capítulos implementado
 
 - pesquisa de referências sobre rastreadores de progresso, caminhos guiados, motivação e
   gamificação significativa;
@@ -594,6 +594,25 @@ iniciado depois da revisao da especificacao e da criacao do plano tecnico.
 - aprovação do CTA `Continuar missão` e de `Revisar registro` como ação secundária;
 - aprovação dos estados concluído, atual, futuro e missão ainda indisponível;
 - consolidação da especificação em `design/2026-07-21-jornada-mapa-capitulos.md`.
+- derivação backend de quatro capítulos, marco atual, registro estratégico e missão relacionada;
+- duração estimada persistida no catálogo versão 3 e exposta no contrato frontend;
+- mapa responsivo, painel do marco, estados honestos e Mapa da startup por query string;
+- remoção da conclusão direta: o endpoint rejeita `complete: true` com `409` e o avanço ocorre
+  pela missão relacionada;
+- reconciliação das missões de proposta e alternativas com os marcos correspondentes, inclusive
+  em ordem paralela, sem duplicação de XP;
+- preservação do progresso e XP de startups legadas.
 
-Esta seção registra pesquisa, decisão e documentação. O Mapa de Capítulos ainda não foi
-implementado e a Jornada funcional continua sendo a versão mestre-detalhe descrita acima.
+### Validações executadas
+
+- `manage.py makemigrations --check --dry-run`: nenhuma mudança detectada;
+- `manage.py check`: sem problemas;
+- `manage.py test accounts startups`: `84/84` testes aprovados;
+- `npm.cmd test -- --maxWorkers=1`: `116/116` testes em 27 arquivos aprovados;
+- `npx.cmd tsc --noEmit --pretty false` e `npm.cmd run lint`: aprovados;
+- `npm.cmd run build`: aprovado no Next.js 16.2.10, com 12 páginas geradas;
+- smoke HTTP: cadastro e criação da startup, payload com quatro capítulos, Jornada e Mapa da
+  startup em `200`, e tentativa de conclusão direta rejeitada em `409`.
+
+A inspeção visual manual final nos viewports-alvo permanece separada da cobertura automatizada e
+não é alegada por estas validações.

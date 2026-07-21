@@ -2,8 +2,8 @@
 
 ## Estado atual
 
-Em 2026-07-20, a plataforma possui um workspace funcional com autenticação, ciclo de vida de
-startups, Home guiada, Jornada, gamificação ligada a trabalho real e o primeiro incremento do
+Em 2026-07-21, a plataforma possui um workspace funcional com autenticação, ciclo de vida de
+startups, Home guiada, Jornada em Mapa de Capítulos, gamificação ligada a trabalho real e o primeiro incremento do
 Motor de Missões 2.0. O arco atual possui cinco missões operacionais, Central própria e execução
 estruturada.
 
@@ -31,7 +31,7 @@ conclusao, nao premia login isolado e nao cria progresso apenas visual.
 - shell compartilhado com marca, navegacao, seletor, nivel, sequencia e menu de conta;
 - entrada automatica pela startup usada por ultimo;
 - Home orientada pela primeira missao operacional;
-- Jornada com oito etapas, bloqueios honestos e Mapa inicial editavel;
+- Jornada com oito marcos em quatro capítulos, bloqueios honestos e Mapa da startup editável;
 - gerenciador com abertura, renomeacao, exclusao confirmada e fallback;
 - estados de carregamento, erro, sessao e conteudo ausente nas rotas principais.
 - sessao rejeitada pelo backend limpa o cookie antes de retornar ao login;
@@ -75,7 +75,7 @@ conclusao, nao premia login isolado e nao cria progresso apenas visual.
 
 ### 4A. Motor de Missoes 2.0 — Incremento 1
 
-- catalogo versionado na versao 2, sincronizado sem duplicar instancias;
+- catalogo versionado na versao 3, com duração estimada persistida e sincronização sem duplicar instancias;
 - snapshots iniciados ou concluidos preservados quando o catalogo evolui;
 - recomendacao deterministica e explicavel, com uma unica missao principal;
 - dependencias reais, motivos de bloqueio e progresso derivados no backend;
@@ -85,12 +85,14 @@ conclusao, nao premia login isolado e nao cria progresso apenas visual.
 - submissao e conclusao idempotentes, sem evidencias, eventos ou XP repetidos;
 - isolamento por usuario e startup em Central, detalhe e submissao.
 
-### 5. Jornada e Mapa inicial
+### 5. Jornada e Mapa da startup
 
 - oito etapas semeadas automaticamente por startup;
-- etapa atual aberta, concluidas revisitaveis e futuras bloqueadas;
-- editor com pergunta, dica, exemplo, rascunho e conclusao;
-- Mapa inicial edita uma secao por vez: nome, ideia, segmento, problema, publico e objetivo;
+- quatro capítulos derivados pelo backend: Fundamento, Proposta, Validação e Construção;
+- mapa horizontal no desktop e vertical no celular, com estados concluído, atual e bloqueado;
+- painel do marco atual com registro acumulado, próximo desbloqueio, duração, XP e missão relacionada;
+- conclusão direta pela Jornada rejeitada; o avanço ocorre pela missão transacional correspondente;
+- Mapa da startup edita uma secao por vez: nome, ideia, segmento, problema, publico e objetivo;
 - problema e publico permanecem sincronizados entre Startup e Jornada.
 
 ### 6. Gerenciamento de startups
@@ -102,7 +104,7 @@ conclusao, nao premia login isolado e nao cria progresso apenas visual.
 
 ### 7. Gamificacao baseada em atividade real
 
-- 100 XP por etapa concluida da Jornada;
+- XP de etapas legadas preservado e recompensa de missão sem duplicação pela Jornada;
 - 10 XP por entrevista, 25 XP pelo primeiro aprendizado da missao e 150 XP por sua conclusao;
 - um nivel a cada 300 XP;
 - sequencia calculada por dias com atividade significativa, nunca por login isolado;
@@ -141,6 +143,8 @@ semanal. A especificação completa permanece em `design/2026-07-15-motor-missoe
   responsabilidades migraram para Home, Jornada e Gerenciador do workspace atual.
 - **2026-07-20:** o Incremento 1 do Motor 2.0 entregou catálogo, recomendação, dependências,
   cinco missões, Central e detalhe operacional.
+- **2026-07-21:** a Jornada passou a ser um Mapa de Capítulos conectado às missões e o Mapa inicial
+  foi renomeado para Mapa da startup.
 
 As expressoes `painel inicial`, `Suas startups` e `pagina de detalhe` descrevem apenas esses ciclos
 historicos. Nao representam componentes ou destinos vigentes.

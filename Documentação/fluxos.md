@@ -59,7 +59,7 @@ continuam respondendo como nao encontrados, sem revelar a existencia dos dados.
 
 1. O usuário registra cinco entrevistas e um aprendizado na Home.
 2. A conclusão libera `Refine o problema com evidências`.
-3. A submissão do problema atualiza Startup, Jornada e Mapa inicial e libera a validação do
+3. A submissão do problema atualiza Startup, Jornada e Mapa da startup e libera a validação do
    público.
 4. A submissão do público atualiza os mesmos contextos e libera duas missões de Proposta.
 5. `Reformule a proposta de valor` torna-se o foco; `Mapeie as alternativas atuais` aparece como
@@ -68,6 +68,15 @@ continuam respondendo como nao encontrados, sem revelar a existencia dos dados.
 7. Alternativas registra opções, limitações e oportunidade como evidência estruturada.
 8. Cada mutação bem-sucedida reconcilia o workspace. Refresh ou reenvio não duplica evidência,
    conclusão ou XP.
+
+### Consulta da Jornada
+
+1. O usuário abre `/painel/startup/<id>/jornada` e recebe os quatro capítulos derivados pelo backend.
+2. O mapa destaca o marco atual e mantém os concluídos consultáveis e os futuros bloqueados.
+3. O painel mostra o que já foi construído, o próximo desbloqueio e a missão relacionada.
+4. `Continuar missão` abre o fluxo operacional existente; a Jornada não conclui o marco diretamente.
+5. `Revisar registro` abre `?view=map&field=<campo>` sem alterar progresso ou XP.
+6. Depois da conclusão válida da missão, o backend reconcilia a etapa e a Jornada recarrega o novo estado.
 
 ### Abertura e submissão de uma missão
 
@@ -93,6 +102,8 @@ Esta secao preserva a sequencia de implementacao sem confundi-la com a navegacao
   gerenciador em `/painel/startups`.
 - **2026-07-20:** Home e Central passaram a compartilhar o Motor 2.0; o primeiro arco recebeu cinco
   missões, pré-requisitos reais e telas de execução estruturada.
+- **2026-07-21:** a Jornada mestre-detalhe foi substituída pelo Mapa de Capítulos; execução e
+  conclusão passaram a permanecer exclusivamente nas missões relacionadas.
 
 Os fluxos vigentes sao exclusivamente os descritos em `Fluxos atuais do workspace` acima. Em
 especial, a criacao ocorre em `/painel/startups/nova`, a entrada ocorre pela Home da startup mais

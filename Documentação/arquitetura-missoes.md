@@ -13,7 +13,7 @@ O ciclo implementado é:
 
 ## Catálogo e sincronização
 
-`mission_catalog.py` é a fonte de verdade das definições. O catálogo atual é a versão 2 e
+`mission_catalog.py` é a fonte de verdade das definições. O catálogo atual é a versão 3 e
 contém exatamente:
 
 1. `customer_interviews_5` — Converse com 5 potenciais clientes;
@@ -22,7 +22,7 @@ contém exatamente:
 4. `reframe_value_proposition` — Reformule a proposta de valor;
 5. `map_current_alternatives` — Mapeie as alternativas atuais.
 
-Cada definição possui chave e versão estáveis, tipo, fase, prioridade, ordem, recompensa,
+Cada definição possui chave e versão estáveis, tipo, fase, prioridade, ordem, recompensa, duração estimada,
 pré-requisitos, orientações, critério de conclusão, tipo de ação, configuração dos
 requisitos e passos. A validação rejeita chaves duplicadas, pré-requisitos ausentes e ciclos.
 
@@ -78,13 +78,13 @@ deduplicação. Repetir refresh, submissão ou conclusão não cria evidência, 
 
 - Entrevistas reutiliza o fluxo completo da Home: cinco evidências, aprendizado e conclusão.
 - Refinamento do problema exige problema e resumo das evidências e atualiza problema na Startup,
-  Jornada e Mapa inicial.
+  Jornada e Mapa da startup.
 - Validação do público exige recorte, sinais observados e decisão; atualiza público na Startup,
-  Jornada e Mapa inicial.
+  Jornada e Mapa da startup.
 - Proposta de valor exige promessa e justificativa; atualiza a etapa correspondente e a conclui
   somente quando ela é a etapa atual.
-- Alternativas exige opções atuais, limitações e oportunidade e permanece registrada como
-  evidência estruturada.
+- Alternativas exige opções atuais, limitações e oportunidade, registra evidência estruturada e
+  reconcilia o marco de diferenciais mesmo quando concluída fora da ordem principal.
 
 Cada primeira submissão estruturada válida concede 25 XP de evidência, além do XP próprio da
 missão concluída. Validações superficiais retornam erros por campo; missões bloqueadas retornam
@@ -110,12 +110,13 @@ token aos componentes.
   trilha, bloqueios e histórico.
 - Detalhe em `/painel/startup/<id>/missoes/<key>` orienta e executa as quatro submissões
   estruturadas; bloqueadas explicam requisitos e concluídas ficam em modo leitura.
-- Jornada continua responsável pelas oito etapas e pelo Mapa inicial; ela recebe apenas efeitos
-  coerentes produzidos pelas missões.
+- Jornada apresenta as oito etapas em quatro capítulos, o marco atual e o Mapa da startup; ela não
+  conclui marcos diretamente e recebe apenas efeitos coerentes produzidos pelas missões.
 
 ## Gamificação
 
-- XP da Jornada: 100 por etapa concluída;
+- etapas legadas preservam o XP já registrado; etapas ligadas a missões usam a recompensa da missão
+  sem somar um segundo XP pela Jornada;
 - entrevistas: 10 XP por evidência;
 - primeiro aprendizado da missão de entrevistas: 25 XP;
 - submissão estruturada válida: 25 XP;
