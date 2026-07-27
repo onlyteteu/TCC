@@ -679,6 +679,9 @@ def _today_payload(user, startup, *, message=None, celebration=None):
         },
         "mission": mission_payload,
         "missionState": mission_state,
+        "testWorkspace": {
+            "canReset": bool(user.is_staff and startup.is_test_workspace),
+        },
         "gamification": account_progress,
         "recentActivities": [_serialize_activity(event) for event in recent_activity],
         "nextUnlock": next_unlock,
