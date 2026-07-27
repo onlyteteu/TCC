@@ -213,11 +213,11 @@ export function GuidedInterviewFlow({
           </p>
         </aside>
         <div className={styles.actions}>
-          <button className={styles.primaryButton} onClick={leaveGuide} type="button">
-            {optionalGuide ? "Voltar ao registro" : "Começar registro"}
-          </button>
           <button className={styles.secondaryButton} onClick={onClose} type="button">
             Continuar depois
+          </button>
+          <button className={styles.primaryButton} onClick={leaveGuide} type="button">
+            {optionalGuide ? "Voltar ao registro" : "Começar registro"}
           </button>
         </div>
       </section>
@@ -392,35 +392,6 @@ export function GuidedInterviewFlow({
       {error ? <p className={styles.error} role="alert">{error}</p> : null}
 
       <div className={styles.actions}>
-        {draft.stage > 1 ? (
-          <button
-            className={styles.secondaryButton}
-            disabled={isSaving}
-            onClick={goBack}
-            type="button"
-          >
-            Voltar
-          </button>
-        ) : null}
-        {draft.stage < 4 ? (
-          <button
-            className={styles.primaryButton}
-            disabled={isSaving || !canAdvanceInterview(draft, draft.stage)}
-            onClick={advance}
-            type="button"
-          >
-            Continuar
-          </button>
-        ) : (
-          <button
-            className={styles.primaryButton}
-            disabled={isSaving || !canAdvanceInterview(draft, 4)}
-            onClick={saveEvidence}
-            type="button"
-          >
-            {isSaving ? "Salvando evidência..." : error ? "Tentar novamente" : "Salvar evidência"}
-          </button>
-        )}
         <button
           className={styles.secondaryButton}
           disabled={isSaving}
@@ -429,6 +400,37 @@ export function GuidedInterviewFlow({
         >
           Continuar depois
         </button>
+        <div className={styles.navigationActions}>
+          {draft.stage > 1 ? (
+            <button
+              className={styles.secondaryButton}
+              disabled={isSaving}
+              onClick={goBack}
+              type="button"
+            >
+              Voltar
+            </button>
+          ) : null}
+          {draft.stage < 4 ? (
+            <button
+              className={styles.primaryButton}
+              disabled={isSaving || !canAdvanceInterview(draft, draft.stage)}
+              onClick={advance}
+              type="button"
+            >
+              Continuar
+            </button>
+          ) : (
+            <button
+              className={styles.primaryButton}
+              disabled={isSaving || !canAdvanceInterview(draft, 4)}
+              onClick={saveEvidence}
+              type="button"
+            >
+              {isSaving ? "Salvando evidência..." : error ? "Tentar novamente" : "Salvar evidência"}
+            </button>
+          )}
+        </div>
       </div>
     </section>
   );

@@ -69,6 +69,36 @@ describe("GuidedInterviewFlow", () => {
     expect(screen.queryByText("Etapa 1 de 4")).not.toBeInTheDocument();
   });
 
+  it("keeps the defer action before the primary action in the guide and form", () => {
+    render(<GuidedInterviewFlow {...props()} />);
+
+    const deferFromGuide = screen.getByRole("button", {
+      name: "Continuar depois",
+    });
+    const startRegistration = screen.getByRole("button", {
+      name: "Começar registro",
+    });
+
+    expect(
+      deferFromGuide.compareDocumentPosition(startRegistration) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+
+    fireEvent.click(startRegistration);
+
+    const deferFromForm = screen.getByRole("button", {
+      name: "Continuar depois",
+    });
+    const continueRegistration = screen.getByRole("button", {
+      name: "Continuar",
+    });
+
+    expect(
+      deferFromForm.compareDocumentPosition(continueRegistration) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+  });
+
   it("starts later interviews at registration and keeps the guide optional", () => {
     render(<GuidedInterviewFlow {...props({ evidenceCount: 1 })} />);
 
