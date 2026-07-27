@@ -82,6 +82,19 @@ npm.cmd run dev
 
 Para apontar o frontend para outro backend, use `apps/frontend/.env.local.example` como referência.
 
+## Conta de teste reiniciável
+
+No backend, configure as credenciais fora do Git e provisione o ambiente:
+
+```powershell
+$env:TEST_WORKSPACE_EMAIL="seu-email-de-teste"
+$env:TEST_WORKSPACE_PASSWORD="uma-senha-forte"
+.\.venv\Scripts\python.exe manage.py bootstrap_test_workspace
+```
+
+O comando é idempotente e não apaga progresso. Na hospedagem, configure as mesmas variáveis como
+segredos e execute o comando uma vez; os resets seguintes são feitos pelo painel.
+
 ## Testes e verificações
 
 Backend:

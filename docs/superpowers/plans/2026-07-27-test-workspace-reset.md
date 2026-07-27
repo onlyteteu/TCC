@@ -1,6 +1,6 @@
-# Ambiente de Testes Reiniciável — Plano de Implementação
+﻿# Ambiente de Testes Reiniciável — Plano de Implementação
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Criar uma conta administrativa restrita com uma única startup de teste que possa voltar à primeira missão pelo próprio painel, preservando a conta, o ID e os dados-base da startup.
 
@@ -28,7 +28,7 @@
 - Create: `apps/backend/startups/test_test_workspace.py`
 - Modify: `apps/backend/startups/views.py`
 
-- [ ] **Step 1: Escrever os testes vermelhos do campo e da capacidade**
+- [x] **Step 1: Escrever os testes vermelhos do campo e da capacidade**
 
 Criar `TestWorkspaceCapabilityTests` em `test_test_workspace.py` cobrindo:
 
@@ -54,7 +54,7 @@ def test_today_exposes_reset_capability_only_to_staff_owner_of_test_workspace(se
 
 Adicionar casos literais para `is_staff=False` e `is_test_workspace=False`, esperando `{"canReset": False}`.
 
-- [ ] **Step 2: Executar e observar RED**
+- [x] **Step 2: Executar e observar RED**
 
 ```powershell
 & 'C:\Users\mateu\OneDrive\Área de Trabalho\TCC\apps\backend\.venv\Scripts\python.exe' manage.py test startups.test_test_workspace.TestWorkspaceCapabilityTests --keepdb
@@ -62,7 +62,7 @@ Adicionar casos literais para `is_staff=False` e `is_test_workspace=False`, espe
 
 Falha esperada: `Startup` não aceita `is_test_workspace` e o payload não contém `testWorkspace`.
 
-- [ ] **Step 3: Implementar campo, migração e capacidade calculada**
+- [x] **Step 3: Implementar campo, migração e capacidade calculada**
 
 Adicionar em `Startup`:
 
@@ -80,13 +80,13 @@ Gerar a migração `0009`. Em `_today_payload`, acrescentar:
 
 O payload só é criado depois da busca por `owner=user`, portanto a propriedade já está garantida.
 
-- [ ] **Step 4: Executar GREEN**
+- [x] **Step 4: Executar GREEN**
 
 ```powershell
 & 'C:\Users\mateu\OneDrive\Área de Trabalho\TCC\apps\backend\.venv\Scripts\python.exe' manage.py test startups.test_test_workspace.TestWorkspaceCapabilityTests --keepdb
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```powershell
 git add apps/backend/startups/models.py apps/backend/startups/migrations/0009_startup_is_test_workspace.py apps/backend/startups/test_test_workspace.py apps/backend/startups/views.py
@@ -102,7 +102,7 @@ git commit -m "feat: identify resettable test workspaces"
 - Create: `apps/backend/startups/test_workspace.py`
 - Modify: `apps/backend/startups/test_test_workspace.py`
 
-- [ ] **Step 1: Escrever o teste vermelho do reset completo**
+- [x] **Step 1: Escrever o teste vermelho do reset completo**
 
 Criar `TestWorkspaceResetServiceTests`. A fixture deve:
 
@@ -139,11 +139,11 @@ self.assertEqual(
 
 Usar consultas reais para confirmar ausência de evidências, aprendizados e eventos e confirmar que as cinco missões do catálogo foram reconstruídas.
 
-- [ ] **Step 2: Escrever o teste vermelho de rollback**
+- [x] **Step 2: Escrever o teste vermelho de rollback**
 
 Usar `mock.patch("startups.test_workspace.sync_mission_catalog", side_effect=RuntimeError)` apenas para simular uma falha externa durante a reconstrução. Capturar a exceção fora da chamada e verificar que jornada, missões, evidências, aprendizados e eventos continuam existentes.
 
-- [ ] **Step 3: Executar e observar RED**
+- [x] **Step 3: Executar e observar RED**
 
 ```powershell
 & 'C:\Users\mateu\OneDrive\Área de Trabalho\TCC\apps\backend\.venv\Scripts\python.exe' manage.py test startups.test_test_workspace.TestWorkspaceResetServiceTests --keepdb
@@ -151,7 +151,7 @@ Usar `mock.patch("startups.test_workspace.sync_mission_catalog", side_effect=Run
 
 Falha esperada: o módulo e a função ainda não existem.
 
-- [ ] **Step 4: Implementar o serviço mínimo**
+- [x] **Step 4: Implementar o serviço mínimo**
 
 Em `test_workspace.py`:
 
@@ -177,13 +177,13 @@ def reset_test_workspace(*, startup_id):
 
 Não modificar campos-base nem `last_opened_at`.
 
-- [ ] **Step 5: Executar GREEN**
+- [x] **Step 5: Executar GREEN**
 
 ```powershell
 & 'C:\Users\mateu\OneDrive\Área de Trabalho\TCC\apps\backend\.venv\Scripts\python.exe' manage.py test startups.test_test_workspace.TestWorkspaceResetServiceTests --keepdb
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```powershell
 git add apps/backend/startups/test_workspace.py apps/backend/startups/test_test_workspace.py
@@ -200,7 +200,7 @@ git commit -m "feat: reset test workspace transactionally"
 - Modify: `apps/backend/startups/views.py`
 - Modify: `apps/backend/startups/urls.py`
 
-- [ ] **Step 1: Escrever os testes vermelhos da API**
+- [x] **Step 1: Escrever os testes vermelhos da API**
 
 Criar `TestWorkspaceResetApiTests` cobrindo:
 
@@ -219,7 +219,7 @@ Corpo literal:
 {"confirmation": "RESET_TEST_WORKSPACE"}
 ```
 
-- [ ] **Step 2: Executar e observar RED**
+- [x] **Step 2: Executar e observar RED**
 
 ```powershell
 & 'C:\Users\mateu\OneDrive\Área de Trabalho\TCC\apps\backend\.venv\Scripts\python.exe' manage.py test startups.test_test_workspace.TestWorkspaceResetApiTests --keepdb
@@ -227,7 +227,7 @@ Corpo literal:
 
 Falha esperada: `POST /api/startups/<id>/test-reset/` retorna `404`.
 
-- [ ] **Step 3: Implementar view e URL**
+- [x] **Step 3: Implementar view e URL**
 
 Adicionar `test_reset` com `@csrf_exempt` e `@require_POST`:
 
@@ -245,13 +245,13 @@ Registrar:
 path("startups/<int:startup_id>/test-reset/", test_reset),
 ```
 
-- [ ] **Step 4: Executar GREEN e regressão backend focal**
+- [x] **Step 4: Executar GREEN e regressão backend focal**
 
 ```powershell
 & 'C:\Users\mateu\OneDrive\Área de Trabalho\TCC\apps\backend\.venv\Scripts\python.exe' manage.py test startups.test_test_workspace startups.tests.StartupApiTests --keepdb
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```powershell
 git add apps/backend/startups/views.py apps/backend/startups/urls.py apps/backend/startups/test_test_workspace.py
@@ -269,7 +269,7 @@ git commit -m "feat: expose protected test workspace reset"
 - Create: `apps/backend/startups/management/commands/bootstrap_test_workspace.py`
 - Modify: `apps/backend/startups/test_test_workspace.py`
 
-- [ ] **Step 1: Escrever testes vermelhos do comando**
+- [x] **Step 1: Escrever testes vermelhos do comando**
 
 Criar `BootstrapTestWorkspaceCommandTests` usando `call_command` e `override_env`/`mock.patch.dict`:
 
@@ -279,7 +279,7 @@ Criar `BootstrapTestWorkspaceCommandTests` usando `call_command` e `override_env
 - segunda execução atualiza a senha mas preserva o mesmo usuário, a mesma startup e um evento de progresso inserido entre as chamadas;
 - a saída contém o e-mail, mas não contém a senha.
 
-- [ ] **Step 2: Executar e observar RED**
+- [x] **Step 2: Executar e observar RED**
 
 ```powershell
 & 'C:\Users\mateu\OneDrive\Área de Trabalho\TCC\apps\backend\.venv\Scripts\python.exe' manage.py test startups.test_test_workspace.BootstrapTestWorkspaceCommandTests --keepdb
@@ -287,7 +287,7 @@ Criar `BootstrapTestWorkspaceCommandTests` usando `call_command` e `override_env
 
 Falha esperada: comando `bootstrap_test_workspace` desconhecido.
 
-- [ ] **Step 3: Implementar comando idempotente**
+- [x] **Step 3: Implementar comando idempotente**
 
 Aceitar `--email` e `--password`, com fallback para:
 
@@ -311,13 +311,13 @@ Normalizar e-mail para minúsculas; recusar valores vazios. Criar/atualizar o us
 
 Somente ao criar a startup, executar `ensure_journey` e `sync_mission_catalog`. Em execuções posteriores, nunca resetar progresso.
 
-- [ ] **Step 4: Executar GREEN**
+- [x] **Step 4: Executar GREEN**
 
 ```powershell
 & 'C:\Users\mateu\OneDrive\Área de Trabalho\TCC\apps\backend\.venv\Scripts\python.exe' manage.py test startups.test_test_workspace.BootstrapTestWorkspaceCommandTests --keepdb
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```powershell
 git add apps/backend/startups/management apps/backend/startups/test_test_workspace.py
@@ -335,7 +335,7 @@ git commit -m "feat: provision dedicated test workspace"
 - Create: `apps/frontend/src/lib/test-workspace-storage.test.ts`
 - Modify: `apps/frontend/src/lib/startup-types.ts`
 
-- [ ] **Step 1: Escrever teste vermelho da limpeza local**
+- [x] **Step 1: Escrever teste vermelho da limpeza local**
 
 Em `test-workspace-storage.test.ts`, sem mockar `localStorage`, criar:
 
@@ -346,7 +346,7 @@ Em `test-workspace-storage.test.ts`, sem mockar `localStorage`, criar:
 
 Após `clearTestWorkspaceDrafts(7)`, esperar que somente as três chaves da startup `7` tenham sido removidas.
 
-- [ ] **Step 2: Executar e observar RED**
+- [x] **Step 2: Executar e observar RED**
 
 ```powershell
 npm test -- --run src/lib/test-workspace-storage.test.ts
@@ -354,7 +354,7 @@ npm test -- --run src/lib/test-workspace-storage.test.ts
 
 Falha esperada: módulo inexistente.
 
-- [ ] **Step 3: Implementar helper, tipo e proxy**
+- [x] **Step 3: Implementar helper, tipo e proxy**
 
 O helper percorre `window.localStorage` e remove:
 
@@ -383,13 +383,13 @@ return proxyAuthenticatedBackend(`/startups/${startupId}/test-reset/`, {
 });
 ```
 
-- [ ] **Step 4: Executar GREEN**
+- [x] **Step 4: Executar GREEN**
 
 ```powershell
 npm test -- --run src/lib/test-workspace-storage.test.ts
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```powershell
 git add apps/frontend/src/app/api/startups/[startupId]/test-reset/route.ts apps/frontend/src/lib/test-workspace-storage.ts apps/frontend/src/lib/test-workspace-storage.test.ts apps/frontend/src/lib/startup-types.ts
@@ -409,7 +409,7 @@ git commit -m "feat: add test workspace reset client contract"
 - Modify: `apps/frontend/src/components/home/startup-home-screen.test.tsx`
 - Modify: `apps/frontend/src/components/home/startup-home-screen.module.css`
 
-- [ ] **Step 1: Escrever testes vermelhos do componente**
+- [x] **Step 1: Escrever testes vermelhos do componente**
 
 Testar o componente real:
 
@@ -420,7 +420,7 @@ Testar o componente real:
 - confirmação chama `onReset` uma única vez, mantém botão desabilitado enquanto a Promise está pendente e mostra `Reiniciando...`;
 - rejeição mantém o modal aberto e mostra erro com possibilidade de tentar novamente.
 
-- [ ] **Step 2: Executar e observar RED**
+- [x] **Step 2: Executar e observar RED**
 
 ```powershell
 npm test -- --run src/components/home/test-workspace-banner.test.tsx
@@ -428,7 +428,7 @@ npm test -- --run src/components/home/test-workspace-banner.test.tsx
 
 Falha esperada: componente inexistente.
 
-- [ ] **Step 3: Implementar componente mínimo e acessível**
+- [x] **Step 3: Implementar componente mínimo e acessível**
 
 Props:
 
@@ -441,13 +441,13 @@ type TestWorkspaceBannerProps = {
 
 Usar `role="dialog"`, `aria-modal`, título associado, foco inicial no botão de cancelar, armadilha de `Tab`, retorno de foco e `aria-live` para erros. Guardar uma ref booleana além do estado para impedir duas chamadas no mesmo frame.
 
-- [ ] **Step 4: Executar GREEN do componente**
+- [x] **Step 4: Executar GREEN do componente**
 
 ```powershell
 npm test -- --run src/components/home/test-workspace-banner.test.tsx
 ```
 
-- [ ] **Step 5: Escrever testes vermelhos de integração na Home**
+- [x] **Step 5: Escrever testes vermelhos de integração na Home**
 
 Adicionar `testWorkspace: { canReset: false }` à fixture base. Testar:
 
@@ -458,7 +458,7 @@ Adicionar `testWorkspace: { canReset: false }` à fixture base. Testar:
 - erro HTTP mantém o modal e apresenta a mensagem do backend;
 - sucesso aplica o novo `TodayPayload`, limpa só os rascunhos da startup `7`, chama `onWorkspaceChanged` e anuncia a mensagem retornada.
 
-- [ ] **Step 6: Executar e observar RED da integração**
+- [x] **Step 6: Executar e observar RED da integração**
 
 ```powershell
 npm test -- --run src/components/home/startup-home-screen.test.tsx
@@ -466,7 +466,7 @@ npm test -- --run src/components/home/startup-home-screen.test.tsx
 
 Falha esperada: a Home ainda não renderiza a faixa nem envia o reset.
 
-- [ ] **Step 7: Integrar na Home**
+- [x] **Step 7: Integrar na Home**
 
 Criar `resetTestWorkspace()` na Home:
 
@@ -480,13 +480,13 @@ Criar `resetTestWorkspace()` na Home:
 
 Renderizar `TestWorkspaceBanner` logo após o cabeçalho apenas quando `payload.testWorkspace.canReset`.
 
-- [ ] **Step 8: Executar GREEN e regressão da Home**
+- [x] **Step 8: Executar GREEN e regressão da Home**
 
 ```powershell
 npm test -- --run src/components/home/test-workspace-banner.test.tsx src/components/home/startup-home-screen.test.tsx src/lib/test-workspace-storage.test.ts
 ```
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```powershell
 git add apps/frontend/src/components/home/test-workspace-banner.tsx apps/frontend/src/components/home/test-workspace-banner.module.css apps/frontend/src/components/home/test-workspace-banner.test.tsx apps/frontend/src/components/home/startup-home-screen.tsx apps/frontend/src/components/home/startup-home-screen.test.tsx apps/frontend/src/components/home/startup-home-screen.module.css
@@ -502,7 +502,7 @@ git commit -m "feat: add reset controls to test workspace"
 - Modify: `README.md`
 - Modify: `docs/superpowers/plans/2026-07-27-test-workspace-reset.md`
 
-- [ ] **Step 1: Acrescentar instrução operacional curta**
+- [x] **Step 1: Acrescentar instrução operacional curta**
 
 No README, documentar somente:
 
@@ -514,13 +514,13 @@ $env:TEST_WORKSPACE_PASSWORD="uma-senha-forte"
 
 Explicar em duas frases que o comando é idempotente, não reseta progresso e deve ser executado no ambiente publicado após configurar os segredos da hospedagem.
 
-- [ ] **Step 2: Rodar toda a suíte backend**
+- [x] **Step 2: Rodar toda a suíte backend**
 
 ```powershell
 & 'C:\Users\mateu\OneDrive\Área de Trabalho\TCC\apps\backend\.venv\Scripts\python.exe' manage.py test accounts startups --keepdb
 ```
 
-- [ ] **Step 3: Rodar toda a suíte frontend**
+- [x] **Step 3: Rodar toda a suíte frontend**
 
 ```powershell
 npm test -- --run
@@ -528,7 +528,7 @@ npm run lint
 npm run build
 ```
 
-- [ ] **Step 4: Verificar migrações e diff**
+- [x] **Step 4: Verificar migrações e diff**
 
 ```powershell
 & 'C:\Users\mateu\OneDrive\Área de Trabalho\TCC\apps\backend\.venv\Scripts\python.exe' manage.py makemigrations --check --dry-run
@@ -536,7 +536,7 @@ git diff --check
 git status --short
 ```
 
-- [ ] **Step 5: Validar fluxo local real**
+- [x] **Step 5: Validar fluxo local real**
 
 Com backend em `8000` e frontend em `3001`:
 
@@ -548,11 +548,11 @@ Com backend em `8000` e frontend em `3001`:
 6. atualizar a página e confirmar que o baseline persistiu;
 7. entrar em uma startup comum e confirmar que a faixa não aparece.
 
-- [ ] **Step 6: Revisar o checklist da especificação**
+- [x] **Step 6: Revisar o checklist da especificação**
 
 Conferir cada item de `docs/superpowers/specs/2026-07-21-test-workspace-reset-design.md`, registrar qualquer divergência no plano e corrigi-la antes de concluir.
 
-- [ ] **Step 7: Commit final**
+- [x] **Step 7: Commit final**
 
 ```powershell
 git add README.md docs/superpowers/plans/2026-07-27-test-workspace-reset.md
