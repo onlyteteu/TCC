@@ -1,6 +1,9 @@
+import os
+from io import StringIO
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
+from django.core.management import CommandError, call_command
 from django.test import TestCase
 
 from accounts.tokens import issue_auth_token
@@ -350,4 +353,89 @@ class TestWorkspaceResetApiTests(TestCase):
         self.assertEqual(
             self.startup.missions.filter(key="customer_interviews_5").count(),
             1,
+        )
+
+
+class BootstrapTestWorkspaceCommandTests(TestCase):
+    email = "workspace-test@example.com"
+
+    def run_command(self, password):
+        stdout = StringIO()
+        with patch.dict(
+            os.environ,
+            {
+                "TEST_WORKSPACE_EMAIL": self.email,
+                "TEST_WORKSPACE_PASSWORD": password,
+            },
+        ):
+            call_command("bootstrap_test_workspace", stdout=stdout)
+        return stdout.getvalue()
+
+    def test_command_requires_email_and_password(self):
+        with patch.dict(
+            os.environ,
+            {
+                "TEST_WORKSPACE_EMAIL": "",
+                "TEST_WORKSPACE_PASSWORD": "",
+            },
+        ):
+            with self.assertRaisesRegex(
+                CommandError,
+                "TEST_WORKSPACE_EMAIL e TEST_WORKSPACE_PASSWORD",
+            ):
+                call_command("bootstrap_test_workspace")
+
+    def test_command_creates_staff_account_and_initialized_test_startup(self):
+        password = "first-test-password"
+
+        output = self.run_command(password)
+
+        user = User.objects.get(username=self.email)
+        self.assertEqual(user.email, self.email)
+        self.assertTrue(user.is_staff)
+        self.assertFalse(user.is_superuser)
+        self.assertTrue(user.check_password(password))
+
+        startup = Startup.objects.get(owner=user, is_test_workspace=True)
+        self.assertEqual(startup.name, "Startup de Teste")
+        self.assertEqual(startup.journey_steps.count(), 8)
+        self.assertEqual(startup.missions.count(), 5)
+        self.assertEqual(
+            startup.missions.get(key="customer_interviews_5").status,
+            Mission.Status.AVAILABLE,
+        )
+        self.assertIn(self.email, output)
+        self.assertNotIn(password, output)
+
+    def test_repeated_command_updates_password_without_resetting_progress(self):
+        self.run_command("first-test-password")
+        user = User.objects.get(username=self.email)
+        startup = Startup.objects.get(owner=user, is_test_workspace=True)
+        user_id = user.pk
+        startup_id = startup.pk
+        ActivityEvent.objects.create(
+            startup=startup,
+            kind=ActivityEvent.Kind.INTERVIEW_RECORDED,
+            description="Progresso preservado.",
+            xp_awarded=10,
+            dedupe_key="preserved-progress",
+        )
+
+        self.run_command("second-test-password")
+
+        user.refresh_from_db()
+        startup.refresh_from_db()
+        self.assertEqual(user.pk, user_id)
+        self.assertEqual(startup.pk, startup_id)
+        self.assertTrue(user.check_password("second-test-password"))
+        self.assertEqual(User.objects.filter(username=self.email).count(), 1)
+        self.assertEqual(
+            Startup.objects.filter(owner=user, is_test_workspace=True).count(),
+            1,
+        )
+        self.assertTrue(
+            ActivityEvent.objects.filter(
+                startup=startup,
+                dedupe_key="preserved-progress",
+            ).exists()
         )
