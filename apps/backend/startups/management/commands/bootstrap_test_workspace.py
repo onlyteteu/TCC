@@ -1,8 +1,11 @@
 import os
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from django.db.models import Q
 
 from startups.mission_engine import sync_mission_catalog
 from startups.models import Startup, ensure_journey
@@ -36,24 +39,45 @@ class Command(BaseCommand):
                 "ou use --email e --password."
             )
 
-        user, _ = User.objects.get_or_create(
-            username=email,
-            defaults={"email": email},
-        )
+        matching_users = User.objects.filter(
+            Q(username__iexact=email) | Q(email__iexact=email)
+        ).distinct()
+        if matching_users.count() > 1:
+            raise CommandError(
+                "Mais de uma conta usa esse e-mail. Escolha um e-mail exclusivo."
+            )
+
+        user = matching_users.first()
+        if user is not None and not Startup.objects.filter(
+            owner=user,
+            is_test_workspace=True,
+        ).exists():
+            raise CommandError(
+                "A conta ja existe e nao pertence a um ambiente de teste. "
+                "Escolha outro e-mail."
+            )
+
+        if user is None:
+            user = User(
+                username=email,
+                email=email,
+                first_name="Teste",
+            )
+
+        try:
+            validate_password(password, user)
+        except ValidationError as error:
+            raise CommandError(
+                "A senha do ambiente de teste nao atende aos requisitos: "
+                + " ".join(error.messages)
+            ) from error
+
         user.email = email
         user.first_name = "Teste"
         user.is_staff = True
         user.is_superuser = False
         user.set_password(password)
-        user.save(
-            update_fields=[
-                "email",
-                "first_name",
-                "is_staff",
-                "is_superuser",
-                "password",
-            ]
-        )
+        user.save()
 
         startup = Startup.objects.filter(
             owner=user,

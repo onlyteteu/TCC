@@ -385,6 +385,32 @@ class BootstrapTestWorkspaceCommandTests(TestCase):
             ):
                 call_command("bootstrap_test_workspace")
 
+    def test_command_refuses_to_promote_an_existing_regular_account(self):
+        user = User.objects.create_user(
+            username=self.email,
+            email=self.email,
+            password="original-password",
+        )
+
+        with self.assertRaisesRegex(
+            CommandError,
+            "ja existe e nao pertence a um ambiente de teste",
+        ):
+            self.run_command("replacement-password")
+
+        user.refresh_from_db()
+        self.assertFalse(user.is_staff)
+        self.assertTrue(user.check_password("original-password"))
+        self.assertFalse(
+            Startup.objects.filter(owner=user, is_test_workspace=True).exists()
+        )
+
+    def test_command_rejects_a_weak_password_before_creating_the_account(self):
+        with self.assertRaises(CommandError):
+            self.run_command("123")
+
+        self.assertFalse(User.objects.filter(username=self.email).exists())
+
     def test_command_creates_staff_account_and_initialized_test_startup(self):
         password = "first-test-password"
 

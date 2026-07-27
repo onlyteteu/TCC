@@ -1,10 +1,14 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { clearTestWorkspaceDrafts } from "./test-workspace-storage";
 
 describe("clearTestWorkspaceDrafts", () => {
   beforeEach(() => {
     window.localStorage.clear();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it("removes only interview and problem drafts owned by the reset startup", () => {
@@ -32,5 +36,13 @@ describe("clearTestWorkspaceDrafts", () => {
     Object.entries(preservedEntries).forEach(([key, value]) =>
       expect(window.localStorage.getItem(key)).toBe(value)
     );
+  });
+
+  it("does not fail the server reset when browser storage is unavailable", () => {
+    vi.spyOn(Storage.prototype, "length", "get").mockImplementation(() => {
+      throw new DOMException("Storage blocked", "SecurityError");
+    });
+
+    expect(() => clearTestWorkspaceDrafts(7)).not.toThrow();
   });
 });

@@ -47,6 +47,48 @@ describe("TestWorkspaceBanner", () => {
     expect(trigger).toHaveFocus();
   });
 
+  it("focuses cancel first and closes from cancel or the backdrop", async () => {
+    render(<TestWorkspaceBanner onReset={vi.fn()} />);
+    const trigger = screen.getByRole("button", { name: "Reiniciar ambiente" });
+
+    fireEvent.click(trigger);
+    const cancel = screen.getByRole("button", { name: "Manter progresso" });
+    expect(cancel).toHaveFocus();
+    fireEvent.click(cancel);
+    await waitFor(() =>
+      expect(
+        screen.queryByRole("dialog", { name: "Reiniciar ambiente de teste" })
+      ).not.toBeInTheDocument()
+    );
+    expect(trigger).toHaveFocus();
+
+    fireEvent.click(trigger);
+    const dialog = screen.getByRole("dialog", {
+      name: "Reiniciar ambiente de teste",
+    });
+    fireEvent.mouseDown(dialog.parentElement!);
+    await waitFor(() => expect(dialog).not.toBeInTheDocument());
+    expect(trigger).toHaveFocus();
+  });
+
+  it("keeps Tab and Shift+Tab inside the confirmation dialog", () => {
+    render(<TestWorkspaceBanner onReset={vi.fn()} />);
+    fireEvent.click(screen.getByRole("button", { name: "Reiniciar ambiente" }));
+    const dialog = screen.getByRole("dialog", {
+      name: "Reiniciar ambiente de teste",
+    });
+    const cancel = screen.getByRole("button", { name: "Manter progresso" });
+    const confirm = screen.getByRole("button", {
+      name: "Reiniciar na primeira missão",
+    });
+
+    expect(cancel).toHaveFocus();
+    fireEvent.keyDown(dialog, { key: "Tab", shiftKey: true });
+    expect(confirm).toHaveFocus();
+    fireEvent.keyDown(dialog, { key: "Tab" });
+    expect(cancel).toHaveFocus();
+  });
+
   it("runs only one reset while the confirmation is pending", async () => {
     const pending = deferredPromise();
     const onReset = vi.fn(() => pending.promise);
