@@ -271,6 +271,9 @@ export interface TodayPayload {
   };
   mission: MissionDetailSummary | null;
   missionState: "active" | "arc_complete" | "unavailable";
+  testWorkspace: {
+    canReset: boolean;
+  };
   gamification: AccountProgress;
   recentActivities: ActivitySummary[];
   nextUnlock: {
