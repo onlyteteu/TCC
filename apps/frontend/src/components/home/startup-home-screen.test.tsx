@@ -75,6 +75,9 @@ const payload: TodayPayload = {
     ],
   },
   missionState: "active",
+  testWorkspace: {
+    canReset: false,
+  },
   gamification: {
     xp: 360,
     level: 3,
@@ -553,5 +556,167 @@ describe("StartupHomeScreen", () => {
       expect(await screen.findByText(testCase.error)).toBeInTheDocument();
       view.unmount();
     }
+  });
+
+  it("shows reset controls only when the backend grants the capability", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockImplementation(() => jsonResponse(payload)));
+    const regularView = render(<StartupHomeScreen startupId={7} />);
+
+    await screen.findByRole("heading", { name: "Bom dia, Ana" });
+    expect(screen.queryByLabelText("Modo de teste")).not.toBeInTheDocument();
+    regularView.unmount();
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation(() =>
+        jsonResponse({
+          ...payload,
+          testWorkspace: { canReset: true },
+        })
+      )
+    );
+    render(<StartupHomeScreen startupId={7} />);
+
+    expect(await screen.findByLabelText("Modo de teste")).toBeInTheDocument();
+  });
+
+  it("resets the workspace, clears only its drafts and reconciles the shell", async () => {
+    const onWorkspaceChanged = vi.fn().mockResolvedValue(true);
+    const resetPayload: TodayPayload = {
+      ...payload,
+      message: "Ambiente de teste reiniciado na primeira missão.",
+      mission: {
+        ...payload.mission!,
+        evidenceCount: 0,
+        evidences: [],
+        progress: 0,
+        status: "available",
+      },
+      recentActivities: [],
+      testWorkspace: { canReset: true },
+    };
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(() =>
+        jsonResponse({
+          ...payload,
+          testWorkspace: { canReset: true },
+        })
+      )
+      .mockImplementationOnce(() => jsonResponse(resetPayload));
+    vi.stubGlobal("fetch", fetchMock);
+    window.localStorage.setItem(
+      "startup-quest:interview-draft:7:customer_interviews_5:1",
+      "remove"
+    );
+    window.localStorage.setItem(
+      "startup-quest:problem-refinement:7",
+      "remove"
+    );
+    window.localStorage.setItem(
+      "startup-quest:interview-draft:8:customer_interviews_5:1",
+      "preserve"
+    );
+
+    render(
+      <StartupHomeScreen
+        onWorkspaceChanged={onWorkspaceChanged}
+        startupId={7}
+      />
+    );
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Reiniciar ambiente" })
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Reiniciar na primeira missão" })
+    );
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    expect(fetchMock.mock.calls[1]).toEqual([
+      "/api/startups/7/test-reset",
+      {
+        body: JSON.stringify({ confirmation: "RESET_TEST_WORKSPACE" }),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      },
+    ]);
+    expect(
+      await screen.findByText("Ambiente de teste reiniciado na primeira missão.")
+    ).toBeInTheDocument();
+    expect(
+      window.localStorage.getItem(
+        "startup-quest:interview-draft:7:customer_interviews_5:1"
+      )
+    ).toBeNull();
+    expect(
+      window.localStorage.getItem("startup-quest:problem-refinement:7")
+    ).toBeNull();
+    expect(
+      window.localStorage.getItem(
+        "startup-quest:interview-draft:8:customer_interviews_5:1"
+      )
+    ).toBe("preserve");
+    expect(onWorkspaceChanged).toHaveBeenCalledTimes(1);
+    expect(
+      screen.queryByRole("dialog", { name: "Reiniciar ambiente de teste" })
+    ).not.toBeInTheDocument();
+  });
+
+  it("keeps the reset dialog open when the backend rejects the request", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(() =>
+        jsonResponse({
+          ...payload,
+          testWorkspace: { canReset: true },
+        })
+      )
+      .mockImplementationOnce(() =>
+        jsonResponse(
+          { message: "Esse ambiente não pode ser reiniciado." },
+          403
+        )
+      );
+    vi.stubGlobal("fetch", fetchMock);
+    render(<StartupHomeScreen startupId={7} />);
+
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Reiniciar ambiente" })
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Reiniciar na primeira missão" })
+    );
+
+    expect(
+      await screen.findByRole("alert")
+    ).toHaveTextContent("Esse ambiente não pode ser reiniciado.");
+    expect(
+      screen.getByRole("dialog", { name: "Reiniciar ambiente de teste" })
+    ).toBeInTheDocument();
+  });
+
+  it("redirects to login when the reset session has expired", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(() =>
+        jsonResponse({
+          ...payload,
+          testWorkspace: { canReset: true },
+        })
+      )
+      .mockImplementationOnce(() =>
+        jsonResponse({ message: "Sessão expirada." }, 401)
+      );
+    vi.stubGlobal("fetch", fetchMock);
+    render(<StartupHomeScreen startupId={7} />);
+
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Reiniciar ambiente" })
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Reiniciar na primeira missão" })
+    );
+
+    await waitFor(() => expect(navigation.replace).toHaveBeenCalledWith("/"));
   });
 });

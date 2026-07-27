@@ -1,0 +1,241 @@
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 12px 14px;
+  border: 1px solid #2b4f72;
+  border-radius: 12px;
+  background: #0a1522;
+  color: #d8e8f7;
+}
+
+.modeLabel {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #17314a;
+  color: #a9d5fa;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.bannerCopy {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  gap: 2px;
+}
+
+.bannerCopy strong {
+  color: #f7efe3;
+  font-size: 0.9rem;
+}
+
+.bannerCopy span {
+  color: #a9b9c9;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.resetButton,
+.cancelButton,
+.dangerButton {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 750;
+}
+
+.resetButton {
+  flex: 0 0 auto;
+  padding: 0 14px;
+  border: 1px solid #4a7397;
+  background: #10243a;
+  color: #d8e8f7;
+}
+
+.resetButton:hover {
+  border-color: #6b9bc4;
+  background: #17314a;
+}
+
+.resetButton:focus-visible,
+.cancelButton:focus-visible,
+.dangerButton:focus-visible {
+  outline: 2px solid #f2a51a;
+  outline-offset: 3px;
+}
+
+.backdrop {
+  position: fixed;
+  z-index: 60;
+  display: grid;
+  padding: 24px;
+  background: rgb(2 5 9 / 82%);
+  inset: 0;
+  overflow-y: auto;
+  place-items: center;
+}
+
+.dialog {
+  width: min(580px, 100%);
+  max-height: calc(100vh - 48px);
+  padding: 26px;
+  overflow-y: auto;
+  border: 1px solid #3f5166;
+  border-radius: 14px;
+  background: #0b111c;
+  color: #cbd4df;
+}
+
+.dialogHeader {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 14px;
+}
+
+.warningMark {
+  display: inline-grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 50%;
+  background: #3a1718;
+  color: #ffb0b0;
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+.dialogHeader h2 {
+  margin: 0;
+  color: #f7efe3;
+  font-size: 1.3rem;
+  text-wrap: balance;
+}
+
+.dialogHeader p {
+  max-width: 68ch;
+  margin: 7px 0 0;
+  color: #aeb9c6;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.resetScope {
+  margin-top: 22px;
+  padding: 16px;
+  border-radius: 10px;
+  background: #111927;
+}
+
+.resetScope strong {
+  color: #f7efe3;
+  font-size: 0.9rem;
+}
+
+.resetScope ul {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding-left: 20px;
+  color: #cbd4df;
+}
+
+.resetScope li::marker {
+  color: #ff8383;
+}
+
+.preserved {
+  margin: 16px 0 0;
+  color: #9fb0c1;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.error {
+  margin: 16px 0 0;
+  padding: 11px 12px;
+  border-radius: 9px;
+  background: #351617;
+  color: #ffb0b0;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.cancelButton,
+.dangerButton {
+  min-height: 44px;
+  padding: 0 16px;
+}
+
+.cancelButton {
+  border: 1px solid #526e8d;
+  background: transparent;
+  color: #cbd4df;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: #152033;
+  color: #f7efe3;
+}
+
+.dangerButton {
+  border: 1px solid #d25e61;
+  background: #b33e42;
+  color: #fff4f4;
+}
+
+.dangerButton:hover:not(:disabled) {
+  border-color: #ee7477;
+  background: #c94b4f;
+}
+
+.cancelButton:disabled,
+.dangerButton:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+@media (max-width: 680px) {
+  .banner {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .bannerCopy {
+    flex-basis: calc(100% - 72px);
+  }
+
+  .resetButton {
+    width: 100%;
+  }
+
+  .backdrop {
+    padding: 12px;
+  }
+
+  .dialog {
+    max-height: calc(100vh - 24px);
+    padding: 20px;
+  }
+
+  .actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+}

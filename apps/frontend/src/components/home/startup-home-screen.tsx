@@ -16,12 +16,14 @@ import { ProductIcon } from "@/components/product-icon";
 import type { AuthErrorPayload } from "@/lib/auth-types";
 import { missionExecutionHref } from "@/lib/startup-navigation";
 import type { ActivitySummary, TodayPayload } from "@/lib/startup-types";
+import { clearTestWorkspaceDrafts } from "@/lib/test-workspace-storage";
 
 import { FounderProgressRail } from "./founder-progress-rail";
 import { GuidedInterviewFlow } from "./guided-interview-flow";
 import type { InterviewEvidencePayload } from "./guided-interview-model";
 import { MissionFocusPanel } from "./mission-focus-panel";
 import styles from "./startup-home-screen.module.css";
+import { TestWorkspaceBanner } from "./test-workspace-banner";
 
 type StartupHomeScreenProps = {
   onWorkspaceChanged?: () => Promise<boolean>;
@@ -145,6 +147,7 @@ export function StartupHomeScreen({
   const [formError, setFormError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
+  const [isTestResetOpen, setIsTestResetOpen] = useState(false);
   const completionRequestRef = useRef(false);
   const dialogRef = useRef<HTMLElement>(null);
   const dialogTriggerRef = useRef<HTMLElement | null>(null);
@@ -228,6 +231,43 @@ export function StartupHomeScreen({
   function applySuccess(nextPayload: TodayPayload) {
     setPayload(nextPayload);
     closeWorkDialog();
+    void onWorkspaceChanged?.();
+  }
+
+  const handleTestWorkspaceModalChange = useCallback(
+    (open: boolean) => {
+      setIsTestResetOpen(open);
+      onWorkspaceModalChange?.(open);
+    },
+    [onWorkspaceModalChange]
+  );
+
+  async function resetTestWorkspace() {
+    let response: Response;
+    try {
+      response = await fetch(`/api/startups/${startupId}/test-reset`, {
+        body: JSON.stringify({ confirmation: "RESET_TEST_WORKSPACE" }),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      });
+    } catch {
+      throw new Error(
+        "Não foi possível reiniciar o ambiente. Verifique sua conexão e tente novamente."
+      );
+    }
+
+    const nextPayload = (await response.json()) as TodayPayload | AuthErrorPayload;
+    if (response.status === 401) {
+      router.replace("/");
+      throw new Error("Sua sessão expirou. Entre novamente para continuar.");
+    }
+    if (!response.ok) {
+      throw new Error(firstFieldError(nextPayload as AuthErrorPayload));
+    }
+
+    const todayPayload = nextPayload as TodayPayload;
+    clearTestWorkspaceDrafts(startupId);
+    setPayload(todayPayload);
     void onWorkspaceChanged?.();
   }
 
@@ -575,14 +615,21 @@ export function StartupHomeScreen({
   return (
     <>
       <div
-        aria-hidden={workMode !== "overview" ? "true" : undefined}
+        aria-hidden={workMode !== "overview" || isTestResetOpen ? "true" : undefined}
         className={styles.page}
-        inert={workMode !== "overview" ? true : undefined}
+        inert={workMode !== "overview" || isTestResetOpen ? true : undefined}
       >
       <header className={styles.pageHeader}>
         <h1>Bom dia, {payload.user.firstName}</h1>
         <p>Hoje, o foco é entender o problema antes de construir a solução.</p>
       </header>
+
+      {payload.testWorkspace.canReset ? (
+        <TestWorkspaceBanner
+          onModalChange={handleTestWorkspaceModalChange}
+          onReset={resetTestWorkspace}
+        />
+      ) : null}
 
       {payload.message ? (
         <div className={styles.successMessage} role="status">
