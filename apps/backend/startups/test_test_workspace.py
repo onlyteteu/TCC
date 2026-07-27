@@ -199,3 +199,155 @@ class TestWorkspaceResetServiceTests(TestCase):
         self.assertTrue(
             MissionEvidence.objects.filter(pk=self.evidence.pk).exists()
         )
+
+
+class TestWorkspaceResetApiTests(TestCase):
+    def setUp(self):
+        self.owner = User.objects.create_user(
+            username="staff-owner@example.com",
+            email="staff-owner@example.com",
+            password="test-password",
+            is_staff=True,
+        )
+        self.token = issue_auth_token(self.owner)
+        self.startup = Startup.objects.create(
+            owner=self.owner,
+            name="Startup de Teste",
+            problem="Problema preservado.",
+            audience="Público preservado.",
+            is_test_workspace=True,
+        )
+        ensure_journey(self.startup)
+        sync_mission_catalog(self.startup)
+        mission = self.startup.missions.get(key="customer_interviews_5")
+        mission.status = Mission.Status.IN_PROGRESS
+        mission.save(update_fields=["status", "updated_at"])
+        MissionEvidence.objects.create(
+            mission=mission,
+            evidence_type=MissionEvidence.Type.INTERVIEW,
+            interviewee_name="Cliente 01",
+            notes="Evidência a remover.",
+        )
+        Learning.objects.create(
+            startup=self.startup,
+            mission=mission,
+            content="Aprendizado a remover.",
+            impact="Impacto.",
+            next_action="Ação.",
+        )
+        ActivityEvent.objects.create(
+            startup=self.startup,
+            kind=ActivityEvent.Kind.INTERVIEW_RECORDED,
+            description="Entrevista registrada.",
+            xp_awarded=10,
+            dedupe_key="api-test-event",
+        )
+
+    def post_reset(self, *, startup=None, token=None, confirmation="RESET_TEST_WORKSPACE"):
+        target = startup or self.startup
+        credentials = token if token is not None else self.token
+        return self.client.post(
+            f"/api/startups/{target.pk}/test-reset/",
+            data={"confirmation": confirmation},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {credentials}",
+        )
+
+    def test_reset_requires_authentication(self):
+        response = self.client.post(
+            f"/api/startups/{self.startup.pk}/test-reset/",
+            data={"confirmation": "RESET_TEST_WORKSPACE"},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_reset_hides_another_owners_startup(self):
+        other = User.objects.create_user(
+            username="other@example.com",
+            email="other@example.com",
+            password="test-password",
+            is_staff=True,
+        )
+
+        response = self.post_reset(token=issue_auth_token(other))
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_reset_rejects_regular_owner(self):
+        regular = User.objects.create_user(
+            username="regular@example.com",
+            email="regular@example.com",
+            password="test-password",
+        )
+        startup = Startup.objects.create(
+            owner=regular,
+            name="Teste sem permissão",
+            is_test_workspace=True,
+        )
+
+        response = self.post_reset(
+            startup=startup,
+            token=issue_auth_token(regular),
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_reset_rejects_regular_startup_even_for_staff_owner(self):
+        startup = Startup.objects.create(owner=self.owner, name="Startup comum")
+
+        response = self.post_reset(startup=startup)
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_reset_requires_exact_confirmation(self):
+        response = self.post_reset(confirmation="reset")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()["message"],
+            "Confirme explicitamente o reinício do ambiente de teste.",
+        )
+
+    def test_reset_rejects_invalid_json(self):
+        response = self.client.post(
+            f"/api/startups/{self.startup.pk}/test-reset/",
+            data="{",
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()["message"],
+            "Nao foi possivel interpretar a requisicao.",
+        )
+
+    def test_reset_returns_first_mission_payload_and_foundation_xp(self):
+        response = self.post_reset()
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(
+            payload["message"],
+            "Ambiente de teste reiniciado na primeira missão.",
+        )
+        self.assertEqual(payload["startup"]["id"], self.startup.pk)
+        self.assertEqual(payload["mission"]["key"], "customer_interviews_5")
+        self.assertEqual(payload["mission"]["status"], Mission.Status.AVAILABLE)
+        self.assertEqual(payload["mission"]["evidenceCount"], 0)
+        self.assertEqual(payload["gamification"]["xp"], 200)
+        self.assertEqual(payload["recentActivities"], [])
+        self.assertEqual(payload["testWorkspace"], {"canReset": True})
+
+    def test_reset_is_repeatable_without_catalog_duplicates(self):
+        first_response = self.post_reset()
+        second_response = self.post_reset()
+
+        self.assertEqual(first_response.status_code, 200)
+        self.assertEqual(second_response.status_code, 200)
+        self.assertEqual(self.startup.missions.count(), 5)
+        self.assertEqual(
+            self.startup.missions.filter(key="customer_interviews_5").count(),
+            1,
+        )

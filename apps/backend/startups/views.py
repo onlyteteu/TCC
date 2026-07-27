@@ -42,6 +42,7 @@ from .models import (
     Startup,
     ensure_journey,
 )
+from .test_workspace import reset_test_workspace
 
 DEFERRED_STARTUP_NAME = "Startup sem nome"
 User = get_user_model()
@@ -723,6 +724,44 @@ def today(request, startup_id):
         return _error_response("Startup nao encontrada.", status=404)
 
     return JsonResponse(_today_payload(user, startup))
+
+
+@csrf_exempt
+@require_POST
+def test_reset(request, startup_id):
+    try:
+        user = _authenticate_request(request)
+    except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
+        return _error_response("Sessao invalida ou expirada.", status=401)
+
+    startup = Startup.objects.filter(owner=user, pk=startup_id).first()
+    if startup is None:
+        return _error_response("Startup nao encontrada.", status=404)
+
+    if not user.is_staff or not startup.is_test_workspace:
+        return _error_response(
+            "Esse ambiente nao pode ser reiniciado.",
+            status=403,
+        )
+
+    try:
+        payload = _json_body(request)
+    except ValueError as error:
+        return _error_response(str(error))
+
+    if payload.get("confirmation") != "RESET_TEST_WORKSPACE":
+        return _error_response(
+            "Confirme explicitamente o reinício do ambiente de teste.",
+        )
+
+    reset_startup = reset_test_workspace(startup_id=startup.pk)
+    return JsonResponse(
+        _today_payload(
+            user,
+            reset_startup,
+            message="Ambiente de teste reiniciado na primeira missão.",
+        )
+    )
 
 
 def _mission_for_startup(startup, mission_key, *, for_update=False):
