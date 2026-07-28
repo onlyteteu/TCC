@@ -40,6 +40,15 @@
   line-height: 1.4;
 }
 
+.bannerActions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.completeButton,
 .resetButton,
 .cancelButton,
 .dangerButton {
@@ -54,6 +63,18 @@
   font-weight: 750;
 }
 
+.completeButton {
+  padding: 0 14px;
+  border: 1px solid #f2a51a;
+  background: #f2a51a;
+  color: #070b13;
+}
+
+.completeButton:hover:not(:disabled) {
+  border-color: #ffb630;
+  background: #ffb630;
+}
+
 .resetButton {
   flex: 0 0 auto;
   padding: 0 14px;
@@ -62,16 +83,27 @@
   color: #d8e8f7;
 }
 
-.resetButton:hover {
+.resetButton:hover:not(:disabled) {
   border-color: #6b9bc4;
   background: #17314a;
 }
 
+.completeButton:focus-visible,
 .resetButton:focus-visible,
 .cancelButton:focus-visible,
 .dangerButton:focus-visible {
   outline: 2px solid #f2a51a;
   outline-offset: 3px;
+}
+
+.completeButton:disabled,
+.resetButton:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+.bannerError {
+  color: #ffb0b0 !important;
 }
 
 .backdrop {
@@ -221,7 +253,12 @@
     flex-basis: calc(100% - 72px);
   }
 
-  .resetButton {
+  .bannerActions {
+    display: grid;
+    width: 100%;
+  }
+
+  .bannerActions > button {
     width: 100%;
   }
 

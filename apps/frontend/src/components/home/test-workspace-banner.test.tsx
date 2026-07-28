@@ -144,4 +144,59 @@ describe("TestWorkspaceBanner", () => {
 
     await waitFor(() => expect(onReset).toHaveBeenCalledTimes(2));
   });
+
+  it("completes the current mission only once while the request is pending", async () => {
+    const pending = deferredPromise();
+    const onCompleteMission = vi.fn(() => pending.promise);
+    render(
+      <TestWorkspaceBanner
+        onCompleteMission={onCompleteMission}
+        onReset={vi.fn()}
+      />
+    );
+
+    const complete = screen.getByRole("button", {
+      name: "Concluir missão atual",
+    });
+    fireEvent.click(complete);
+    fireEvent.click(complete);
+
+    expect(onCompleteMission).toHaveBeenCalledTimes(1);
+    expect(
+      screen.getByRole("button", { name: "Concluindo missão..." })
+    ).toBeDisabled();
+
+    pending.resolve();
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "Concluir missão atual" })
+      ).toBeEnabled()
+    );
+  });
+
+  it("shows a completion error and allows retry", async () => {
+    const onCompleteMission = vi
+      .fn<() => Promise<void>>()
+      .mockRejectedValueOnce(new Error("Não foi possível avançar."))
+      .mockResolvedValueOnce();
+    render(
+      <TestWorkspaceBanner
+        onCompleteMission={onCompleteMission}
+        onReset={vi.fn()}
+      />
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Concluir missão atual" })
+    );
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Não foi possível avançar."
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Concluir missão atual" })
+    );
+    await waitFor(() => expect(onCompleteMission).toHaveBeenCalledTimes(2));
+  });
 });

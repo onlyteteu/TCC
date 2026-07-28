@@ -11,21 +11,26 @@ import { createPortal } from "react-dom";
 import styles from "./test-workspace-banner.module.css";
 
 type TestWorkspaceBannerProps = {
+  onCompleteMission?: () => Promise<void>;
   onModalChange?: (open: boolean) => void;
   onReset: () => Promise<void>;
 };
 
 export function TestWorkspaceBanner({
+  onCompleteMission,
   onModalChange,
   onReset,
 }: TestWorkspaceBannerProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isCompleting, setIsCompleting] = useState(false);
+  const [completionError, setCompletionError] = useState<string | null>(null);
   const [isResetting, setIsResetting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
   const cancelRef = useRef<HTMLButtonElement>(null);
   const requestPendingRef = useRef(false);
+  const completionPendingRef = useRef(false);
   const shouldRestoreFocusRef = useRef(false);
 
   useEffect(() => {
@@ -81,6 +86,29 @@ export function TestWorkspaceBanner({
     } finally {
       requestPendingRef.current = false;
       setIsResetting(false);
+    }
+  }
+
+  async function completeMission() {
+    if (!onCompleteMission || completionPendingRef.current) {
+      return;
+    }
+
+    completionPendingRef.current = true;
+    setIsCompleting(true);
+    setCompletionError(null);
+
+    try {
+      await onCompleteMission();
+    } catch (caughtError) {
+      setCompletionError(
+        caughtError instanceof Error
+          ? caughtError.message
+          : "Não foi possível concluir a missão de teste."
+      );
+    } finally {
+      completionPendingRef.current = false;
+      setIsCompleting(false);
     }
   }
 
@@ -210,16 +238,36 @@ export function TestWorkspaceBanner({
         <span className={styles.modeLabel}>Teste</span>
         <div className={styles.bannerCopy}>
           <strong>Modo de teste</strong>
-          <span>Este ambiente pode voltar à primeira missão a qualquer momento.</span>
+          <span>
+            Avance rapidamente ou volte à primeira missão a qualquer momento.
+          </span>
+          {completionError ? (
+            <span className={styles.bannerError} role="alert">
+              {completionError}
+            </span>
+          ) : null}
         </div>
-        <button
-          className={styles.resetButton}
-          onClick={openDialog}
-          ref={triggerRef}
-          type="button"
-        >
-          Reiniciar ambiente
-        </button>
+        <div className={styles.bannerActions}>
+          {onCompleteMission ? (
+            <button
+              className={styles.completeButton}
+              disabled={isCompleting}
+              onClick={() => void completeMission()}
+              type="button"
+            >
+              {isCompleting ? "Concluindo missão..." : "Concluir missão atual"}
+            </button>
+          ) : null}
+          <button
+            className={styles.resetButton}
+            disabled={isCompleting}
+            onClick={openDialog}
+            ref={triggerRef}
+            type="button"
+          >
+            Reiniciar ambiente
+          </button>
+        </div>
       </aside>
       {dialog}
     </>

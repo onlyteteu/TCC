@@ -764,6 +764,52 @@ def test_reset(request, startup_id):
     )
 
 
+@csrf_exempt
+@require_POST
+def test_complete_mission(request, startup_id):
+    try:
+        user = _authenticate_request(request)
+    except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
+        return _error_response("Sessao invalida ou expirada.", status=401)
+
+    startup = Startup.objects.filter(owner=user, pk=startup_id).first()
+    if startup is None:
+        return _error_response("Startup nao encontrada.", status=404)
+
+    if not user.is_staff or not startup.is_test_workspace:
+        return _error_response(
+            "Esse ambiente nao permite concluir missoes de teste.",
+            status=403,
+        )
+
+    mission = select_recommended_mission(startup)
+    if mission is None:
+        return _error_response(
+            "Nao ha uma missao disponivel para concluir.",
+            status=409,
+        )
+
+    from .mission_engine import complete_test_mission_record
+
+    try:
+        mission, completed_now = complete_test_mission_record(mission)
+    except MissionRuleError as error:
+        return _error_response(str(error), status=409)
+
+    message = (
+        "Miss\u00e3o conclu\u00edda pelo modo de teste."
+        if completed_now
+        else "Essa miss\u00e3o j\u00e1 estava conclu\u00edda."
+    )
+    return JsonResponse(
+        _today_payload(
+            user,
+            startup,
+            message=message,
+        )
+    )
+
+
 def _mission_for_startup(startup, mission_key, *, for_update=False):
     sync_mission_catalog(startup)
     missions = startup.missions

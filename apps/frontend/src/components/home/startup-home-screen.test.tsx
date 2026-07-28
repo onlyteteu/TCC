@@ -580,6 +580,53 @@ describe("StartupHomeScreen", () => {
     expect(await screen.findByLabelText("Modo de teste")).toBeInTheDocument();
   });
 
+  it("completes the current test mission and refreshes the Home payload", async () => {
+    const onWorkspaceChanged = vi.fn().mockResolvedValue(true);
+    const testPayload = {
+      ...payload,
+      testWorkspace: { canReset: true },
+    };
+    const advancedPayload = {
+      ...testPayload,
+      message: "Missão concluída pelo modo de teste.",
+      mission: {
+        ...payload.mission!,
+        key: "refine_problem_with_evidence",
+        title: "Refine o problema com evidências",
+      },
+    };
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(() => jsonResponse(testPayload))
+      .mockImplementationOnce(() => jsonResponse(advancedPayload));
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      <StartupHomeScreen
+        onWorkspaceChanged={onWorkspaceChanged}
+        startupId={7}
+      />
+    );
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Concluir missão atual" })
+    );
+
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenNthCalledWith(
+        2,
+        "/api/startups/7/test-complete-mission",
+        { method: "POST" }
+      )
+    );
+    expect(
+      await screen.findByText("Missão concluída pelo modo de teste.")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Refine o problema com evidências")
+    ).toBeInTheDocument();
+    expect(onWorkspaceChanged).toHaveBeenCalledTimes(1);
+  });
+
   it("resets the workspace, clears only its drafts and reconciles the shell", async () => {
     const onWorkspaceChanged = vi.fn().mockResolvedValue(true);
     const resetPayload: TodayPayload = {

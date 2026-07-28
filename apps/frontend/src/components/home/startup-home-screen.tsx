@@ -271,6 +271,32 @@ export function StartupHomeScreen({
     void onWorkspaceChanged?.();
   }
 
+  async function completeTestMission() {
+    let response: Response;
+    try {
+      response = await fetch(
+        `/api/startups/${startupId}/test-complete-mission`,
+        { method: "POST" }
+      );
+    } catch {
+      throw new Error(
+        "Não foi possível concluir a missão de teste. Verifique sua conexão e tente novamente."
+      );
+    }
+
+    const nextPayload = (await response.json()) as TodayPayload | AuthErrorPayload;
+    if (response.status === 401) {
+      router.replace("/");
+      throw new Error("Sua sessão expirou. Entre novamente para continuar.");
+    }
+    if (!response.ok) {
+      throw new Error(firstFieldError(nextPayload as AuthErrorPayload));
+    }
+
+    setPayload(nextPayload as TodayPayload);
+    void onWorkspaceChanged?.();
+  }
+
   async function submitInterview(
     nextInterview: InterviewEvidencePayload
   ): Promise<string> {
@@ -626,6 +652,7 @@ export function StartupHomeScreen({
 
       {payload.testWorkspace.canReset ? (
         <TestWorkspaceBanner
+          onCompleteMission={completeTestMission}
           onModalChange={handleTestWorkspaceModalChange}
           onReset={resetTestWorkspace}
         />

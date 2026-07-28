@@ -5,10 +5,11 @@ from unittest.mock import patch
 from django.contrib.auth import get_user_model
 from django.core.management import CommandError, call_command
 from django.test import TestCase
+from django.utils import timezone
 
 from accounts.tokens import issue_auth_token
 
-from .mission_engine import sync_mission_catalog
+from .mission_engine import complete_test_mission_record, sync_mission_catalog
 from .models import (
     ActivityEvent,
     JourneyStep,
@@ -352,6 +353,131 @@ class TestWorkspaceResetApiTests(TestCase):
         self.assertEqual(self.startup.missions.count(), 5)
         self.assertEqual(
             self.startup.missions.filter(key="customer_interviews_5").count(),
+            1,
+        )
+
+
+class TestWorkspaceCompleteMissionApiTests(TestCase):
+    def setUp(self):
+        self.owner = User.objects.create_user(
+            username="staff-owner@example.com",
+            email="staff-owner@example.com",
+            password="test-password",
+            is_staff=True,
+        )
+        self.token = issue_auth_token(self.owner)
+        self.startup = Startup.objects.create(
+            owner=self.owner,
+            name="Startup de Teste",
+            is_test_workspace=True,
+        )
+        ensure_journey(self.startup)
+        sync_mission_catalog(self.startup)
+
+    def post_complete(self, *, startup=None, token=None):
+        target = startup or self.startup
+        credentials = token if token is not None else self.token
+        return self.client.post(
+            f"/api/startups/{target.pk}/test-complete-mission/",
+            HTTP_AUTHORIZATION=f"Bearer {credentials}",
+        )
+
+    def test_complete_requires_authentication(self):
+        response = self.client.post(
+            f"/api/startups/{self.startup.pk}/test-complete-mission/"
+        )
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_complete_hides_another_owners_startup(self):
+        other = User.objects.create_user(
+            username="other@example.com",
+            email="other@example.com",
+            password="test-password",
+            is_staff=True,
+        )
+
+        response = self.post_complete(token=issue_auth_token(other))
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_complete_rejects_regular_owner(self):
+        regular = User.objects.create_user(
+            username="regular@example.com",
+            email="regular@example.com",
+            password="test-password",
+        )
+        startup = Startup.objects.create(
+            owner=regular,
+            name="Teste sem permissão",
+            is_test_workspace=True,
+        )
+
+        response = self.post_complete(
+            startup=startup,
+            token=issue_auth_token(regular),
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_complete_rejects_regular_startup_even_for_staff_owner(self):
+        startup = Startup.objects.create(owner=self.owner, name="Startup comum")
+
+        response = self.post_complete(startup=startup)
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_complete_advances_current_mission_without_evidence(self):
+        current = self.startup.missions.get(key="customer_interviews_5")
+        self.assertFalse(current.evidences.exists())
+        self.assertFalse(current.learnings.exists())
+
+        response = self.post_complete()
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        current.refresh_from_db()
+        self.assertEqual(current.status, Mission.Status.COMPLETED)
+        self.assertEqual(payload["mission"]["key"], "refine_problem_with_evidence")
+        self.assertEqual(
+            payload["message"],
+            "Missão concluída pelo modo de teste.",
+        )
+        self.assertTrue(
+            ActivityEvent.objects.filter(
+                startup=self.startup,
+                dedupe_key=f"mission_completed:{current.pk}",
+                xp_awarded=current.xp_reward,
+            ).exists()
+        )
+
+    def test_complete_reports_when_no_mission_is_available(self):
+        self.startup.missions.update(
+            status=Mission.Status.COMPLETED,
+            completed_at=timezone.now(),
+        )
+
+        response = self.post_complete()
+
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(
+            response.json()["message"],
+            "Nao ha uma missao disponivel para concluir.",
+        )
+
+    def test_complete_service_does_not_duplicate_activity_or_xp(self):
+        mission = self.startup.missions.get(key="customer_interviews_5")
+
+        _, completed_first = complete_test_mission_record(mission)
+        _, completed_second = complete_test_mission_record(mission)
+
+        self.assertTrue(completed_first)
+        self.assertFalse(completed_second)
+        self.assertEqual(
+            ActivityEvent.objects.filter(
+                startup=self.startup,
+                dedupe_key=f"mission_completed:{mission.pk}",
+            ).count(),
             1,
         )
 

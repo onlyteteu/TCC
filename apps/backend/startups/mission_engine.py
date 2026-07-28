@@ -193,19 +193,9 @@ def recommendation_reason(mission):
     return "Comece por evid\u00eancias reais antes de avan\u00e7ar para a solu\u00e7\u00e3o."
 
 
-@transaction.atomic
-def complete_mission_record(mission):
-    mission = Mission.objects.select_for_update().get(pk=mission.pk)
+def _mark_mission_completed(mission):
     if mission.status == Mission.Status.COMPLETED:
         return mission, False
-    if mission.status == Mission.Status.LOCKED:
-        raise MissionRuleError("Essa miss\u00e3o ainda est\u00e1 bloqueada.")
-
-    evaluation = evaluate_mission(mission)
-    if not evaluation.can_complete:
-        raise MissionRuleError(
-            "A miss\u00e3o ainda precisa de evid\u00eancias antes de ser conclu\u00edda."
-        )
 
     mission.status = Mission.Status.COMPLETED
     mission.completed_at = timezone.now()
@@ -222,3 +212,33 @@ def complete_mission_record(mission):
     )
     reconcile_mission_states(mission.startup)
     return mission, True
+
+
+@transaction.atomic
+def complete_mission_record(mission):
+    mission = Mission.objects.select_for_update().get(pk=mission.pk)
+    if mission.status == Mission.Status.COMPLETED:
+        return mission, False
+    if mission.status == Mission.Status.LOCKED:
+        raise MissionRuleError("Essa miss\u00e3o ainda est\u00e1 bloqueada.")
+
+    evaluation = evaluate_mission(mission)
+    if not evaluation.can_complete:
+        raise MissionRuleError(
+            "A miss\u00e3o ainda precisa de evid\u00eancias antes de ser conclu\u00edda."
+        )
+
+    return _mark_mission_completed(mission)
+
+
+@transaction.atomic
+def complete_test_mission_record(mission):
+    mission = Mission.objects.select_for_update().select_related("startup").get(
+        pk=mission.pk
+    )
+    if not mission.startup.is_test_workspace:
+        raise MissionRuleError("Essa miss\u00e3o n\u00e3o pertence a um ambiente de teste.")
+    if mission.status == Mission.Status.LOCKED:
+        raise MissionRuleError("Essa miss\u00e3o ainda est\u00e1 bloqueada.")
+
+    return _mark_mission_completed(mission)
