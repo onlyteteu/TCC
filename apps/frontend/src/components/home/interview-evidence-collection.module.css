@@ -1,5 +1,12 @@
 .collection {
-  border-top: 1px solid #e3e8ef;
+  --evidence-accent: #f2a51a;
+  --evidence-border: #2b3d52;
+  --evidence-field: #070b13;
+  --evidence-muted: #9aa8b8;
+  --evidence-surface: #111927;
+  --evidence-text: #f7efe3;
+  --evidence-text-secondary: #cbd4df;
+  border-top: 1px solid var(--evidence-border);
   display: grid;
   gap: 16px;
   padding-top: 22px;
@@ -14,7 +21,7 @@
 }
 
 .header span {
-  color: #9a6200;
+  color: var(--evidence-accent);
   display: block;
   font-size: 0.7rem;
   font-weight: 850;
@@ -29,12 +36,12 @@
 }
 
 .header h3 {
-  color: #132238;
+  color: var(--evidence-text);
   font-size: 1.1rem;
 }
 
 .header p {
-  color: #637083;
+  color: var(--evidence-muted);
   font-size: 0.84rem;
   font-weight: 700;
 }
@@ -49,8 +56,8 @@
 }
 
 .card {
-  background: linear-gradient(145deg, #f8fafc, #fff);
-  border: 1px solid #dde4ed;
+  background: var(--evidence-surface);
+  border: 1px solid var(--evidence-border);
   border-radius: 15px;
   display: grid;
   gap: 11px;
@@ -60,7 +67,7 @@
 
 .cardHeader {
   align-items: center;
-  color: #738095;
+  color: var(--evidence-muted);
   display: flex;
   font-size: 0.76rem;
   justify-content: space-between;
@@ -68,9 +75,9 @@
 
 .cardHeader > span {
   align-items: center;
-  background: #132238;
+  background: var(--evidence-accent);
   border-radius: 50%;
-  color: #fff;
+  color: var(--evidence-field);
   display: flex;
   font-size: 0.68rem;
   font-weight: 850;
@@ -85,18 +92,23 @@
 }
 
 .person strong {
-  color: #132238;
+  color: var(--evidence-text);
 }
 
-.person span,
+.person span {
+  color: var(--evidence-muted);
+  font-size: 0.86rem;
+}
+
 .context {
-  color: #637083;
+  color: var(--evidence-text-secondary);
   font-size: 0.86rem;
 }
 
 .context,
 .card blockquote {
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .chips {
@@ -106,20 +118,23 @@
 }
 
 .chips span {
-  background: #eaf2fa;
+  background: #172b3c;
   border-radius: 999px;
-  color: #1f5d91;
+  color: #a9d8ef;
   font-size: 0.72rem;
   font-weight: 750;
   padding: 4px 8px;
 }
 
 .card blockquote {
-  border-left: 3px solid #f2a51a;
-  color: #33445a;
+  background: #0e1724;
+  border: 1px solid #3c536c;
+  border-radius: 10px;
+  color: var(--evidence-text-secondary);
   font-size: 0.88rem;
+  font-style: normal;
   line-height: 1.5;
-  padding-left: 10px;
+  padding: 11px 12px;
 }
 
 @media (max-width: 680px) {
