@@ -363,6 +363,149 @@
   gap: 16px;
 }
 
+.startupProgressPanel {
+  display: grid;
+  gap: 20px;
+  padding: 22px;
+  border: 1px solid var(--sq-border, #203145);
+  border-radius: var(--sq-radius-lg, 16px);
+  background: var(--sq-surface, #0b111c);
+}
+
+.progressPanelHeader,
+.sectionHeadingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.progressPanelHeader h2,
+.sectionHeadingRow h2,
+.sectionHeadingRow h3 {
+  margin: 0;
+  color: var(--sq-text, #f7efe3);
+  font-size: 1.05rem;
+}
+
+.progressPanelHeader > span {
+  color: var(--sq-accent, #f2a51a);
+  font-weight: 800;
+}
+
+.currentMilestone {
+  display: grid;
+  gap: 6px;
+}
+
+.currentMilestone > span {
+  color: var(--sq-text-subtle, #7f8da0);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.currentMilestone strong {
+  color: var(--sq-text, #f7efe3);
+  font-size: 1.12rem;
+}
+
+.currentMilestone p,
+.nextUnlock p {
+  margin: 0;
+  color: var(--sq-text-muted, #9aa8b8);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.journeyTrack {
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #1b2737;
+}
+
+.journeyTrack > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--sq-accent, #f2a51a);
+}
+
+.nextUnlock {
+  display: grid;
+  gap: 8px;
+  padding-top: 18px;
+  border-top: 1px solid var(--sq-border, #203145);
+}
+
+.nextUnlock > strong {
+  color: var(--sq-text, #f7efe3);
+}
+
+.unlockStatusAvailable,
+.unlockStatusLocked {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--sq-success, #bfe8ce);
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
+.unlockStatusAvailable svg,
+.unlockStatusLocked svg {
+  width: 15px;
+  height: 15px;
+}
+
+.unlockStatusLocked {
+  color: var(--sq-text-subtle, #7f8da0);
+}
+
+.journeyLink {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--sq-border-strong, #2b3d52);
+  border-radius: var(--sq-radius-md, 12px);
+  color: var(--sq-text, #f7efe3);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.journeyLink:hover {
+  border-color: var(--sq-accent, #f2a51a);
+  background: var(--sq-surface-raised, #111927);
+}
+
+.journeyLink:focus-visible {
+  outline: 2px solid var(--sq-focus-ring, #f2a51a);
+  outline-offset: 3px;
+}
+
+.recentActivity {
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid var(--sq-border, #203145);
+}
+
+.sectionHeadingRow > span {
+  color: var(--sq-text-subtle, #7f8da0);
+  font-size: 0.78rem;
+}
+
+.activityMeta {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+}
+
+.activityMeta strong {
+  color: var(--sq-success, #bfe8ce);
+  font-size: 0.78rem;
+}
+
 .statusPanel {
   padding: 20px;
   border: 1px solid #203145;
