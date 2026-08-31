@@ -51,43 +51,35 @@
 - Modify: `apps/frontend/src/components/workspace/workspace-shell.module.css`
 - Modify: `apps/frontend/src/components/workspace/workspace-shell.tsx`
 - Modify: `apps/frontend/src/components/workspace/workspace-shell.test.tsx`
-- Create: `apps/frontend/src/components/workspace/workspace-visual-contract.test.ts`
 
 **Interfaces:**
 - Consumes: `WorkspaceShell({ children }: { children: ReactNode })` e estado de `useWorkspace()`.
 - Produces: tokens herdáveis `--sq-bg`, `--sq-sidebar`, `--sq-surface`, `--sq-surface-raised`, `--sq-surface-interactive`, `--sq-border`, `--sq-border-strong`, `--sq-text`, `--sq-text-muted`, `--sq-text-subtle`, `--sq-accent`, `--sq-accent-hover`, `--sq-success`, `--sq-success-bg`, `--sq-danger`, espaçamentos, raios, durações e foco.
 
-- [ ] **Step 1: escrever testes que expressem o contrato visual e o skeleton**
+- [ ] **Step 1: escrever o teste do skeleton que preserva a estrutura durante o carregamento**
 
 ```tsx
-it("declares the semantic workspace token contract", () => {
-  const css = readFileSync(resolve(process.cwd(), "src/components/workspace/workspace-shell.module.css"), "utf8");
-  for (const token of ["--sq-bg", "--sq-surface", "--sq-text", "--sq-accent", "--sq-focus-ring"]) {
-    expect(css).toContain(token);
-  }
-});
-
 it("keeps the shell structure visible while workspace data loads", () => {
   render(<WorkspaceShell><div>Conteúdo</div></WorkspaceShell>);
-  expect(screen.getByLabelText("Carregando workspace")).toBeInTheDocument();
-  expect(screen.getAllByTestId("workspace-skeleton-line").length).toBeGreaterThan(2);
+  const status = screen.getByRole("status", { name: "Carregando workspace" });
+  expect(status.querySelectorAll('[aria-hidden="true"]')).toHaveLength(3);
 });
 ```
 
 - [ ] **Step 2: rodar os testes e confirmar a falha esperada**
 
-Run: `npm.cmd --prefix apps/frontend test -- workspace-shell.test.tsx workspace-visual-contract.test.ts`
+Run: `npm.cmd --prefix apps/frontend test -- workspace-shell.test.tsx`
 
-Expected: FAIL porque os tokens e o skeleton geométrico ainda não existem.
+Expected: FAIL porque o loading atual é apenas texto e não possui o papel nem a geometria do skeleton.
 
 - [ ] **Step 3: declarar tokens no `.shell` e substituir o loading textual por skeleton**
 
 ```tsx
 <div aria-label="Carregando workspace" aria-live="polite" className={styles.loadingState}>
-  <span className={styles.skeletonHeading} data-testid="workspace-skeleton-line" />
+  <span aria-hidden="true" className={styles.skeletonHeading} />
   <div className={styles.skeletonGrid}>
-    <span className={styles.skeletonMission} />
-    <span className={styles.skeletonRail} />
+    <span aria-hidden="true" className={styles.skeletonMission} />
+    <span aria-hidden="true" className={styles.skeletonRail} />
   </div>
   <span className={styles.srOnly}>Preparando seu workspace.</span>
 </div>
@@ -97,14 +89,14 @@ O CSS deve manter sidebar e topbar estáveis, usar `var(--sq-*)`, `minmax(0, 1fr
 
 - [ ] **Step 4: rodar os testes do shell**
 
-Run: `npm.cmd --prefix apps/frontend test -- workspace-shell.test.tsx workspace-visual-contract.test.ts`
+Run: `npm.cmd --prefix apps/frontend test -- workspace-shell.test.tsx`
 
 Expected: PASS.
 
 - [ ] **Step 5: registrar a entrega**
 
 ```powershell
-git add -- apps/frontend/src/components/workspace/workspace-shell.module.css apps/frontend/src/components/workspace/workspace-shell.tsx apps/frontend/src/components/workspace/workspace-shell.test.tsx apps/frontend/src/components/workspace/workspace-visual-contract.test.ts
+git add -- apps/frontend/src/components/workspace/workspace-shell.module.css apps/frontend/src/components/workspace/workspace-shell.tsx apps/frontend/src/components/workspace/workspace-shell.test.tsx
 git commit -m "feat: establish workspace visual foundation"
 ```
 
@@ -343,51 +335,35 @@ git commit -m "feat: rebuild the startup home as a workbench"
 - Modify: `apps/frontend/src/components/journey/startup-journey-screen.module.css`
 - Modify: `apps/frontend/src/components/missions/mission-center-screen.module.css`
 - Modify: `apps/frontend/src/components/missions/mission-detail-screen.module.css`
-- Modify: `apps/frontend/src/components/workspace/workspace-visual-contract.test.ts`
 
 **Interfaces:**
 - Consumes: tokens da Task 1.
 - Produces: três superfícies autenticadas com o mesmo vocabulário de fundo, texto, borda, foco, ação, sucesso e erro.
 
-- [ ] **Step 1: ampliar o teste de contrato para as três folhas**
+- [ ] **Step 1: registrar a linha de base visual das três superfícies**
 
-```tsx
-it.each([
-  "src/components/journey/startup-journey-screen.module.css",
-  "src/components/missions/mission-center-screen.module.css",
-  "src/components/missions/mission-detail-screen.module.css",
-])("uses shared workspace roles in %s", (path) => {
-  const css = readFileSync(resolve(process.cwd(), path), "utf8");
-  expect(css).toContain("var(--sq-text)");
-  expect(css).toContain("var(--sq-surface)");
-  expect(css).toContain("var(--sq-accent)");
-});
-```
+Capturar Home, Jornada e Missões antes da migração e anotar quais elementos representam fundo, superfície, texto, borda, foco, ação, sucesso e erro. Essa lista é a referência observável para impedir que a troca de tokens altere significado ou contraste.
 
-- [ ] **Step 2: rodar o teste e confirmar a falha**
-
-Run: `npm.cmd --prefix apps/frontend test -- workspace-visual-contract.test.ts`
-
-Expected: FAIL porque as folhas ainda repetem cores literais.
-
-- [ ] **Step 3: migrar papéis equivalentes para tokens**
+- [ ] **Step 2: migrar papéis equivalentes para tokens**
 
 Substituir apenas papéis compartilhados: fundo, superfícies, textos, bordas, ação, foco, sucesso e erro. Preservar cores específicas que carregam significado próprio de capítulos e status, documentando-as em `DESIGN.md` na Task 7.
 
-- [ ] **Step 4: rodar testes das telas afetadas**
+- [ ] **Step 3: rodar testes das telas afetadas**
 
-Run: `npm.cmd --prefix apps/frontend test -- src/components/journey src/components/missions workspace-visual-contract.test.ts`
+Run: `npm.cmd --prefix apps/frontend test -- src/components/journey src/components/missions`
 
 Expected: PASS.
 
-- [ ] **Step 5: executar o detector visual e registrar a entrega**
+- [ ] **Step 4: executar o detector visual e comparar a interface renderizada**
 
 Run: `node C:\Users\mateu\.agents\skills\impeccable\scripts\detect.mjs --json apps/frontend/src/components/workspace apps/frontend/src/components/home apps/frontend/src/components/journey apps/frontend/src/components/missions`
 
-Corrigir no escopo alterado qualquer contraste insuficiente, card aninhado, foco ausente, raio acima de `16px` em cards ou borda com sombra ampla.
+Corrigir no escopo alterado qualquer contraste insuficiente, card aninhado, foco ausente, raio acima de `16px` em cards ou borda com sombra ampla. Comparar novamente Home, Jornada e Missões nos mesmos viewports e confirmar que a semântica dos estados foi preservada.
+
+- [ ] **Step 5: registrar a entrega**
 
 ```powershell
-git add -- apps/frontend/src/components/journey/startup-journey-screen.module.css apps/frontend/src/components/missions/mission-center-screen.module.css apps/frontend/src/components/missions/mission-detail-screen.module.css apps/frontend/src/components/workspace/workspace-visual-contract.test.ts
+git add -- apps/frontend/src/components/journey/startup-journey-screen.module.css apps/frontend/src/components/missions/mission-center-screen.module.css apps/frontend/src/components/missions/mission-detail-screen.module.css
 git commit -m "refactor: unify authenticated workspace styles"
 ```
 

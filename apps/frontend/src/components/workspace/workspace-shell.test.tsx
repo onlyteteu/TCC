@@ -36,6 +36,19 @@ describe("WorkspaceShell", () => {
     vi.unstubAllGlobals();
   });
 
+  it("keeps the workspace structure visible while its data loads", () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => undefined)));
+
+    render(
+      <WorkspaceShell>
+        <div>Conteudo</div>
+      </WorkspaceShell>
+    );
+
+    const status = screen.getByRole("status", { name: "Carregando workspace" });
+    expect(status.querySelectorAll('[aria-hidden="true"]')).toHaveLength(3);
+  });
+
   it("makes the complete shell unavailable to assistive technology", async () => {
     vi.stubGlobal(
       "fetch",

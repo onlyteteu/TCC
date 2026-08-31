@@ -69,8 +69,18 @@ function WorkspaceFrame({ activeSection: section, children }: WorkspaceFrameProp
                 </button>
               </div>
             ) : isLoading ? (
-              <div aria-live="polite" className={styles.loadingState}>
-                Preparando seu workspace...
+              <div
+                aria-label="Carregando workspace"
+                aria-live="polite"
+                className={styles.loadingState}
+                role="status"
+              >
+                <span aria-hidden="true" className={styles.skeletonHeading} />
+                <div className={styles.skeletonGrid}>
+                  <span aria-hidden="true" className={styles.skeletonMission} />
+                  <span aria-hidden="true" className={styles.skeletonRail} />
+                </div>
+                <span className={styles.srOnly}>Preparando seu workspace.</span>
               </div>
             ) : (
               children
