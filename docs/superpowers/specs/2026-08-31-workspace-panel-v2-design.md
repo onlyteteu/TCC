@@ -1,7 +1,7 @@
 # Painel 2.0 do workspace
 
 **Data:** 31 de agosto de 2026
-**Status:** direção aprovada; especificação para revisão antes do plano de implementação
+**Status:** aprovada para implementação
 
 ## Resumo da decisão
 
