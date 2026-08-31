@@ -47,10 +47,21 @@ export function MissionFocusPanel({
     <section className={styles.missionPanel} aria-labelledby="mission-title">
       <div className={styles.missionHeader}>
         <div>
-          <span className={styles.missionType}>
-            <ProductIcon name="mission" />
-            {mission.typeLabel}
-          </span>
+          <div className={styles.missionMeta}>
+            <span className={styles.missionType}>
+              <ProductIcon name="mission" />
+              {mission.typeLabel}
+            </span>
+            <span
+              aria-label={`Estado da missão: ${mission.statusLabel}`}
+              className={styles.missionStatus}
+            >
+              {mission.statusLabel}
+            </span>
+          </div>
+          {mission.recommendationReason ? (
+            <p className={styles.missionReason}>{mission.recommendationReason}</p>
+          ) : null}
           <h2 id="mission-title">{mission.title}</h2>
           <p className={styles.missionObjective}>{mission.objective}</p>
         </div>
@@ -184,6 +195,7 @@ export function MissionFocusPanel({
           <button
             aria-busy={isPrimaryActionPending || undefined}
             className={styles.primaryButton}
+            data-primary-action="true"
             disabled={isPrimaryActionPending}
             onClick={onPrimaryAction}
             type="button"

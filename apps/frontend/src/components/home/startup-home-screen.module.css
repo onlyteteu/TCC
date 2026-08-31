@@ -38,9 +38,9 @@
 .missionPanel {
   min-width: 0;
   padding: 28px;
-  border: 1px solid #203145;
-  border-radius: 16px;
-  background: #0b111c;
+  border: 1px solid var(--sq-border, #203145);
+  border-radius: var(--sq-radius-lg, 16px);
+  background: var(--sq-surface, #0b111c);
 }
 
 .missionHeader {
@@ -51,21 +51,51 @@
 }
 
 .missionHeader h2 {
-  margin: 10px 0 8px;
-  color: #f7efe3;
-  font-size: clamp(1.6rem, 2vw, 2.15rem);
-  line-height: 1.15;
+  max-width: 24ch;
+  margin: 12px 0 8px;
+  color: var(--sq-text, #f7efe3);
+  font-size: 1.9rem;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.missionMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
 }
 
 .missionType {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
   font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.missionStatus {
+  display: inline-flex;
+  min-height: 26px;
+  align-items: center;
+  padding: 0 9px;
+  border: 1px solid var(--sq-border-strong, #2b3d52);
+  border-radius: 999px;
+  color: var(--sq-text-muted, #9aa8b8);
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
+.missionReason {
+  max-width: 70ch;
+  margin: 16px 0 0;
+  color: var(--sq-text-muted, #9aa8b8);
+  font-size: 0.88rem;
+  line-height: 1.5;
 }
 
 .missionType svg,
@@ -76,7 +106,8 @@
 
 .missionObjective {
   margin: 0;
-  color: #9aa8b8;
+  max-width: 70ch;
+  color: var(--sq-text-muted, #9aa8b8);
   line-height: 1.6;
 }
 
@@ -86,7 +117,7 @@
   border-radius: 999px;
   border: 1px solid rgb(242 165 26 / 38%);
   background: #17130e;
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
   font-weight: 800;
 }
 
@@ -95,12 +126,12 @@
   justify-content: space-between;
   gap: 16px;
   margin-top: 28px;
-  color: #aeb9c6;
+  color: var(--sq-text-muted, #9aa8b8);
   font-size: 0.9rem;
 }
 
 .missionProgressLabel strong {
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
 }
 
 .progressTrack {
@@ -115,7 +146,7 @@
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: #f2a51a;
+  background: var(--sq-accent, #f2a51a);
 }
 
 .missionSteps {
@@ -134,17 +165,19 @@
   width: 100%;
   gap: 14px;
   padding: 14px;
-  border: 1px solid #203145;
+  border: 1px solid var(--sq-border, #203145);
   border-radius: 12px;
   background: #090e17;
-  color: #cbd4df;
+  color: var(--sq-text-muted, #9aa8b8);
   text-align: left;
 }
 
 .stepAction {
   cursor: pointer;
   font: inherit;
-  transition: border-color 150ms ease, background 150ms ease;
+  transition:
+    border-color var(--sq-duration-interaction, 160ms) ease,
+    background var(--sq-duration-interaction, 160ms) ease;
 }
 
 .stepAction:hover {
@@ -153,9 +186,9 @@
 }
 
 .stepAction:focus-visible {
-  border-color: #f2a51a;
+  border-color: var(--sq-accent, #f2a51a);
   background: #17130e;
-  outline: 2px solid #f2a51a;
+  outline: 2px solid var(--sq-focus-ring, #f2a51a);
   outline-offset: 3px;
 }
 
@@ -191,13 +224,13 @@
 }
 
 .stepCopy strong {
-  color: #f7efe3;
+  color: var(--sq-text, #f7efe3);
 }
 
 .stepCopy span,
 .stepAction small,
 .stepLocked small {
-  color: #9aa8b8;
+  color: var(--sq-text-muted, #9aa8b8);
   font-size: 0.82rem;
 }
 
@@ -207,14 +240,14 @@
 }
 
 .step_current .stepMarker {
-  border-color: #f2a51a;
-  color: #f2a51a;
+  border-color: var(--sq-accent, #f2a51a);
+  color: var(--sq-accent, #f2a51a);
 }
 
 .step_completed .stepMarker {
   border-color: #2f6550;
-  background: #10241b;
-  color: #bfe8ce;
+  background: var(--sq-success-bg, #10241b);
+  color: var(--sq-success, #bfe8ce);
 }
 
 .step_locked .stepMarker {
@@ -227,9 +260,9 @@
   margin-top: 20px;
   padding: 14px 16px;
   border-radius: 12px;
-  border: 1px solid #203145;
+  border: 1px solid var(--sq-border, #203145);
   background: #0a1522;
-  color: #aeb9c6;
+  color: var(--sq-text-muted, #9aa8b8);
 }
 
 .tip p {
@@ -333,8 +366,8 @@
   padding: 0 18px;
   border: 0;
   border-radius: 10px;
-  background: #f2a51a;
-  color: #070b13;
+  background: var(--sq-accent, #f2a51a);
+  color: var(--sq-bg, #070b13);
   cursor: pointer;
   font: inherit;
   font-weight: 800;
@@ -342,14 +375,14 @@
 }
 
 .primaryButton:hover:not(:disabled) {
-  background: #ffb630;
+  background: var(--sq-accent-hover, #ffb630);
 }
 
 .primaryButton:focus-visible,
 .secondaryButton:focus-visible,
 .closeButton:focus-visible,
 .missionUnavailable a:focus-visible {
-  outline: 2px solid #f2a51a;
+  outline: 2px solid var(--sq-focus-ring, #f2a51a);
   outline-offset: 3px;
 }
 

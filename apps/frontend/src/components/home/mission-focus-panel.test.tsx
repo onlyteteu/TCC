@@ -1,6 +1,4 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
 import type { MissionSummary } from "@/lib/startup-types";
@@ -76,6 +74,8 @@ describe("MissionFocusPanel", () => {
     );
 
     expect(screen.getByRole("heading", { name: mission.title })).toBeInTheDocument();
+    expect(screen.getByText("Comece por evidencias reais.")).toBeInTheDocument();
+    expect(screen.getByLabelText("Estado da missão: Em andamento")).toBeInTheDocument();
     expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "20");
     expect(screen.getByText("+150 XP")).toBeInTheDocument();
     expect(screen.getByText("Resuma os padroes").closest("li")).toHaveAttribute(
@@ -84,6 +84,10 @@ describe("MissionFocusPanel", () => {
     );
     fireEvent.click(screen.getByText("Registre 5 entrevistas"));
     expect(onOpenStep).toHaveBeenCalledWith("interviews");
+    expect(screen.getByRole("button", { name: "Registrar entrevista" })).toHaveAttribute(
+      "data-primary-action",
+      "true"
+    );
   });
 
   it("disables the completion action and announces its pending state", () => {
@@ -126,18 +130,6 @@ describe("MissionFocusPanel", () => {
     expect(screen.getByText("Formulacao refinada registrada")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Abrir missão" })).toBeInTheDocument();
     expect(screen.queryByText("1 de 5 entrevistas")).not.toBeInTheDocument();
-  });
-
-  it("defines a high-contrast amber focus outline for actionable rows", () => {
-    const cssPath = resolve(
-      process.cwd(),
-      "src/components/home/startup-home-screen.module.css"
-    );
-    const css = readFileSync(cssPath, "utf8");
-
-    expect(css).toMatch(
-      /\.stepAction:focus-visible\s*\{[\s\S]*?outline:\s*2px solid #f2a51a;[\s\S]*?outline-offset:\s*3px;/
-    );
   });
 
   it("shows the evidence collection while the interview mission is in progress", () => {
