@@ -15,13 +15,14 @@ import {
 import { ProductIcon } from "@/components/product-icon";
 import type { AuthErrorPayload } from "@/lib/auth-types";
 import { missionExecutionHref } from "@/lib/startup-navigation";
-import type { ActivitySummary, TodayPayload } from "@/lib/startup-types";
+import type { TodayPayload } from "@/lib/startup-types";
 import { clearTestWorkspaceDrafts } from "@/lib/test-workspace-storage";
 
-import { FounderProgressRail } from "./founder-progress-rail";
 import { GuidedInterviewFlow } from "./guided-interview-flow";
 import type { InterviewEvidencePayload } from "./guided-interview-model";
 import { MissionFocusPanel } from "./mission-focus-panel";
+import { RecentActivity } from "./recent-activity";
+import { StartupProgressPanel } from "./startup-progress-panel";
 import styles from "./startup-home-screen.module.css";
 import { TestWorkspaceBanner } from "./test-workspace-banner";
 
@@ -55,82 +56,14 @@ function firstFieldError(payload: AuthErrorPayload) {
   return Object.values(payload.fieldErrors)[0]?.[0] ?? payload.message;
 }
 
-function formatActivityDate(value: string) {
-  const date = new Date(value);
-  const today = new Date();
-  const yesterday = new Date();
-  yesterday.setDate(today.getDate() - 1);
-
-  const sameDay = (left: Date, right: Date) =>
-    left.getFullYear() === right.getFullYear() &&
-    left.getMonth() === right.getMonth() &&
-    left.getDate() === right.getDate();
-
-  const prefix = sameDay(date, today)
-    ? "Hoje"
-    : sameDay(date, yesterday)
-      ? "Ontem"
-      : new Intl.DateTimeFormat("pt-BR", {
-          day: "2-digit",
-          month: "short",
-        }).format(date);
-
-  const time = new Intl.DateTimeFormat("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
-
-  return `${prefix}, ${time}`;
-}
-
-function RecentActivity({ activities }: { activities: ActivitySummary[] }) {
-  return (
-    <section className={styles.secondarySection}>
-      <h2>Atividade recente</h2>
-      {activities.length ? (
-        <ul className={styles.activityList}>
-          {activities.map((activity) => (
-            <li key={activity.id}>
-              <span className={styles.activityIcon}>
-                <ProductIcon name={activity.kind === "learning_recorded" ? "book" : "check"} />
-              </span>
-              <div>
-                <strong>{activity.kindLabel}</strong>
-                <p>{activity.description}</p>
-              </div>
-              <time dateTime={activity.occurredAt}>{formatActivityDate(activity.occurredAt)}</time>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div className={styles.emptyActivity}>
-          <ProductIcon name="mission" />
-          <div>
-            <strong>Seu histórico começa com trabalho real</strong>
-            <p>Registre a primeira entrevista para criar a primeira atividade.</p>
-          </div>
-        </div>
-      )}
-    </section>
-  );
-}
-
-function NextUnlock({ unlock }: { unlock: TodayPayload["nextUnlock"] }) {
-  return (
-    <section className={styles.secondarySection}>
-      <h2>Próximo desbloqueio</h2>
-      <div className={styles.unlockRow}>
-        <span className={unlock.available ? styles.unlockAvailable : styles.unlockLocked}>
-          <ProductIcon name={unlock.available ? "check" : "lock"} />
-        </span>
-        <div>
-          <strong>{unlock.title}</strong>
-          <p>{unlock.description}</p>
-        </div>
-        <small>{unlock.available ? "Disponível" : "Bloqueado"}</small>
-      </div>
-    </section>
-  );
+function homeContextMessage(payload: TodayPayload) {
+  if (payload.mission) {
+    return payload.mission.objective;
+  }
+  if (payload.missionState === "arc_complete") {
+    return "Você concluiu o arco disponível e já pode revisar o caminho construído.";
+  }
+  return "Conclua a etapa atual da Jornada para liberar a próxima missão.";
 }
 
 export function StartupHomeScreen({
@@ -613,8 +546,17 @@ export function StartupHomeScreen({
 
   if (isLoading) {
     return (
-      <div className={styles.loadingPage} aria-busy="true" aria-live="polite">
-        <span className={styles.loadingMark} />
+      <div
+        aria-label="Carregando missão de hoje"
+        aria-live="polite"
+        className={styles.loadingPage}
+        role="status"
+      >
+        <span aria-hidden="true" className={styles.homeSkeletonHeading} />
+        <div className={styles.homeSkeletonGrid}>
+          <span aria-hidden="true" className={styles.homeSkeletonMission} />
+          <span aria-hidden="true" className={styles.homeSkeletonProgress} />
+        </div>
         <span className={styles.srOnly}>Preparando a missão de hoje.</span>
       </div>
     );
@@ -646,8 +588,8 @@ export function StartupHomeScreen({
         inert={workMode !== "overview" || isTestResetOpen ? true : undefined}
       >
       <header className={styles.pageHeader}>
-        <h1>Bom dia, {payload.user.firstName}</h1>
-        <p>Hoje, o foco é entender o problema antes de construir a solução.</p>
+        <h1>Olá, {payload.user.firstName}</h1>
+        <p>{homeContextMessage(payload)}</p>
       </header>
 
       {payload.testWorkspace.canReset ? (
@@ -699,13 +641,14 @@ export function StartupHomeScreen({
             <Link href={`/painel/startup/${startupId}/jornada`}>Continuar Jornada</Link>
           </section>
         )}
-        <FounderProgressRail account={payload.gamification} journey={payload.journey} />
+        <StartupProgressPanel
+          journey={payload.journey}
+          nextUnlock={payload.nextUnlock}
+          startupId={startupId}
+        />
       </div>
 
-      <div className={styles.secondaryGrid}>
-        <RecentActivity activities={payload.recentActivities} />
-        <NextUnlock unlock={payload.nextUnlock} />
-      </div>
+      <RecentActivity activities={payload.recentActivities} />
 
       {formError && workMode === "overview" ? (
         <p className={styles.formError} role="alert">

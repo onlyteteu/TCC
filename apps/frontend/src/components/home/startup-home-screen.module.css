@@ -1,8 +1,8 @@
 .page {
-  width: min(1540px, 100%);
+  width: min(var(--sq-content-max, 1540px), 100%);
   margin: 0 auto;
-  padding: 32px;
-  color: #f7efe3;
+  padding: var(--sq-space-8, 32px);
+  color: var(--sq-text, #f7efe3);
 }
 
 .pageHeader {
@@ -11,28 +11,25 @@
 
 .pageHeader h1 {
   margin: 0;
-  color: #f7efe3;
-  font-size: clamp(1.8rem, 2.3vw, 2.5rem);
+  color: var(--sq-text, #f7efe3);
+  font-size: 2.1rem;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
 }
 
 .pageHeader p {
+  max-width: 70ch;
   margin: 8px 0 0;
-  color: #9aa8b8;
+  color: var(--sq-text-muted, #9aa8b8);
   font-size: 1rem;
+  line-height: 1.55;
 }
 
 .primaryGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 360px);
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 340px);
   gap: 24px;
   align-items: start;
-}
-
-.secondaryGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
-  gap: 24px;
-  margin-top: 24px;
 }
 
 .missionPanel {
@@ -391,11 +388,6 @@
   opacity: 0.65;
 }
 
-.statusRail {
-  display: grid;
-  gap: 16px;
-}
-
 .startupProgressPanel {
   display: grid;
   gap: 20px;
@@ -539,99 +531,6 @@
   font-size: 0.78rem;
 }
 
-.statusPanel {
-  padding: 20px;
-  border: 1px solid #203145;
-  border-radius: 16px;
-  background: #0b111c;
-}
-
-.streakRow,
-.levelRow {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.streakRow strong,
-.levelRow strong,
-.phaseHeader strong {
-  color: #f7efe3;
-  font-size: 1rem;
-}
-
-.streakRow p,
-.phaseHeader p {
-  margin: 4px 0 0;
-  color: #9aa8b8;
-  font-size: 0.85rem;
-  line-height: 1.45;
-}
-
-.streakMark,
-.levelRow > svg {
-  display: inline-grid;
-  width: 42px;
-  height: 42px;
-  flex: 0 0 auto;
-  place-items: center;
-  border-radius: 12px;
-}
-
-.streakMark {
-  background: #241b0c;
-  color: #ff7a1a;
-}
-
-.streakMark svg,
-.levelRow > svg {
-  width: 22px;
-  height: 22px;
-}
-
-.levelRow > svg {
-  padding: 10px;
-  background: #17130e;
-  color: #f2a51a;
-}
-
-.levelRow div,
-.phaseHeader div {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  justify-content: space-between;
-  flex: 1;
-  gap: 12px;
-}
-
-.levelRow span,
-.phaseHeader span {
-  color: #f2a51a;
-  font-size: 0.85rem;
-}
-
-.levelTrack,
-.phaseTrack {
-  height: 7px;
-  margin-top: 16px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: #1b2737;
-}
-
-.levelTrack span,
-.phaseTrack span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: #f2a51a;
-}
-
-.phaseTrack span {
-  background: #f2a51a;
-}
-
 .successMessage,
 .celebration {
   display: flex;
@@ -662,19 +561,17 @@
   margin: 3px 0 0;
 }
 
-.secondarySection,
 .missionUnavailable,
 .errorPanel {
   padding: 22px;
-  border: 1px solid #203145;
-  border-radius: 16px;
-  background: #0b111c;
+  border: 1px solid var(--sq-border, #203145);
+  border-radius: var(--sq-radius-lg, 16px);
+  background: var(--sq-surface, #0b111c);
 }
 
-.secondarySection h2,
 .missionUnavailable h2 {
   margin: 0 0 16px;
-  color: #f7efe3;
+  color: var(--sq-text, #f7efe3);
   font-size: 1.05rem;
 }
 
@@ -687,7 +584,6 @@
 }
 
 .activityList li,
-.unlockRow,
 .emptyActivity {
   display: grid;
   grid-template-columns: 38px minmax(0, 1fr) auto;
@@ -702,42 +598,31 @@
 }
 
 .activityList p,
-.unlockRow p,
 .emptyActivity p {
   margin: 3px 0 0;
-  color: #9aa8b8;
+  color: var(--sq-text-muted, #9aa8b8);
   font-size: 0.85rem;
 }
 
-.activityList time,
-.unlockRow small {
-  color: #7f8da0;
+.activityList time {
+  color: var(--sq-text-subtle, #7f8da0);
   font-size: 0.78rem;
 }
 
-.activityIcon,
-.unlockAvailable,
-.unlockLocked {
+.activityIcon {
   display: inline-grid;
   width: 34px;
   height: 34px;
   place-items: center;
   border-radius: 10px;
-  background: #10241b;
-  color: #bfe8ce;
+  background: var(--sq-success-bg, #10241b);
+  color: var(--sq-success, #bfe8ce);
 }
 
 .activityIcon svg,
-.unlockAvailable svg,
-.unlockLocked svg,
 .emptyActivity > svg {
   width: 18px;
   height: 18px;
-}
-
-.unlockLocked {
-  background: #111927;
-  color: #7f8da0;
 }
 
 .emptyActivity {
@@ -750,13 +635,13 @@
 }
 
 .missionUnavailable p {
-  color: #9aa8b8;
+  color: var(--sq-text-muted, #9aa8b8);
 }
 
 .missionUnavailable a {
   display: inline-flex;
   margin-top: 14px;
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
   font-weight: 800;
 }
 
@@ -940,20 +825,49 @@
   margin: 0;
 }
 
-.loadingPage,
 .errorPanel {
   display: grid;
   min-height: 300px;
   place-content: center;
 }
 
-.loadingMark {
-  width: 42px;
-  height: 42px;
-  border: 4px solid #203145;
-  border-top-color: #f2a51a;
-  border-radius: 50%;
-  animation: spin 800ms linear infinite;
+.loadingPage {
+  display: grid;
+  width: min(var(--sq-content-max, 1540px), 100%);
+  gap: 24px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.homeSkeletonHeading,
+.homeSkeletonMission,
+.homeSkeletonProgress {
+  display: block;
+  border-radius: var(--sq-radius-md, 12px);
+  background: var(--sq-surface-raised, #111927);
+  animation: homeSkeletonPulse 1.2s ease-in-out infinite alternate;
+}
+
+.homeSkeletonHeading {
+  width: min(380px, 48%);
+  height: 72px;
+}
+
+.homeSkeletonGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 340px);
+  gap: 24px;
+  min-height: 480px;
+}
+
+.homeSkeletonMission,
+.homeSkeletonProgress {
+  min-width: 0;
+  min-height: 100%;
+}
+
+.homeSkeletonProgress {
+  background: var(--sq-surface, #0b111c);
 }
 
 .errorPanel {
@@ -981,9 +895,13 @@
   border: 0;
 }
 
-@keyframes spin {
+@keyframes homeSkeletonPulse {
+  from {
+    opacity: 0.62;
+  }
+
   to {
-    transform: rotate(360deg);
+    opacity: 1;
   }
 }
 
@@ -999,7 +917,7 @@
 
 @media (max-width: 1120px) {
   .primaryGrid,
-  .secondaryGrid {
+  .homeSkeletonGrid {
     grid-template-columns: minmax(0, 1fr);
   }
 }
@@ -1034,14 +952,13 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .activityList li,
-  .unlockRow {
+  .activityList li {
     grid-template-columns: 34px minmax(0, 1fr);
   }
 
-  .activityList time,
-  .unlockRow small {
+  .activityMeta {
     grid-column: 2;
+    justify-items: start;
   }
 
   .dialogBackdrop {

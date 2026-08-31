@@ -226,10 +226,13 @@ describe("StartupHomeScreen", () => {
 
     render(<StartupHomeScreen startupId={7} />);
 
-    expect(await screen.findByRole("heading", { name: "Bom dia, Ana" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Olá, Ana" })).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith("/api/startups/7/today", { cache: "no-store" });
+    expect(screen.getByRole("heading", { name: "Progresso da startup" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Atividade recente" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Próximo desbloqueio" })).toBeInTheDocument();
+    expect(screen.queryByText("Nível 3")).not.toBeInTheDocument();
+    expect(screen.queryByText("4 dias")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByText("Registre 5 entrevistas"));
     expect(screen.getByRole("dialog", { name: "Registrar entrevista" })).toBeInTheDocument();
@@ -458,7 +461,7 @@ describe("StartupHomeScreen", () => {
       )
     );
 
-    render(<StartupHomeScreen startupId={7} />);
+    const arcView = render(<StartupHomeScreen startupId={7} />);
 
     expect(
       await screen.findByRole("heading", { name: "Arco de Descoberta concluído" })
@@ -469,6 +472,30 @@ describe("StartupHomeScreen", () => {
     expect(screen.getByRole("link", { name: "Rever missões" })).toHaveAttribute(
       "href",
       "/painel/startup/7/missoes"
+    );
+    arcView.unmount();
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            ...payload,
+            mission: null,
+            missionState: "unavailable",
+          }),
+          { status: 200 }
+        )
+      )
+    );
+    render(<StartupHomeScreen startupId={7} />);
+
+    expect(
+      await screen.findByRole("heading", { name: "Sua próxima missão ainda está bloqueada" })
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Continuar Jornada" })).toHaveAttribute(
+      "href",
+      "/painel/startup/7/jornada"
     );
   });
 
@@ -500,7 +527,9 @@ describe("StartupHomeScreen", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const loadingView = render(<StartupHomeScreen startupId={7} />);
-    expect(screen.getByText("Preparando a missão de hoje.")).toBeInTheDocument();
+    const loadingStatus = screen.getByRole("status", { name: "Carregando missão de hoje" });
+    expect(loadingStatus).toHaveTextContent("Preparando a missão de hoje.");
+    expect(loadingStatus.querySelectorAll('[aria-hidden="true"]')).toHaveLength(3);
     resolveLoad(
       new Response(JSON.stringify({ ...payload, celebration: {
         title: "Missão concluída",
@@ -562,7 +591,7 @@ describe("StartupHomeScreen", () => {
     vi.stubGlobal("fetch", vi.fn().mockImplementation(() => jsonResponse(payload)));
     const regularView = render(<StartupHomeScreen startupId={7} />);
 
-    await screen.findByRole("heading", { name: "Bom dia, Ana" });
+    await screen.findByRole("heading", { name: "Olá, Ana" });
     expect(screen.queryByLabelText("Modo de teste")).not.toBeInTheDocument();
     regularView.unmount();
 
