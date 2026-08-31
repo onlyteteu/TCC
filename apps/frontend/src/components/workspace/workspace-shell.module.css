@@ -49,8 +49,8 @@
   left: 50%;
   padding: 10px 16px;
   border-radius: 8px;
-  color: #070b13;
-  background: #f2a51a;
+  color: var(--sq-bg);
+  background: var(--sq-accent);
   font-weight: 800;
   text-decoration: none;
   transform: translate(-50%, -160%);
@@ -58,7 +58,7 @@
 }
 
 .skipLink:focus {
-  outline: 3px solid #f7efe3;
+  outline: 3px solid var(--sq-text);
   outline-offset: 3px;
   transform: translate(-50%, 0);
 }
@@ -92,7 +92,7 @@
 .avatar:focus-visible,
 .profilePopover button:focus-visible,
 .feedback button:focus-visible {
-  outline: 2px solid #f2a51a;
+  outline: 2px solid var(--sq-focus-ring);
   outline-offset: 3px;
 }
 
@@ -120,11 +120,11 @@
 }
 
 .brandName > span:first-child {
-  color: #f2a51a;
+  color: var(--sq-accent);
 }
 
 .brandName > span:last-child {
-  color: #f7efe3;
+  color: var(--sq-text);
 }
 
 .navigation {
@@ -150,30 +150,33 @@
   padding: 8px 11px;
   border: 1px solid transparent;
   border-radius: 10px;
-  color: #9aa8b8;
+  color: var(--sq-text-muted);
   font-size: 0.86rem;
   text-decoration: none;
 }
 
 .navigationLink {
-  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+  transition:
+    border-color var(--sq-duration-interaction) ease,
+    background var(--sq-duration-interaction) ease,
+    color var(--sq-duration-interaction) ease;
 }
 
 .navigationLink:hover {
-  border-color: #2b3d52;
-  color: #f7efe3;
-  background: #111927;
+  border-color: var(--sq-border-strong);
+  color: var(--sq-text);
+  background: var(--sq-surface-raised);
 }
 
 .navigationLink[aria-current="page"] {
   border-color: rgba(242, 165, 26, 0.32);
-  color: #f7efe3;
-  background: linear-gradient(90deg, rgba(242, 165, 26, 0.18), rgba(242, 165, 26, 0.04));
+  color: var(--sq-text);
+  background: rgb(242 165 26 / 12%);
 }
 
 .navigationDisabled {
   grid-template-rows: auto auto;
-  color: #657283;
+  color: var(--sq-text-subtle);
   cursor: not-allowed;
 }
 
@@ -187,7 +190,7 @@
 }
 
 .navigationDisabled small {
-  color: #566271;
+  color: var(--sq-text-subtle);
   font-size: 0.66rem;
   line-height: 1.2;
 }
@@ -212,8 +215,8 @@
   justify-content: space-between;
   min-width: 0;
   padding: 0 24px;
-  border-bottom: 1px solid #203145;
-  background: rgba(7, 11, 19, 0.96);
+  border-bottom: 1px solid var(--sq-border);
+  background: rgb(7 11 19 / 96%);
 }
 
 .startupPicker,
@@ -245,7 +248,7 @@
 .startupPickerSummary:hover,
 .profileMenu[open] .avatar,
 .startupPicker[open] .startupPickerSummary {
-  background: #111927;
+  background: var(--sq-surface-raised);
 }
 
 .startupPickerMark,
@@ -254,7 +257,7 @@
   place-items: center;
   border: 1px solid rgba(242, 165, 26, 0.38);
   border-radius: 9px;
-  color: #f2a51a;
+  color: var(--sq-accent);
   background: #17130e;
   font-weight: 850;
 }
@@ -271,7 +274,7 @@
 }
 
 .startupPickerSummary small {
-  color: #718096;
+  color: var(--sq-text-subtle);
   font-size: 0.66rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -287,7 +290,7 @@
 .chevronIcon {
   width: 16px;
   height: 16px;
-  color: #718096;
+  color: var(--sq-text-subtle);
   transform: rotate(90deg);
   transition: transform 160ms ease;
 }
@@ -300,9 +303,9 @@
 .profilePopover {
   position: absolute;
   top: calc(100% + 10px);
-  border: 1px solid #2b3d52;
-  border-radius: 12px;
-  background: #0b111c;
+  border: 1px solid var(--sq-border-strong);
+  border-radius: var(--sq-radius-md);
+  background: var(--sq-surface);
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.42);
 }
 
@@ -321,7 +324,7 @@
   padding: 8px;
   border: 0;
   border-radius: 8px;
-  color: #cbd4df;
+  color: var(--sq-text-muted);
   background: transparent;
   text-align: left;
   cursor: pointer;
@@ -329,8 +332,8 @@
 
 .startupOption:hover,
 .startupOption[aria-current="true"] {
-  color: #f7efe3;
-  background: #111927;
+  color: var(--sq-text);
+  background: var(--sq-surface-raised);
 }
 
 .startupOption:disabled {
@@ -348,20 +351,20 @@
   gap: 3px;
   margin-top: 6px;
   padding-top: 6px;
-  border-top: 1px solid #203145;
+  border-top: 1px solid var(--sq-border);
 }
 
 .startupMenuLinks a {
   padding: 8px;
   border-radius: 7px;
-  color: #f2a51a;
+  color: var(--sq-accent);
   font-size: 0.78rem;
   font-weight: 750;
   text-decoration: none;
 }
 
 .startupMenuLinks a:hover {
-  background: #111927;
+  background: var(--sq-surface-raised);
 }
 
 .topbarActions {
@@ -376,17 +379,17 @@
   gap: 7px;
   min-height: 38px;
   padding: 0 11px;
-  border: 1px solid #203145;
+  border: 1px solid var(--sq-border);
   border-radius: 999px;
-  color: #aeb9c6;
-  background: #0a1019;
+  color: var(--sq-text-muted);
+  background: var(--sq-surface);
   font-size: 0.76rem;
 }
 
 .progressPill svg {
   width: 17px;
   height: 17px;
-  color: #f2a51a;
+  color: var(--sq-accent);
 }
 
 .avatar {
@@ -396,8 +399,8 @@
   place-items: center;
   border: 1px solid #38506c;
   border-radius: 50%;
-  color: #f7efe3;
-  background: #152033;
+  color: var(--sq-text);
+  background: var(--sq-surface-interactive);
   font-size: 0.76rem;
   font-weight: 850;
 }
@@ -413,12 +416,12 @@
   gap: 4px;
   min-width: 0;
   padding: 3px 4px 12px;
-  border-bottom: 1px solid #203145;
+  border-bottom: 1px solid var(--sq-border);
 }
 
 .profilePopover small {
   overflow: hidden;
-  color: #718096;
+  color: var(--sq-text-subtle);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -427,8 +430,8 @@
 .feedback button {
   border: 0;
   border-radius: 8px;
-  color: #f7efe3;
-  background: #152033;
+  color: var(--sq-text);
+  background: var(--sq-surface-interactive);
   font-weight: 750;
   cursor: pointer;
 }

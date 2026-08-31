@@ -10,18 +10,12 @@ import {
 import styles from "./workspace-shell.module.css";
 
 const items = [
-  { key: "home", label: "Home", icon: "home", enabled: true },
-  { key: "journey", label: "Jornada", icon: "journey", enabled: true },
-  { key: "missions", label: "Missoes", icon: "mission", enabled: true },
-  { key: "experiments", label: "Experimentos", icon: "flask", enabled: false },
-  { key: "learnings", label: "Aprendizados", icon: "book", enabled: false },
-  { key: "metrics", label: "Metricas", icon: "chart", enabled: false },
-  { key: "documents", label: "Documentos", icon: "file", enabled: false },
-  { key: "achievements", label: "Conquistas", icon: "award", enabled: false },
+  { key: "home", label: "Home", icon: "home" },
+  { key: "journey", label: "Jornada", icon: "journey" },
+  { key: "missions", label: "Missões", icon: "mission" },
 ] as const satisfies ReadonlyArray<{
-  enabled: boolean;
   icon: ProductIconName;
-  key: string;
+  key: "home" | "journey" | "missions";
   label: string;
 }>;
 
@@ -45,7 +39,7 @@ export function WorkspaceSidebar({ activeSection, startupId }: WorkspaceSidebarP
         {items.map((item) => {
           const icon = <ProductIcon className={styles.navigationIcon} name={item.icon} />;
 
-          if (item.enabled && startupId !== null) {
+          if (startupId !== null) {
             return (
               <li key={item.key}>
                 <Link
@@ -60,14 +54,12 @@ export function WorkspaceSidebar({ activeSection, startupId }: WorkspaceSidebarP
             );
           }
 
-          const helper = item.enabled ? "Crie uma startup para acessar" : "Em breve";
-
           return (
             <li key={item.key}>
               <span aria-disabled="true" className={styles.navigationDisabled}>
                 {icon}
                 <strong>{item.label}</strong>
-                <small>{helper}</small>
+                <small>Crie uma startup para acessar</small>
               </span>
             </li>
           );

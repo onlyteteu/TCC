@@ -124,7 +124,7 @@ describe("WorkspaceShell", () => {
 
     const atmosphere = document.querySelector('[data-workspace-atmosphere="ritual"]');
     expect(atmosphere).toHaveAttribute("aria-hidden", "true");
-    expect(await screen.findByRole("link", { name: "Missoes" })).toHaveAttribute(
+    expect(await screen.findByRole("link", { name: "Missões" })).toHaveAttribute(
       "aria-current",
       "page"
     );

@@ -13,7 +13,15 @@ vi.mock("next/navigation", () => ({
 }));
 vi.mock("./workspace-context", () => ({
   useWorkspace: () => ({
-    accountProgress: null,
+    accountProgress: {
+      achievements: [],
+      currentStreak: 4,
+      level: 3,
+      unlockedCount: 0,
+      xp: 360,
+      xpIntoLevel: 60,
+      xpPerLevel: 100,
+    },
     activeStartup: { id: 7, name: "Aurora" },
     openStartup,
     startups: [{ id: 7, name: "Aurora" }, { id: 8, name: "Boreal" }],
@@ -43,6 +51,13 @@ describe("WorkspaceTopbar menus", () => {
     expect(summary).toHaveFocus();
   });
 
+  it("names global progress compactly for assistive technology", () => {
+    render(<WorkspaceTopbar />);
+
+    expect(screen.getByLabelText("Sequência: 4 dias")).toBeInTheDocument();
+    expect(screen.getByLabelText("Nível 3, 360 XP")).toBeInTheDocument();
+  });
+
   it("closes the profile menu and restores summary focus before logout navigation", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 200 })));
     render(<WorkspaceTopbar />);
@@ -63,7 +78,9 @@ describe("WorkspaceTopbar menus", () => {
     const details = summary.closest("details")!;
     details.open = true;
 
-    fireEvent.click(screen.getByRole("link", { name: "Ver todas as startups" }));
+    const link = screen.getByRole("link", { name: "Ver todas as startups" });
+    link.addEventListener("click", (event) => event.preventDefault());
+    fireEvent.click(link);
 
     expect(details).not.toHaveAttribute("open");
     expect(summary).toHaveFocus();

@@ -28,6 +28,9 @@ export function WorkspaceTopbar() {
   const startupPickerRef = useRef<HTMLDetailsElement>(null);
   const profileMenuRef = useRef<HTMLDetailsElement>(null);
   const streak = accountProgress?.currentStreak ?? 0;
+  const streakLabel = streak > 0 ? `${streak} ${streak === 1 ? "dia" : "dias"}` : "Comece hoje";
+  const level = accountProgress?.level ?? 1;
+  const xp = accountProgress?.xp ?? 0;
 
   async function handleOpenStartup(startupId: number) {
     setOpeningStartupId(startupId);
@@ -96,13 +99,13 @@ export function WorkspaceTopbar() {
       </details>
 
       <div className={styles.topbarActions}>
-        <span className={styles.progressPill} title="Sequencia atual">
+        <span aria-label={`Sequência: ${streakLabel}`} className={styles.progressPill}>
           <ProductIcon name="flame" />
-          <strong>{streak > 0 ? `${streak} ${streak === 1 ? "dia" : "dias"}` : "Comece hoje"}</strong>
+          <strong>{streakLabel}</strong>
         </span>
-        <span className={styles.progressPill} title="Nivel global">
+        <span aria-label={`Nível ${level}, ${xp} XP`} className={styles.progressPill}>
           <ProductIcon name="level" />
-          <strong>Nivel {accountProgress?.level ?? 1} · {accountProgress?.xp ?? 0} XP</strong>
+          <strong>Nível {level} · {xp} XP</strong>
         </span>
         <details className={styles.profileMenu} ref={profileMenuRef}>
           <summary aria-label="Abrir menu do perfil" className={styles.avatar}>
