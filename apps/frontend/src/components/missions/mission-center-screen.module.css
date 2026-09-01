@@ -3,7 +3,7 @@
   max-width: 1540px;
   margin: 0 auto;
   padding: 32px;
-  color: #f7efe3;
+  color: var(--sq-text, #f7efe3);
 }
 
 .header {
@@ -22,7 +22,7 @@
 
 .header h1 {
   margin: 0;
-  color: #f7efe3;
+  color: var(--sq-text, #f7efe3);
   font-size: 2.3rem;
   letter-spacing: -0.025em;
 }
@@ -31,7 +31,7 @@
 .sectionHeading p {
   max-width: 70ch;
   margin: 8px 0 0;
-  color: #9aa8b8;
+  color: var(--sq-text-muted, #9aa8b8);
   line-height: 1.55;
   text-wrap: pretty;
 }
@@ -42,17 +42,17 @@
   min-width: 230px;
   gap: 7px 24px;
   padding: 13px 15px;
-  border: 1px solid #203145;
+  border: 1px solid var(--sq-border, #203145);
   border-radius: 12px;
-  background: #0b111c;
+  background: var(--sq-surface, #0b111c);
 }
 
 .arcProgress strong {
-  color: #f7efe3;
+  color: var(--sq-text, #f7efe3);
 }
 
 .arcProgress > span {
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
   font-weight: 800;
   text-align: right;
 }
@@ -62,7 +62,7 @@
   height: 6px;
   overflow: hidden;
   border-radius: 6px;
-  background: #203145;
+  background: var(--sq-border, #203145);
 }
 
 .arcTrack span,
@@ -70,7 +70,7 @@
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: #f2a51a;
+  background: var(--sq-accent, #f2a51a);
 }
 
 .focus {
@@ -81,7 +81,7 @@
   padding: 30px;
   border: 1px solid rgba(242, 165, 26, 0.48);
   border-radius: 16px;
-  background: #0b111c;
+  background: var(--sq-surface, #0b111c);
 }
 
 .focusCopy {
@@ -91,7 +91,7 @@
 .focusReason {
   max-width: 72ch;
   margin: 0 0 14px;
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
   font-size: 0.9rem;
   font-weight: 750;
   line-height: 1.5;
@@ -100,7 +100,7 @@
 .focus h2 {
   max-width: 24ch;
   margin: 0;
-  color: #f7efe3;
+  color: var(--sq-text, #f7efe3);
   font-size: 2rem;
   letter-spacing: -0.025em;
   line-height: 1.16;
@@ -109,7 +109,7 @@
 .focusObjective {
   max-width: 68ch;
   margin: 10px 0 0;
-  color: #9aa8b8;
+  color: var(--sq-text-muted, #9aa8b8);
   line-height: 1.6;
   text-wrap: pretty;
 }
@@ -124,19 +124,19 @@
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 8px;
-  color: #9aa8b8;
+  color: var(--sq-text-muted, #9aa8b8);
   font-size: 0.86rem;
 }
 
 .progressLabel strong {
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
 }
 
 .progressTrack {
   height: 8px;
   overflow: hidden;
   border-radius: 8px;
-  background: #203145;
+  background: var(--sq-border, #203145);
 }
 
 .focusAction {
@@ -147,7 +147,7 @@
 }
 
 .reward {
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
   font-size: 0.9rem;
   font-weight: 800;
 }
@@ -162,8 +162,8 @@
   padding: 0 18px;
   border: 0;
   border-radius: 10px;
-  background: #f2a51a;
-  color: #070b13;
+  background: var(--sq-accent, #f2a51a);
+  color: var(--sq-bg, #070b13);
   cursor: pointer;
   font: inherit;
   font-weight: 800;
@@ -178,7 +178,7 @@
 
 .primaryAction:hover,
 .retryButton:hover {
-  background: #ffb630;
+  background: var(--sq-accent-hover, #ffb630);
   transform: translateY(-1px);
 }
 
@@ -186,7 +186,7 @@
 .alternativeLink:focus-visible,
 .trailRow:focus-visible,
 .retryButton:focus-visible {
-  outline: 2px solid #f2a51a;
+  outline: 2px solid var(--sq-accent, #f2a51a);
   outline-offset: 3px;
 }
 
@@ -201,12 +201,12 @@
   justify-content: space-between;
   gap: 28px;
   padding-bottom: 14px;
-  border-bottom: 1px solid #203145;
+  border-bottom: 1px solid var(--sq-border, #203145);
 }
 
 .sectionHeading h2 {
   margin: 0;
-  color: #f7efe3;
+  color: var(--sq-text, #f7efe3);
   font-size: 1.2rem;
 }
 
@@ -224,7 +224,7 @@
 }
 
 .availableList li {
-  border-bottom: 1px solid #203145;
+  border-bottom: 1px solid var(--sq-border, #203145);
 }
 
 .alternativeLink {
@@ -234,13 +234,13 @@
   justify-content: space-between;
   gap: 24px;
   padding: 17px 10px;
-  color: #f7efe3;
+  color: var(--sq-text, #f7efe3);
   text-decoration: none;
   transition: background 160ms ease-out;
 }
 
 .alternativeLink:hover {
-  background: #0b111c;
+  background: var(--sq-surface, #0b111c);
 }
 
 .alternativeLink > span:first-child {
@@ -251,7 +251,7 @@
 
 .alternativeLink small {
   overflow: hidden;
-  color: #9aa8b8;
+  color: var(--sq-text-muted, #9aa8b8);
   font-size: 0.84rem;
   font-weight: 400;
   text-overflow: ellipsis;
@@ -263,7 +263,7 @@
   flex: 0 0 auto;
   align-items: center;
   gap: 9px;
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
   font-size: 0.84rem;
   font-weight: 800;
 }
@@ -279,7 +279,7 @@
 
 .trail li {
   counter-increment: mission-trail;
-  border-bottom: 1px solid #203145;
+  border-bottom: 1px solid var(--sq-border, #203145);
 }
 
 .trailRow {
@@ -289,13 +289,13 @@
   align-items: center;
   gap: 16px;
   padding: 17px 10px;
-  color: #f7efe3;
+  color: var(--sq-text, #f7efe3);
   text-decoration: none;
   transition: background 160ms ease-out;
 }
 
 a.trailRow:hover {
-  background: #0b111c;
+  background: var(--sq-surface, #0b111c);
 }
 
 .trailIcon {
@@ -303,10 +303,10 @@ a.trailRow:hover {
   width: 36px;
   height: 36px;
   place-items: center;
-  border: 1px solid #203145;
+  border: 1px solid var(--sq-border, #203145);
   border-radius: 10px;
-  background: #0b111c;
-  color: #9aa8b8;
+  background: var(--sq-surface, #0b111c);
+  color: var(--sq-text-muted, #9aa8b8);
 }
 
 .trailIcon svg {
@@ -322,20 +322,20 @@ a.trailRow:hover {
 
 .trailCopy > span {
   overflow: hidden;
-  color: #9aa8b8;
+  color: var(--sq-text-muted, #9aa8b8);
   font-size: 0.84rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .trailCopy small {
-  color: #bac5d1;
+  color: var(--sq-text-soft, #bac5d1);
   font-size: 0.8rem;
   line-height: 1.4;
 }
 
 .trailState {
-  color: #9aa8b8;
+  color: var(--sq-text-muted, #9aa8b8);
   font-size: 0.82rem;
   font-weight: 750;
   text-align: right;
@@ -348,37 +348,37 @@ a.trailRow:hover {
 .trail_in_progress .trailIcon,
 .trail_in_progress .trailState {
   border-color: rgba(242, 165, 26, 0.48);
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
 }
 
 .trail_available .trailState {
-  color: #9aa8b8;
+  color: var(--sq-text-muted, #9aa8b8);
 }
 
 .trail_completed .trailIcon {
-  border-color: #2f6550;
-  background: #10241b;
-  color: #bfe8ce;
+  border-color: var(--sq-success-border, #2f6550);
+  background: var(--sq-success-bg, #10241b);
+  color: var(--sq-success, #bfe8ce);
 }
 
 .trail_completed .trailState {
-  color: #bfe8ce;
+  color: var(--sq-success, #bfe8ce);
 }
 
 .trail_locked .trailRow {
-  color: #9aa8b8;
+  color: var(--sq-text-muted, #9aa8b8);
   cursor: not-allowed;
 }
 
 .trail_locked .trailIcon,
 .trail_locked .trailState {
-  color: #7f8da0;
+  color: var(--sq-text-subtle, #7f8da0);
 }
 
 .focusCompleted {
   display: block;
-  border-color: #2f6550;
-  background: #10241b;
+  border-color: var(--sq-success-border, #2f6550);
+  background: var(--sq-success-bg, #10241b);
 }
 
 .completedFocus,
@@ -392,7 +392,7 @@ a.trailRow:hover {
 .noFocus p {
   max-width: 70ch;
   margin: 9px 0 0;
-  color: #bfe8ce;
+  color: var(--sq-success, #bfe8ce);
   line-height: 1.55;
 }
 
@@ -403,9 +403,9 @@ a.trailRow:hover {
   height: 42px;
   flex: 0 0 auto;
   place-items: center;
-  border: 1px solid #2f6550;
+  border: 1px solid var(--sq-success-border, #2f6550);
   border-radius: 12px;
-  color: #bfe8ce;
+  color: var(--sq-success, #bfe8ce);
 }
 
 .completedIcon svg,
@@ -415,7 +415,7 @@ a.trailRow:hover {
 }
 
 .noFocus p {
-  color: #9aa8b8;
+  color: var(--sq-text-muted, #9aa8b8);
 }
 
 .skeletonPage {
@@ -436,7 +436,7 @@ a.trailRow:hover {
 .skeletonTrail span {
   display: block;
   border-radius: 12px;
-  background: #0b111c;
+  background: var(--sq-surface, #0b111c);
   animation: skeleton-pulse 1.2s ease-in-out infinite alternate;
 }
 
@@ -453,14 +453,14 @@ a.trailRow:hover {
 .skeletonFocus {
   height: 270px;
   margin-top: 24px;
-  border: 1px solid #203145;
+  border: 1px solid var(--sq-border, #203145);
 }
 
 .skeletonTrail {
   display: grid;
   gap: 1px;
   margin-top: 34px;
-  background: #203145;
+  background: var(--sq-border, #203145);
 }
 
 .skeletonTrail span {
@@ -476,14 +476,14 @@ a.trailRow:hover {
   padding: 28px;
   place-content: center;
   justify-items: start;
-  border: 1px solid #203145;
+  border: 1px solid var(--sq-border, #203145);
   border-radius: 16px;
-  background: #0b111c;
-  color: #f7efe3;
+  background: var(--sq-surface, #0b111c);
+  color: var(--sq-text, #f7efe3);
 }
 
 .errorPanel > svg {
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
 }
 
 .errorPanel h1 {
@@ -493,7 +493,7 @@ a.trailRow:hover {
 
 .errorPanel p {
   margin: 8px 0 20px;
-  color: #9aa8b8;
+  color: var(--sq-text-muted, #9aa8b8);
   line-height: 1.55;
 }
 

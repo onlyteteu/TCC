@@ -3,7 +3,7 @@
   margin: 0 auto;
   padding: 30px 32px 48px;
   overflow-x: hidden;
-  color: #f5f0e8;
+  color: var(--sq-text, #f7efe3);
 }
 
 .header {
@@ -20,14 +20,14 @@
 }
 
 .header > div > span {
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
   font-size: 0.78rem;
   font-weight: 800;
 }
 
 .header h1 {
   margin: 6px 0 0;
-  color: #f7f3ec;
+  color: var(--sq-text, #f7efe3);
   font-size: 1.9rem;
   letter-spacing: -0.025em;
   line-height: 1.15;
@@ -37,7 +37,7 @@
 .header p {
   max-width: 68ch;
   margin: 8px 0 0;
-  color: #aab6c5;
+  color: var(--sq-text-soft, #bac5d1);
   font-size: 0.9rem;
   line-height: 1.55;
   text-wrap: pretty;
@@ -71,28 +71,28 @@
 }
 
 .primaryButton {
-  border: 1px solid #f2a51a;
-  color: #090d14;
-  background: #f2a51a;
+  border: 1px solid var(--sq-accent, #f2a51a);
+  color: var(--sq-bg, #070b13);
+  background: var(--sq-accent, #f2a51a);
 }
 
 .primaryButton:hover {
-  border-color: #ffb630;
-  background: #ffb630;
+  border-color: var(--sq-accent-hover, #ffb630);
+  background: var(--sq-accent-hover, #ffb630);
 }
 
 .secondaryButton,
 .editButton {
-  border: 1px solid #3d526b;
-  color: #d4dde8;
-  background: #0c1420;
+  border: 1px solid var(--sq-border-strong, #2b3d52);
+  color: var(--sq-text-soft, #bac5d1);
+  background: var(--sq-surface, #0b111c);
 }
 
 .secondaryButton:hover,
 .editButton:hover {
   border-color: #60758e;
-  color: #ffffff;
-  background: #152235;
+  color: var(--sq-text, #f7efe3);
+  background: var(--sq-surface-interactive, #152033);
 }
 
 .primaryButton:disabled,
@@ -109,7 +109,7 @@
 .chapterStepButton:focus-visible,
 .mapEditor input:focus-visible,
 .mapEditor textarea:focus-visible {
-  outline: 2px solid #f2a51a;
+  outline: 2px solid var(--sq-accent, #f2a51a);
   outline-offset: 3px;
 }
 
@@ -117,8 +117,8 @@
   margin-bottom: 18px;
   padding: 12px 15px;
   border-radius: 9px;
-  color: #c6f1da;
-  background: #10271d;
+  color: var(--sq-success, #bfe8ce);
+  background: var(--sq-success-bg, #10241b);
   font-size: 0.84rem;
 }
 
@@ -131,9 +131,9 @@
   gap: 12px;
   margin: 44px auto;
   padding: 30px;
-  border: 1px solid #24364a;
+  border: 1px solid var(--sq-border, #203145);
   border-radius: 14px;
-  background: #0b121d;
+  background: var(--sq-surface, #0b111c);
   text-align: center;
 }
 
@@ -144,7 +144,7 @@
 
 .statePanel p {
   max-width: 56ch;
-  color: #aab6c5;
+  color: var(--sq-text-soft, #bac5d1);
   line-height: 1.55;
 }
 
@@ -158,7 +158,7 @@
   display: block;
   min-width: 0;
   border-radius: 14px;
-  background: #111c2a;
+  background: var(--sq-surface-raised, #111927);
   animation: skeletonPulse 1.4s ease-in-out infinite alternate;
 }
 
@@ -200,9 +200,9 @@
   align-items: end;
   gap: 32px;
   padding: 26px 28px;
-  border: 1px solid #293c52;
+  border: 1px solid var(--sq-border-strong, #2b3d52);
   border-radius: 14px;
-  background: #0e1826;
+  background: var(--sq-surface-raised, #111927);
 }
 
 .chapterHero > div:first-child {
@@ -211,7 +211,7 @@
 
 .chapterHero > div:first-child > span {
   display: block;
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
   font-size: 0.78rem;
   font-weight: 800;
 }
@@ -219,14 +219,14 @@
 .chapterHero > div:first-child > strong {
   display: block;
   margin-top: 7px;
-  color: #cbd5e1;
+  color: var(--sq-text-soft, #bac5d1);
   font-size: 0.9rem;
 }
 
 .chapterHero h2 {
   max-width: 32ch;
   margin: 9px 0 0;
-  color: #ffffff;
+  color: var(--sq-text, #f7efe3);
   font-size: 1.48rem;
   letter-spacing: -0.02em;
   line-height: 1.28;
@@ -239,7 +239,7 @@
 
 .overallProgress > span {
   display: block;
-  color: #d7e0ea;
+  color: var(--sq-text-soft, #bac5d1);
   font-size: 0.82rem;
   font-weight: 750;
   text-align: right;
@@ -250,15 +250,14 @@
   margin-top: 10px;
   overflow: hidden;
   border-radius: 999px;
-  background: #223248;
+  background: var(--sq-border, #203145);
 }
 
 .progressTrack > span {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: #f2a51a;
-  transition: width 220ms ease-out;
+  background: var(--sq-accent, #f2a51a);
 }
 
 .chapterTrack {
@@ -303,14 +302,14 @@
 }
 
 .chapterHeading small {
-  color: #8f9db0;
+  color: var(--sq-text-muted, #9aa8b8);
   font-size: 0.72rem;
   font-weight: 700;
 }
 
 .chapterHeading strong {
   overflow: hidden;
-  color: #d7e0ea;
+  color: var(--sq-text-soft, #bac5d1);
   font-size: 0.9rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -324,36 +323,36 @@
   border: 2px solid #506178;
   border-radius: 50%;
   color: #9eacbd;
-  background: #0a111c;
+  background: var(--sq-surface, #0b111c);
   font-size: 0.78rem;
   font-weight: 850;
 }
 
 .chapterCount {
-  color: #8f9db0;
+  color: var(--sq-text-muted, #9aa8b8);
   font-size: 0.72rem;
   font-weight: 750;
 }
 
 .chapter[data-status="done"] .chapterNode {
-  border-color: #35c68a;
+  border-color: var(--sq-success, #bfe8ce);
   color: #07150f;
-  background: #35c68a;
+  background: var(--sq-success, #bfe8ce);
 }
 
 .chapter[data-status="done"] .chapterHeading small,
 .chapter[data-status="done"] .chapterCount {
-  color: #73dcae;
+  color: var(--sq-success, #bfe8ce);
 }
 
 .chapter[data-status="current"] .chapterNode {
-  border-color: #f2a51a;
-  color: #090d14;
-  background: #f2a51a;
+  border-color: var(--sq-accent, #f2a51a);
+  color: var(--sq-bg, #070b13);
+  background: var(--sq-accent, #f2a51a);
 }
 
 .chapter[data-status="current"] .chapterHeading strong {
-  color: #ffffff;
+  color: var(--sq-text, #f7efe3);
 }
 
 .chapter[data-status="current"] .chapterHeading small,
@@ -362,7 +361,7 @@
 }
 
 .chapter[data-status="locked"] .chapterHeading strong {
-  color: #8694a6;
+  color: var(--sq-text-subtle, #7f8da0);
 }
 
 .chapterSteps {
@@ -389,33 +388,33 @@
 
 .chapterStepButton {
   border: 1px solid transparent;
-  color: #b9c5d2;
+  color: var(--sq-text-soft, #bac5d1);
   background: transparent;
   cursor: pointer;
 }
 
 .chapterStepButton:hover {
   border-color: #3d526b;
-  color: #ffffff;
-  background: #111c2a;
+  color: var(--sq-text, #f7efe3);
+  background: var(--sq-surface-raised, #111927);
 }
 
 .chapterStepButton[aria-current="step"] {
   border-color: rgb(242 165 26 / 55%);
-  color: #ffffff;
+  color: var(--sq-text, #f7efe3);
   background: rgb(242 165 26 / 11%);
 }
 
 .chapter[data-status="done"] .chapterStepButton > span {
-  color: #35c68a;
+  color: var(--sq-success, #bfe8ce);
 }
 
 .chapter[data-status="current"] .chapterStepButton > span {
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
 }
 
 .lockedChapterStep {
-  color: #7f8da0;
+  color: var(--sq-text-subtle, #7f8da0);
 }
 
 .journeyWorkspace {
@@ -429,9 +428,9 @@
 .strategicSummary,
 .mapSummary {
   min-width: 0;
-  border: 1px solid #283b51;
+  border: 1px solid var(--sq-border-strong, #2b3d52);
   border-radius: 14px;
-  background: #0b131f;
+  background: var(--sq-surface, #0b111c);
 }
 
 .milestonePanel {
@@ -439,7 +438,7 @@
 }
 
 .sectionEyebrow {
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
   font-size: 0.78rem;
   font-weight: 800;
 }
@@ -447,7 +446,7 @@
 .milestonePanel h2,
 .strategicSummary h2 {
   margin: 7px 0 0;
-  color: #ffffff;
+  color: var(--sq-text, #f7efe3);
   font-size: 1.34rem;
   letter-spacing: -0.018em;
   line-height: 1.25;
@@ -457,7 +456,7 @@
 .milestoneDescription {
   max-width: 68ch;
   margin: 10px 0 0;
-  color: #b3bfcd;
+  color: var(--sq-text-soft, #bac5d1);
   line-height: 1.6;
   text-wrap: pretty;
 }
@@ -465,12 +464,12 @@
 .alreadyBuilt {
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid #223248;
+  border-top: 1px solid var(--sq-border, #203145);
 }
 
 .alreadyBuilt h3 {
   margin: 0;
-  color: #d7e0ea;
+  color: var(--sq-text-soft, #bac5d1);
   font-size: 0.86rem;
 }
 
@@ -488,12 +487,12 @@
 }
 
 .alreadyBuilt li strong {
-  color: #8f9db0;
+  color: var(--sq-text-muted, #9aa8b8);
   font-size: 0.74rem;
 }
 
 .alreadyBuilt li span {
-  color: #d7e0ea;
+  color: var(--sq-text-soft, #bac5d1);
   font-size: 0.88rem;
   line-height: 1.5;
 }
@@ -504,26 +503,26 @@
   margin-top: 22px;
   padding: 15px 16px;
   border-radius: 10px;
-  background: #101c2b;
+  background: var(--sq-surface-raised, #111927);
 }
 
 .nextUnlock > span,
 .missionConnection > div:first-child > span {
-  color: #8f9db0;
+  color: var(--sq-text-muted, #9aa8b8);
   font-size: 0.73rem;
   font-weight: 750;
 }
 
 .nextUnlock strong,
 .missionConnection > div:first-child > strong {
-  color: #f3f6fa;
+  color: var(--sq-text, #f7efe3);
   font-size: 0.9rem;
 }
 
 .nextUnlock p,
 .missionConnection p {
   margin: 0;
-  color: #aab6c5;
+  color: var(--sq-text-soft, #bac5d1);
   font-size: 0.82rem;
   line-height: 1.5;
 }
@@ -535,7 +534,7 @@
   gap: 16px;
   margin-top: 24px;
   padding-top: 22px;
-  border-top: 1px solid #223248;
+  border-top: 1px solid var(--sq-border, #203145);
 }
 
 .missionConnection > div:first-child {
@@ -560,23 +559,23 @@
 .missionMeta span {
   padding: 5px 8px;
   border-radius: 999px;
-  color: #d7e0ea;
+  color: var(--sq-text-soft, #bac5d1);
   background: #1b2a3c;
   font-size: 0.72rem;
   font-weight: 800;
 }
 
 .missionMeta span:last-child {
-  color: #78dfb2;
-  background: #10271d;
+  color: var(--sq-success, #bfe8ce);
+  background: var(--sq-success-bg, #10241b);
 }
 
 .unavailableMessage {
   margin: 24px 0 0;
   padding: 13px 14px;
   border-radius: 9px;
-  color: #b5c0cd;
-  background: #131d2a;
+  color: var(--sq-text-soft, #bac5d1);
+  background: var(--sq-surface-raised, #111927);
   font-size: 0.84rem;
   line-height: 1.5;
 }
@@ -593,18 +592,18 @@
 
 .strategicSummary dl > div {
   padding: 15px 0;
-  border-top: 1px solid #223248;
+  border-top: 1px solid var(--sq-border, #203145);
 }
 
 .strategicSummary dt {
-  color: #8f9db0;
+  color: var(--sq-text-muted, #9aa8b8);
   font-size: 0.74rem;
   font-weight: 750;
 }
 
 .strategicSummary dd {
   margin: 7px 0 0;
-  color: #d9e1ea;
+  color: var(--sq-text-soft, #bac5d1);
   font-size: 0.86rem;
   line-height: 1.55;
   white-space: pre-wrap;
@@ -615,7 +614,7 @@
   margin-top: 9px;
   padding: 0;
   border: 0;
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
   background: transparent;
   cursor: pointer;
   font-size: 0.76rem;
@@ -640,12 +639,12 @@
   justify-content: space-between;
   gap: 24px;
   padding: 26px 28px;
-  border-bottom: 1px solid #283b51;
+  border-bottom: 1px solid var(--sq-border-strong, #2b3d52);
 }
 
 .mapHeading h2 {
   margin: 0;
-  color: #ffffff;
+  color: var(--sq-text, #f7efe3);
   font-size: 1.4rem;
   letter-spacing: -0.02em;
 }
@@ -653,7 +652,7 @@
 .mapHeading p {
   max-width: 65ch;
   margin: 7px 0 0;
-  color: #aab6c5;
+  color: var(--sq-text-soft, #bac5d1);
   line-height: 1.5;
 }
 
@@ -661,7 +660,7 @@
   flex: 0 0 auto;
   padding: 6px 9px;
   border-radius: 999px;
-  color: #f2a51a;
+  color: var(--sq-accent, #f2a51a);
   background: rgb(242 165 26 / 10%);
   font-size: 0.72rem;
   font-weight: 800;
@@ -674,7 +673,7 @@
 
 .mapField {
   padding: 22px 28px;
-  border-bottom: 1px solid #223248;
+  border-bottom: 1px solid var(--sq-border, #203145);
 }
 
 .mapField:last-child {
@@ -694,12 +693,12 @@
 }
 
 .mapField dt {
-  color: #f0f4f8;
+  color: var(--sq-text, #f7efe3);
   font-weight: 800;
 }
 
 .mapFieldHeader span {
-  color: #91a0b2;
+  color: var(--sq-text-muted, #9aa8b8);
   font-size: 0.78rem;
   line-height: 1.45;
 }
@@ -711,7 +710,7 @@
 .mapField dd > p {
   max-width: 75ch;
   margin: 0;
-  color: #d1dae5;
+  color: var(--sq-text-soft, #bac5d1);
   line-height: 1.6;
   white-space: pre-wrap;
 }
@@ -736,15 +735,15 @@
   padding: 12px 13px;
   border: 1px solid #526780;
   border-radius: 9px;
-  color: #ffffff;
-  background: #080e17;
+  color: var(--sq-text, #f7efe3);
+  background: var(--sq-bg, #070b13);
   font: inherit;
   line-height: 1.55;
 }
 
 .mapEditor input:focus,
 .mapEditor textarea:focus {
-  border-color: #f2a51a;
+  border-color: var(--sq-accent, #f2a51a);
 }
 
 .mapEditor textarea {
@@ -760,7 +759,7 @@
 
 .formError {
   margin: 2px 0 0;
-  color: #ffaaaa;
+  color: var(--sq-danger, #ffaaaa);
   font-size: 0.82rem;
 }
 

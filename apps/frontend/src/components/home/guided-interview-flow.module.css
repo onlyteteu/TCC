@@ -121,7 +121,6 @@
   background: var(--interview-accent);
   display: block;
   height: 100%;
-  transition: width 180ms ease;
 }
 
 .guideButton {

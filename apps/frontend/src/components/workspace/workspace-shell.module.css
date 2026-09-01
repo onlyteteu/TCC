@@ -7,12 +7,14 @@
   --sq-border: #203145;
   --sq-border-strong: #2b3d52;
   --sq-text: #f7efe3;
+  --sq-text-soft: #bac5d1;
   --sq-text-muted: #9aa8b8;
   --sq-text-subtle: #7f8da0;
   --sq-accent: #f2a51a;
   --sq-accent-hover: #ffb630;
   --sq-success: #bfe8ce;
   --sq-success-bg: #10241b;
+  --sq-success-border: #2f6550;
   --sq-danger: #ffaaaa;
   --sq-space-1: 4px;
   --sq-space-2: 8px;

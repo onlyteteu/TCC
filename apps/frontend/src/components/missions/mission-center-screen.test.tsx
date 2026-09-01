@@ -91,11 +91,11 @@ describe("MissionCenterScreen", () => {
     render(<MissionCenterScreen startupId={7} />);
 
     expect(await screen.findByRole("heading", { name: recommended.title })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Continuar missao" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Continuar missão" })).toHaveAttribute(
       "href",
       "/painel/startup/7"
     );
-    expect(screen.queryByRole("heading", { name: "Tambem disponivel" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Também disponível" })).not.toBeInTheDocument();
     expect(screen.getByText("Conclua: Converse com 5 potenciais clientes")).toBeInTheDocument();
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
     const arcProgress = screen.getByRole("progressbar", {
@@ -131,8 +131,8 @@ describe("MissionCenterScreen", () => {
     );
     render(<MissionCenterScreen startupId={7} />);
 
-    expect(await screen.findByRole("heading", { name: "Tambem disponivel" })).toBeInTheDocument();
-    const alternatives = screen.getByRole("region", { name: "Tambem disponivel" });
+    expect(await screen.findByRole("heading", { name: "Também disponível" })).toBeInTheDocument();
+    const alternatives = screen.getByRole("region", { name: "Também disponível" });
     expect(within(alternatives).getByRole("link", { name: /Mapeie as alternativas atuais/ })).toHaveAttribute(
       "href",
       "/painel/startup/7/missoes/map_current_alternatives"
@@ -219,10 +219,10 @@ describe("MissionCenterScreen", () => {
     render(<MissionCenterScreen startupId={7} />);
 
     expect(
-      await screen.findByRole("heading", { name: "Arco de Descoberta concluido" })
+      await screen.findByRole("heading", { name: "Arco de Descoberta concluído" })
     ).toBeInTheDocument();
-    expect(screen.getByText(/A proxima trilha ainda nao foi liberada/)).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Continuar missao" })).not.toBeInTheDocument();
+    expect(screen.getByText(/A próxima trilha ainda não foi liberada/)).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Continuar missão" })).not.toBeInTheDocument();
     expect(screen.getAllByRole("listitem")).toHaveLength(5);
   });
 
@@ -231,7 +231,7 @@ describe("MissionCenterScreen", () => {
 
     render(<MissionCenterScreen startupId={7} />);
 
-    expect(screen.getByLabelText("Carregando central de missoes")).toHaveAttribute(
+    expect(screen.getByLabelText("Carregando central de missões")).toHaveAttribute(
       "aria-busy",
       "true"
     );

@@ -51,7 +51,7 @@ function MissionProgress({ mission }: { mission: MissionCardSummary }) {
   return (
     <div className={styles.missionProgress}>
       <div className={styles.progressLabel}>
-        <span>Progresso da missao</span>
+        <span>Progresso da missão</span>
         <strong>{progress}%</strong>
       </div>
       <div
@@ -108,11 +108,11 @@ function MissionCenterSkeleton() {
   return (
     <div
       aria-busy="true"
-      aria-label="Carregando central de missoes"
+      aria-label="Carregando central de missões"
       className={styles.skeletonPage}
       role="status"
     >
-      <span className={styles.srOnly}>Carregando central de missoes.</span>
+      <span className={styles.srOnly}>Carregando central de missões.</span>
       <div className={styles.skeletonHeader}>
         <span />
         <span />
@@ -197,7 +197,7 @@ export function MissionCenterScreen({ startupId }: MissionCenterScreenProps) {
     return (
       <section className={styles.errorPanel} role="alert">
         <ProductIcon name="info" />
-        <h1>Nao conseguimos abrir a Central de missoes</h1>
+        <h1>Não conseguimos abrir a Central de missões</h1>
         <p>{loadError ?? LOAD_ERROR}</p>
         <button className={styles.retryButton} onClick={() => void loadMissions()} type="button">
           Tentar novamente
@@ -214,8 +214,8 @@ export function MissionCenterScreen({ startupId }: MissionCenterScreenProps) {
     <div className={styles.page}>
       <header className={styles.header}>
         <div>
-          <h1>Missoes</h1>
-          <p>Transforme a proxima duvida da startup em acao.</p>
+          <h1>Missões</h1>
+          <p>Transforme a próxima dúvida da startup em ação.</p>
         </div>
         <div className={styles.arcProgress}>
           <strong>{payload.arc.title}</strong>
@@ -245,9 +245,9 @@ export function MissionCenterScreen({ startupId }: MissionCenterScreenProps) {
               <ProductIcon name="check" />
             </span>
             <div>
-              <h2 id="mission-focus-title">Arco de {payload.arc.title} concluido</h2>
+              <h2 id="mission-focus-title">Arco de {payload.arc.title} concluído</h2>
               <p>
-                Voce concluiu as missoes desta etapa. A proxima trilha ainda nao foi liberada.
+                Você concluiu as missões desta etapa. A próxima trilha ainda não foi liberada.
               </p>
             </div>
           </div>
@@ -255,7 +255,7 @@ export function MissionCenterScreen({ startupId }: MissionCenterScreenProps) {
           <>
             <div className={styles.focusCopy}>
               <p className={styles.focusReason}>
-                {recommended.recommendationReason ?? "Esta e a proxima acao mais importante agora."}
+                {recommended.recommendationReason ?? "Esta é a próxima ação mais importante agora."}
               </p>
               <h2 id="mission-focus-title">{recommended.title}</h2>
               <p className={styles.focusObjective}>{recommended.objective}</p>
@@ -267,7 +267,7 @@ export function MissionCenterScreen({ startupId }: MissionCenterScreenProps) {
                 className={styles.primaryAction}
                 href={missionExecutionHref(startupId, recommended.key, recommended.actionType)}
               >
-                Continuar missao
+                Continuar missão
                 <ProductIcon name="chevron" />
               </Link>
             </div>
@@ -276,8 +276,8 @@ export function MissionCenterScreen({ startupId }: MissionCenterScreenProps) {
           <div className={styles.noFocus}>
             <ProductIcon name="info" />
             <div>
-              <h2 id="mission-focus-title">Nenhuma missao recomendada agora</h2>
-              <p>A trilha permanece visivel abaixo enquanto uma nova prioridade e preparada.</p>
+              <h2 id="mission-focus-title">Nenhuma missão recomendada agora</h2>
+              <p>A trilha permanece visível abaixo enquanto uma nova prioridade é preparada.</p>
             </div>
           </div>
         )}
@@ -286,7 +286,7 @@ export function MissionCenterScreen({ startupId }: MissionCenterScreenProps) {
       {payload.availableMissions.length > 0 ? (
         <section className={styles.availableSection} aria-labelledby="available-title">
           <div className={styles.sectionHeading}>
-            <h2 id="available-title">Tambem disponivel</h2>
+            <h2 id="available-title">Também disponível</h2>
             <p>Escolha outra frente se ela fizer mais sentido para o momento da startup.</p>
           </div>
           <ul className={styles.availableList}>
@@ -314,7 +314,7 @@ export function MissionCenterScreen({ startupId }: MissionCenterScreenProps) {
       <section className={styles.trailSection} aria-labelledby="trail-title">
         <div className={styles.sectionHeading}>
           <h2 id="trail-title">Trilha completa</h2>
-          <p>Acompanhe o que avancou, o que esta disponivel e o que ainda depende de outra missao.</p>
+          <p>Acompanhe o que avançou, o que está disponível e o que ainda depende de outra missão.</p>
         </div>
         <ol className={styles.trail}>
           {trail.map((mission) => (
