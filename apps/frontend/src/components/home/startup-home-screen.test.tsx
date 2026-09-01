@@ -67,6 +67,7 @@ const payload: TodayPayload = {
     completedAt: null,
     requirements: [],
     evidences: [],
+    sourceEvidences: [],
     learning: null,
     steps: [
       { key: "prepare", title: "Prepare o roteiro", description: "Use perguntas reais.", status: "completed" },

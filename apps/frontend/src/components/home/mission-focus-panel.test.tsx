@@ -37,6 +37,7 @@ const mission: MissionSummary = {
   completedAt: null,
   requirements: [],
   evidences: [],
+  sourceEvidences: [],
   learning: null,
   steps: [
     {

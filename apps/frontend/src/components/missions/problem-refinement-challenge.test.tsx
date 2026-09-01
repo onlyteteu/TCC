@@ -31,15 +31,42 @@ const startup = {
   problem: "Compras duplicadas de ingredientes",
 } as StartupSummary;
 
-const mission = {
+const mission: MissionDetailSummary = {
   key: "refine_problem_with_evidence",
+  definitionVersion: 3,
+  origin: "catalog",
+  type: "main",
+  typeLabel: "Missão principal",
+  phase: "Descoberta",
   title: "Refine o problema com evidências",
   objective: "Reescrever o problema usando os padrões encontrados nas entrevistas.",
+  whyItMatters: "Um problema específico reduz o risco de construir a solução errada.",
+  instructions: ["Revise os padrões", "Conecte as evidências", "Reescreva o problema"],
+  completionCriteria: "Registrar um problema sustentado pelas entrevistas.",
+  contextualTip: "Descreva o problema sem antecipar uma solução.",
   xpReward: 100,
+  estimatedMinutes: 20,
+  status: "available",
+  statusLabel: "Disponível",
+  progress: 0,
+  actionType: "problem_refinement",
+  isRequired: true,
+  order: 20,
+  priority: 90,
+  prerequisiteKeys: ["customer_interviews_5"],
+  lockedReasons: [],
+  recommendationReason: "Transforme as entrevistas em uma definição observável do problema.",
+  completedAt: null,
+  requiredEvidenceCount: 1,
+  evidenceCount: 0,
+  canAddLearning: false,
+  canComplete: false,
+  requirements: [],
+  steps: [],
   sourceEvidences: [1, 2, 3, 4, 5].map(interview),
   evidences: [],
-  status: "available",
-} as MissionDetailSummary;
+  learning: null,
+};
 
 type ChallengeProps = {
   celebration?: MissionDetailPayload["celebration"];
