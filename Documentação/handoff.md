@@ -1,5 +1,9 @@
 # Handoff do projeto
 
+> Este arquivo é o panorama do produto: o que a Startup Quest é hoje, atualizado a cada
+> incremento. O estado da última sessão de trabalho fica em `sessoes/HANDOFF.md`, e o
+> protocolo de troca entre Codex e Claude está em `AGENTS.md`, na raiz.
+
 Data de revisão: 21 de julho de 2026
 
 ## Dados principais

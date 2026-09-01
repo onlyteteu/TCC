@@ -134,3 +134,17 @@ marcada como funcionalidade implementada depois de código, migrations, estados,
 
 Decisões importantes de produto, arquitetura, fluxo, interface e funcionalidade não devem ficar
 somente no código. A documentação correspondente deve ser atualizada no mesmo ciclo da mudança.
+
+## Trabalho com agentes de IA
+
+O projeto é desenvolvido alternando entre Codex e Claude. Para que a troca de ferramenta não custe
+contexto, o repositório guarda a memória do trabalho:
+
+- `AGENTS.md`: fonte única de contexto e protocolo de sessão, lido pelas duas ferramentas;
+- `CLAUDE.md`: importa `AGENTS.md` e guarda o que é específico do Claude;
+- `Documentação/sessoes/HANDOFF.md`: onde a última sessão parou;
+- `Documentação/sessoes/LOG.md`: histórico das trocas;
+- `Documentação/sessoes/COMO-USAR.md`: o ciclo em quatro passos;
+- `scripts/estado.ps1`: imprime o estado factual do repositório.
+
+Toda sessão começa com `abrir sessão` e termina com `fechar sessão`.
