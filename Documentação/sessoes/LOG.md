@@ -18,3 +18,10 @@ Formato: `## AAAA-MM-DD — ferramenta — resumo em uma linha`, seguido de feit
   `AGENTS.md` sobre onde as validações rodam;
 - próximo passo: rodar `npm.cmd test` e `npx.cmd tsc --noEmit` no PowerShell e escolher a próxima frente;
 - estado: estável, árvore limpa, validações pendentes.
+
+## 2026-09-01 — Claude (aplicativo) — roteiro de validação do Incremento 1 aberto
+
+- feito: `Documentação/validacao/2026-09-01-incremento-1.md` (`092d969`), com roteiro, tabelas de
+  achados e de decisões derivadas;
+- próximo passo: rodar as validações no PowerShell, subir o ambiente e executar a rodada 1;
+- estado: estável, árvore limpa, nenhum achado preenchido.

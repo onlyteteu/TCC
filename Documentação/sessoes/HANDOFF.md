@@ -11,7 +11,7 @@ Formato obrigatório: manter todos os campos abaixo, na mesma ordem, sem deixar 
 ## Cabeçalho
 
 - ferramenta: Claude (aplicativo, ponte com o computador `cei-ufg`)
-- data e hora: 2026-09-01, 15h40 (America/Sao_Paulo)
+- data e hora: 2026-09-01, 15h55 (America/Sao_Paulo)
 - tipo da entrada: normal
 - estado ao encerrar: estável, árvore de trabalho limpa
 
@@ -30,12 +30,16 @@ anterior no Codex e deixar o repositório pronto para retomar o desenvolvimento.
   `MissionDetailSummary`. Confirmado antes de commitar que `sourceEvidences` já existe em
   `apps/frontend/src/lib/startup-types.ts:225` e é consumido por
   `apps/frontend/src/components/missions/problem-refinement-challenge.tsx`;
-- `AGENTS.md` ganhou a regra de que as validações rodam no Windows, não pela ponte.
+- `AGENTS.md` ganhou a regra de que as validações rodam no Windows, não pela ponte;
+- frente escolhida pelo Matheus: validar o Incremento 1 em uso real antes de ampliar o catálogo;
+- roteiro de validação aberto em `Documentação/validacao/2026-09-01-incremento-1.md`, commit `092d969`,
+  com as cinco perguntas de `proximos-passos.md`, preparação pelo workspace de teste reiniciável,
+  regras de condução, roteiro das cinco missões, tabelas de achados e de decisões derivadas.
 
 ## Estado do repositório
 
-- branch: `main`, 44 commits à frente de `origin/main` (não empurrados)
-- último commit: `2ee150c test: alinha fixtures de missao ao contrato com sourceEvidences`
+- branch: `main`, 46 commits à frente de `origin/main` (não empurrados)
+- último commit: `092d969 docs: abre o roteiro de validacao do Incremento 1`
 - árvore de trabalho limpa, com exceção de `.impeccable/`, que segue não rastreado por opção
 - `.git/_lixo-locks/` guarda arquivos de lock obsoletos deixados por comandos git executados pela
   ponte; a pasta pode ser apagada à vontade e não afeta o repositório
@@ -49,8 +53,9 @@ rodar no PowerShell, no Windows.
 
 ## Onde parei exatamente
 
-Repositório limpo e protocolo funcionando de ponta a ponta. Falta apenas a validação no Windows das
-alterações de fixture já commitadas, e a escolha da próxima frente de desenvolvimento.
+Repositório limpo, protocolo funcionando de ponta a ponta e roteiro de validação pronto para uso. O
+Matheus vai executar a rodada 1 da validação no ambiente local. Nenhum achado foi preenchido ainda:
+as tabelas do roteiro estão vazias.
 
 ## Próximo passo
 
@@ -59,10 +64,12 @@ Na raiz do projeto, em PowerShell:
 ```powershell
 cd apps\frontend; npm.cmd test -- --maxWorkers=1
 cd apps\frontend; npx.cmd tsc --noEmit --pretty false
+.\LIGAR-TUDO.cmd
 ```
 
-Se passar, seguir para a frente escolhida em `Documentação/proximos-passos.md`. Se falhar, corrigir
-antes de qualquer coisa nova e registrar a falha aqui.
+Com o ambiente no ar, executar a rodada 1 de `Documentação/validacao/2026-09-01-incremento-1.md`,
+preenchendo a tabela de achados durante o uso. Depois, transformar os achados em decisões na segunda
+tabela do mesmo arquivo, antes de escrever qualquer código novo.
 
 ## Decisões tomadas
 
