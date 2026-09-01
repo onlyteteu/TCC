@@ -2,19 +2,23 @@
 
 ## Estado atual
 
-Em 2026-07-21, o workspace principal inclui Home, Central de missão, detalhe de missão, Jornada
+Em 2026-09-01, o workspace principal inclui Home, Central de missão, detalhe de missão, Jornada
 e gerenciamento. Depois da autenticação, o produto resolve a startup mais recente e abre uma
 experiência única com sidebar fixa, topbar, seletor e somente a área de conteúdo rolável. A
-prioridade desta versão é desktop.
+prioridade desta versão é desktop. O `Painel 2.0` usa a missão principal como foco, separa o
+progresso da startup dos indicadores globais da conta e compartilha os tokens registrados no
+`DESIGN.md`.
 
 ## Workspace principal implementado
 
 ### Home da startup
 
 - rota `/painel/startup/<id>`;
-- concentra a missao principal, seus passos e o proximo gesto esperado;
-- registra entrevistas como evidencias e libera a sintese dos aprendizados no momento correto;
-- mostra XP, nivel global, sequencia de dias, fase, atividade recente e proximo desbloqueio;
+- abre com saudação e contexto derivados do estado atual da startup;
+- concentra a missão principal, seus passos, progresso, recomendação e próximo gesto esperado;
+- registra entrevistas como evidências e libera a síntese dos aprendizados no momento correto;
+- mostra progresso da startup, marco atual, atividade recente e próximo desbloqueio;
+- deixa XP, nível global e sequência somente na topbar, sem duplicá-los nos cards;
 - usa estados explicitos de carregamento, erro, bloqueio, envio e celebracao.
 - distingue o arco concluído de uma recomendação temporariamente indisponível.
 
@@ -58,20 +62,18 @@ prioridade desta versão é desktop.
 - a exclusao exige digitacao do nome e escolhe um fallback seguro quando a startup ativa e removida;
 - a criacao dedicada permanece em `/painel/startups/nova`.
 
-### Modulos visiveis, mas desabilitados
+### Navegação vigente
 
-Experimentos, Aprendizados, Metricas, Documentos e Conquistas continuam visiveis na navegacao
-como arquitetura futura. Eles aparecem como `em breve`, sem links falsos ou conteudo de
-demonstracao apresentado como funcional. Configuracoes tambem permanece futura, mas ainda nao
-aparece na sidebar. Missoes deixou o grupo desabilitado: a Central e o detalhe do Incremento 1
-estao ativos.
+A sidebar mostra apenas `Home`, `Jornada` e `Missões`. Experimentos, Aprendizados, Métricas,
+Documentos, Conquistas e Configurações continuam no escopo futuro, mas não aparecem como módulos
+desabilitados enquanto não possuírem dados, regras, estados vazios e testes.
 
 ### Validação de interface do Incremento 1
 
 Os componentes possuem testes de semântica, foco, navegação, loading, erro, bloqueio, envio e
 leitura. O CSS foi construído para desktop com contenção de largura, `min-width: 0`, truncamento e
-breakpoint estrutural. A inspeção visual manual final nos quatro viewports-alvo permanece uma
-checagem de aceitação separada; ela não é inferida apenas da suíte automatizada.
+breakpoint estrutural. A inspeção visual do Painel 2.0 cobre os quatro viewports desktop definidos
+no `DESIGN.md` e continua sendo uma checagem separada da suíte automatizada.
 
 ## Referencias historicas de design
 

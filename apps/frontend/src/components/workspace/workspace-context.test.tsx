@@ -375,9 +375,9 @@ describe("WorkspaceProvider", () => {
       </WorkspaceProvider>
     );
 
-    expect(await screen.findByText("Nivel 2 · 120 XP")).toBeInTheDocument();
+    expect(await screen.findByText("Nível 2 · 120 XP")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Reconciliar progresso" }));
-    expect(await screen.findByText("Nivel 3 · 230 XP")).toBeInTheDocument();
+    expect(await screen.findByText("Nível 3 · 230 XP")).toBeInTheDocument();
   });
 
   it("does not let an older refresh overwrite a startup opened while it was pending", async () => {

@@ -2,10 +2,11 @@
 
 ## Estado atual
 
-Em 2026-07-21, a plataforma possui um workspace funcional com autenticação, ciclo de vida de
+Em 2026-09-01, a plataforma possui um workspace funcional com autenticação, ciclo de vida de
 startups, Home guiada, Jornada em Mapa de Capítulos, gamificação ligada a trabalho real e o primeiro incremento do
 Motor de Missões 2.0. O arco atual possui cinco missões operacionais, Central própria e execução
-estruturada.
+estruturada. O Painel 2.0 consolida uma navegação enxuta, uma Home orientada à continuidade e um
+sistema visual compartilhado entre Home, Jornada e Missões.
 
 ## Escopo da gamificacao
 
@@ -55,7 +56,7 @@ conclusao, nao premia login isolado e nao cria progresso apenas visual.
 
 ### 3. Workspace principal
 
-- shell unico com marca, sidebar, topbar, seletor de startup e menu de conta;
+- shell único com marca, sidebar restrita a Home/Jornada/Missões, topbar, seletor de startup e menu de conta;
 - Home em `/painel/startup/[id]`;
 - Jornada em `/painel/startup/[id]/jornada`;
 - Central de missão em `/painel/startup/[id]/missoes`;
@@ -69,7 +70,8 @@ conclusao, nao premia login isolado e nao cria progresso apenas visual.
 - registro de entrevistas como evidencias;
 - sintese do aprendizado liberada depois das cinco entrevistas;
 - conclusao transacional e idempotente;
-- atividade recente e proximo desbloqueio derivados do backend.
+- painel de progresso local da startup sem repetir nível, XP e sequência da conta;
+- atividade recente e próximo desbloqueio derivados do backend.
 - recomendacao e progresso compartilhados com a Central;
 - estado `arc_complete` mostra a conclusao da Descoberta sem inventar uma missao bloqueada.
 
@@ -123,9 +125,8 @@ conclusao, nao premia login isolado e nao cria progresso apenas visual.
 - pagina completa de Conquistas;
 - Configuracoes.
 
-Na sidebar, somente Experimentos, Aprendizados, Metricas, Documentos e Conquistas aparecem
-desabilitados e sem links falsos. Configuracoes permanece futura e ainda nao aparece na navegacao;
-os demais itens desta lista tambem nao sao apresentados como modulos ativos.
+Nenhum módulo futuro aparece desabilitado na sidebar. A navegação fica restrita a `Home`,
+`Jornada` e `Missões` até que os demais itens tenham funcionalidade real, estados e testes.
 
 ## Proximo ciclo recomendado
 
@@ -145,6 +146,8 @@ semanal. A especificação completa permanece em `design/2026-07-15-motor-missoe
   cinco missões, Central e detalhe operacional.
 - **2026-07-21:** a Jornada passou a ser um Mapa de Capítulos conectado às missões e o Mapa inicial
   foi renomeado para Mapa da startup.
+- **2026-09-01:** o Painel 2.0 simplificou a navegação, reconstruiu a Home como bancada de trabalho
+  e unificou os papéis visuais de Home, Jornada, Central e detalhe de missão.
 
 As expressoes `painel inicial`, `Suas startups` e `pagina de detalhe` descrevem apenas esses ciclos
 historicos. Nao representam componentes ou destinos vigentes.

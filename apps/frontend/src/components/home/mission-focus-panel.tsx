@@ -65,7 +65,21 @@ export function MissionFocusPanel({
           <h2 id="mission-title">{mission.title}</h2>
           <p className={styles.missionObjective}>{mission.objective}</p>
         </div>
-        <span className={styles.reward}>+{mission.xpReward} XP</span>
+        <div className={styles.missionHeaderActions}>
+          <span className={styles.reward}>+{mission.xpReward} XP</span>
+          {!isCompleted ? (
+            <button
+              aria-busy={isPrimaryActionPending || undefined}
+              className={styles.primaryButton}
+              data-primary-action="true"
+              disabled={isPrimaryActionPending}
+              onClick={onPrimaryAction}
+              type="button"
+            >
+              {primaryLabel}
+            </button>
+          ) : null}
+        </div>
       </div>
 
       <div className={styles.missionProgressLabel}>
@@ -190,20 +204,7 @@ export function MissionFocusPanel({
             </Link>
           </div>
         </>
-      ) : (
-        <div className={styles.missionActions}>
-          <button
-            aria-busy={isPrimaryActionPending || undefined}
-            className={styles.primaryButton}
-            data-primary-action="true"
-            disabled={isPrimaryActionPending}
-            onClick={onPrimaryAction}
-            type="button"
-          >
-            {primaryLabel}
-          </button>
-        </div>
-      )}
+      ) : null}
     </section>
   );
 }

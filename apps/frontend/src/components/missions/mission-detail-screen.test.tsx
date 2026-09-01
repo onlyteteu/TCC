@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type {
@@ -294,7 +294,9 @@ describe("MissionDetailScreen", () => {
     render(<MissionDetailScreen missionKey="refine_problem_with_evidence" startupId={7} />);
 
     await reachProblemDiscoveryCard();
-    fireEvent.click(screen.getByRole("button", { name: "Registrar descoberta" }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Registrar descoberta" }));
+    });
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Revise");
   });

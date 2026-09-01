@@ -47,6 +47,13 @@
   gap: 24px;
 }
 
+.missionHeaderActions {
+  display: grid;
+  flex: 0 0 auto;
+  justify-items: end;
+  gap: 12px;
+}
+
 .missionHeader h2 {
   max-width: 24ch;
   margin: 12px 0 8px;
@@ -935,6 +942,14 @@
   .missionActions {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .missionHeaderActions {
+    justify-items: stretch;
+  }
+
+  .missionHeaderActions .reward {
+    justify-self: start;
   }
 
   .stepAction,

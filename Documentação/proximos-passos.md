@@ -9,6 +9,7 @@
 - Central de missão e detalhe operacional;
 - cinco missões do arco inicial: entrevistas, problema, público, proposta e alternativas;
 - dependências, bloqueios, submissões idempotentes e integração com Jornada/Mapa.
+- Painel 2.0 com navegação enxuta, Home orientada à missão e sistema visual documentado.
 
 ## Antes de ampliar o motor
 
@@ -48,10 +49,9 @@ Depois da validação do arco atual:
 ## Itens ainda futuros
 
 Experimentos, Decisões, biblioteca independente de Aprendizados, Métricas, Documentos, página
-completa de Conquistas, Configurações e missões dinâmicas não estão implementados. Entre esses
-itens, Experimentos, Aprendizados, Métricas, Documentos e Conquistas estão visíveis na sidebar e
-continuam desabilitados até possuírem dados, regras, estados vazios e testes. Configurações
-permanece futura e ainda não aparece na navegação.
+completa de Conquistas, Configurações e missões dinâmicas não estão implementados. Esses itens não
+aparecem na sidebar até possuírem dados, regras, estados vazios e testes; a navegação atual contém
+somente Home, Jornada e Missões.
 
 ## Itens que devem acompanhar cada ciclo
 
@@ -59,7 +59,7 @@ permanece futura e ainda não aparece na navegação.
 - registrar decisões de escopo e arquitetura;
 - preservar compatibilidade com missões já iniciadas ou concluídas;
 - manter Home, Central, detalhe e Jornada com responsabilidades distintas;
-- validar os viewports desktop `1280 x 720`, `1366 x 768`, `1536 x 720` e `1920 x 900`;
+- validar os viewports desktop `1280 x 720`, `1366 x 768`, `1536 x 864` e `1920 x 900`;
 - verificar navegação por teclado e mensagens que não dependam apenas de cor.
 
 ## Cuidados de escopo

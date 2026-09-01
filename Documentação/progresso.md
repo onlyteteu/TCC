@@ -2,7 +2,38 @@
 
 Cada entrada abaixo e um retrato do projeto na data indicada. Quando uma entrada antiga menciona
 `painel`, `Suas startups`, `pagina de detalhe`, `Hoje` ou criacao direta em `/painel`, ela registra
-uma etapa superada; o estado vigente e o ciclo mais recente, de 2026-07-21.
+uma etapa superada; o estado vigente e o ciclo mais recente, de 2026-09-01.
+
+## 2026-09-01 (Painel 2.0)
+
+### Resultado do ciclo
+
+- sistema visual semântico compartilhado pelo workspace, documentado no `DESIGN.md`;
+- sidebar reduzida a Home, Jornada e Missões, sem módulos futuros desabilitados;
+- topbar compacta com startup ativa, sequência e nível/XP acessíveis;
+- Home reconstruída com saudação contextual, missão principal, progresso da startup, próximo
+  desbloqueio e atividade recente;
+- separação explícita entre progresso local da startup e status global da conta;
+- missão em foco com motivo da recomendação, progresso semântico e CTA prioritário;
+- Jornada, Central e detalhe de missão migrados para os mesmos papéis de superfície, texto, borda,
+  ação, sucesso e erro;
+- cópia principal da Central de Missões revisada com acentuação correta;
+- testes que inspecionavam valores literais do CSS removidos em favor de comportamento e validação
+  renderizada.
+
+### Aceite
+
+- `npm.cmd test`: `170/170` testes aprovados em 33 arquivos;
+- `npm.cmd run lint`: aprovado;
+- `npm.cmd run build`: aprovado no Next.js 16.2.10, com 12 páginas geradas;
+- `manage.py test accounts startups --keepdb`: `113/113` testes aprovados;
+- `manage.py check`: sem problemas;
+- `manage.py makemigrations --check --dry-run`: nenhuma mudança detectada;
+- detector visual do workspace: nenhum alerta;
+- inspeção real de Home, Jornada e Missões em `1280 x 720`, `1366 x 768`, `1536 x 864` e
+  `1920 x 900`: sem overflow horizontal ou erro de runtime, shell ocupando o viewport e CTA da
+  Home visível na primeira dobra;
+- menus de startup e perfil conferidos em `1280 x 720`, sem recorte.
 
 ## 2026-07-20 (Motor de Missões 2.0 — Incremento 1)
 
