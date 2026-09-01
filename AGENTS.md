@@ -36,6 +36,12 @@ cd apps\frontend; npm.cmd run lint
 
 Nunca afirmar que um teste passou sem ter executado o comando na sessão.
 
+As validações rodam no Windows, em PowerShell, na máquina do Matheus. Quando a sessão é o Claude no
+aplicativo, o acesso aos arquivos passa por uma ponte e o sistema de arquivos fica lento demais para
+essas suítes: um `tsc --noEmit` passou de dez minutos sem terminar, e `npm test` depende de binários
+instalados para Windows. Nesse caso, pedir ao Matheus que rode o comando no PowerShell e cole a
+saída, e registrar no bastão que a validação ficou pendente.
+
 ## Mapa da documentação
 
 Antes de propor qualquer coisa, ler o que já foi decidido. Ordem de leitura por objetivo:

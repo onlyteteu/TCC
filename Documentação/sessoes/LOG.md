@@ -11,3 +11,10 @@ Formato: `## AAAA-MM-DD — ferramenta — resumo em uma linha`, seguido de feit
 - feito: `AGENTS.md`, `CLAUDE.md`, `Documentação/sessoes/` com bastão, log e guia, e `scripts/estado.ps1`;
 - próximo passo: rodar a suíte do frontend, resolver as alterações de teste pendentes e commitar;
 - estado: estável, nada commitado, nenhuma validação executada.
+
+## 2026-09-01 — Claude (aplicativo) — protocolo commitado e pendências do Codex resolvidas
+
+- feito: commits `0a5662d` (protocolo) e `2ee150c` (fixtures com `sourceEvidences`); regra nova em
+  `AGENTS.md` sobre onde as validações rodam;
+- próximo passo: rodar `npm.cmd test` e `npx.cmd tsc --noEmit` no PowerShell e escolher a próxima frente;
+- estado: estável, árvore limpa, validações pendentes.
