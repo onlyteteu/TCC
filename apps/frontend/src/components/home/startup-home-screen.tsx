@@ -594,7 +594,7 @@ export function StartupHomeScreen({
 
       {payload.testWorkspace.canReset ? (
         <TestWorkspaceBanner
-          onCompleteMission={completeTestMission}
+          onCompleteMission={payload.missionState === "active" ? completeTestMission : undefined}
           onModalChange={handleTestWorkspaceModalChange}
           onReset={resetTestWorkspace}
         />

@@ -426,13 +426,13 @@ describe("StartupHomeScreen", () => {
       },
       progress: 100,
       status: "completed",
-      statusLabel: "Concluida",
+      statusLabel: "Concluída",
       steps: payload.mission!.steps.map((step) => ({ ...step, status: "completed" as const })),
     });
     vi.stubGlobal("fetch", vi.fn().mockImplementation(() => jsonResponse(completedPayload)));
     render(<StartupHomeScreen startupId={7} />);
 
-    expect(await screen.findByText("Missao concluida")).toBeInTheDocument();
+    expect(await screen.findByText("Missão concluída")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Registrar entrevista/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Registrar aprendizado/i })).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Ir para a Jornada" })).toHaveAttribute(
@@ -450,6 +450,7 @@ describe("StartupHomeScreen", () => {
             ...payload,
             mission: null,
             missionState: "arc_complete",
+            testWorkspace: { canReset: true },
             nextUnlock: {
               key: "next_arc",
               title: "Próxima trilha",
@@ -474,6 +475,12 @@ describe("StartupHomeScreen", () => {
       "href",
       "/painel/startup/7/missoes"
     );
+    expect(
+      screen.queryByRole("button", { name: "Concluir missão atual" })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Reiniciar ambiente" })
+    ).toBeInTheDocument();
     arcView.unmount();
 
     vi.stubGlobal(

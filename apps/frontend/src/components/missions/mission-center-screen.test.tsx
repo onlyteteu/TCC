@@ -204,9 +204,9 @@ describe("MissionCenterScreen", () => {
       completedMissions: Array.from({ length: 5 }, (_, index) => ({
         ...recommended,
         key: `completed_${index}`,
-        title: `Missao concluida ${index + 1}`,
+        title: `Missão concluída ${index + 1}`,
         status: "completed" as const,
-        statusLabel: "Concluida",
+        statusLabel: "Concluída",
         progress: 100,
         order: (index + 1) * 10,
         completedAt: "2026-07-16T12:00:00Z",
@@ -250,7 +250,7 @@ describe("MissionCenterScreen", () => {
 
     render(<MissionCenterScreen startupId={99} />);
     expect(
-      await screen.findByText("Esta startup nao existe ou voce nao pode mais acessa-la.")
+      await screen.findByText("Esta startup não existe ou você não pode mais acessá-la.")
     ).toBeInTheDocument();
   });
 });

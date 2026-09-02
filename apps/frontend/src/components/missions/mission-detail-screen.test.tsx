@@ -18,14 +18,14 @@ const recommended = {
   definitionVersion: 2,
   origin: "catalog",
   type: "main",
-  typeLabel: "Missao principal",
+  typeLabel: "Missão principal",
   phase: "Descoberta",
   title: "Converse com 5 potenciais clientes",
   objective: "Entender como o problema acontece na vida real.",
   xpReward: 150,
   estimatedMinutes: 150,
   status: "available",
-  statusLabel: "Disponivel",
+  statusLabel: "Disponível",
   progress: 0,
   actionType: "interviews",
   isRequired: true,
@@ -55,16 +55,16 @@ const detail: MissionDetailPayload = {
   mission: {
     ...recommended,
     key: "refine_problem_with_evidence",
-    title: "Refine o problema com evidencias",
+    title: "Refine o problema com evidências",
     actionType: "problem_refinement",
     xpReward: 100,
     status: "available",
-    statusLabel: "Disponivel",
+    statusLabel: "Disponível",
     order: 20,
     whyItMatters: "Um problema especifico reduz risco.",
     instructions: ["Revise os padroes", "Reescreva o problema"],
-    completionCriteria: "Registrar problema e evidencias.",
-    contextualTip: "Nao cite a solucao.",
+    completionCriteria: "Registrar problema e evidências.",
+    contextualTip: "Não cite a solução.",
     requiredEvidenceCount: 1,
     evidenceCount: 0,
     canAddLearning: false,
@@ -72,7 +72,7 @@ const detail: MissionDetailPayload = {
     requirements: [
       {
         key: "submission",
-        label: "Entregavel registrado",
+        label: "Entregável registrado",
         current: 0,
         target: 1,
         completed: false,
@@ -109,11 +109,11 @@ function detailFor(actionType: MissionActionType): MissionDetailPayload {
     interviews: { key: "customer_interviews_5", title: "Converse com 5 potenciais clientes" },
     problem_refinement: {
       key: "refine_problem_with_evidence",
-      title: "Refine o problema com evidencias",
+      title: "Refine o problema com evidências",
     },
     audience_validation: {
       key: "validate_priority_audience",
-      title: "Valide o publico prioritario",
+      title: "Valide o público prioritário",
     },
     value_proposition: {
       key: "reframe_value_proposition",
@@ -191,14 +191,14 @@ describe("MissionDetailScreen", () => {
     render(<MissionDetailScreen missionKey={audience.mission.key} startupId={7} />);
 
     await screen.findByRole("heading", { name: audience.mission.title });
-    expect(screen.getByRole("progressbar", { name: "Progresso da missao" })).toHaveAttribute(
+    expect(screen.getByRole("progressbar", { name: "Progresso da missão" })).toHaveAttribute(
       "aria-valuenow",
       "0"
     );
     expect(screen.getByRole("heading", { name: "Requisitos" })).toBeInTheDocument();
-    expect(screen.getByText("Entregavel registrado")).toBeInTheDocument();
+    expect(screen.getByText("Entregável registrado")).toBeInTheDocument();
     expect(screen.getByText("0 de 1")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Etapas da missao" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Etapas da missão" })).toBeInTheDocument();
     expect(screen.getByText("Refine o problema")).toBeInTheDocument();
     expect(screen.getByText("Conecte as entrevistas.")).toBeInTheDocument();
   });
@@ -213,7 +213,7 @@ describe("MissionDetailScreen", () => {
       })
     ).toBeInTheDocument();
     expect(screen.queryByLabelText("Problema refinado")).not.toBeInTheDocument();
-    expect(screen.queryByRole("progressbar", { name: "Progresso da missao" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("progressbar", { name: "Progresso da missão" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Requisitos" })).not.toBeInTheDocument();
     expect(screen.getByLabelText("Recompensa: 100 XP")).toBeInTheDocument();
   });
@@ -227,8 +227,8 @@ describe("MissionDetailScreen", () => {
         new Response(
           JSON.stringify({
             ...detail,
-            mission: { ...detail.mission, status: "completed", statusLabel: "Concluida" },
-            message: "Missao concluida.",
+            mission: { ...detail.mission, status: "completed", statusLabel: "Concluída" },
+            message: "Missão concluída.",
             celebration: {
               title: "Missão cumprida",
               xpAwarded: 100,
@@ -237,7 +237,7 @@ describe("MissionDetailScreen", () => {
             nextRecommendedMission: {
               ...recommended,
               key: "validate_priority_audience",
-              title: "Valide o publico prioritario",
+              title: "Valide o público prioritário",
               actionType: "audience_validation",
               order: 30,
             },
@@ -266,7 +266,7 @@ describe("MissionDetailScreen", () => {
         "2 entrevistas sustentam este recorte. Pessoa 1: Relato 1: comprou ingredientes que ainda " +
         "estavam guardados. | Pessoa 2: Relato 2: comprou ingredientes que ainda estavam guardados.",
     });
-    expect(screen.getByRole("link", { name: /Valide o publico prioritario/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /Valide o público prioritário/ })).toHaveAttribute(
       "href",
       "/painel/startup/7/missoes/validate_priority_audience"
     );
@@ -316,9 +316,9 @@ describe("MissionDetailScreen", () => {
     );
     render(<MissionDetailScreen missionKey={audience.mission.key} startupId={7} />);
 
-    const audienceControl = await screen.findByLabelText("Publico prioritario");
+    const audienceControl = await screen.findByLabelText("Público prioritário");
     const signalsControl = screen.getByLabelText("Sinais observados");
-    const decisionControl = screen.getByLabelText("Decisao");
+    const decisionControl = screen.getByLabelText("Decisão");
     fireEvent.change(audienceControl, {
       target: { value: "Donos de restaurantes independentes com controle manual de estoque." },
     });
@@ -326,9 +326,9 @@ describe("MissionDetailScreen", () => {
       target: { value: "Relatam perda semanal e decidem diretamente as compras do negocio." },
     });
     fireEvent.change(decisionControl, { target: { value: "keep" } });
-    fireEvent.click(screen.getByRole("button", { name: "Salvar e concluir missao" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar e concluir missão" }));
 
-    expect(await screen.findByRole("button", { name: "Salvando missao..." })).toBeDisabled();
+    expect(await screen.findByRole("button", { name: "Salvando missão..." })).toBeDisabled();
     expect(audienceControl).toBeDisabled();
     expect(signalsControl).toBeDisabled();
     expect(decisionControl).toBeDisabled();
@@ -337,7 +337,7 @@ describe("MissionDetailScreen", () => {
       new Response(
         JSON.stringify({
           ...audience,
-          mission: { ...audience.mission, status: "completed", statusLabel: "Concluida" },
+          mission: { ...audience.mission, status: "completed", statusLabel: "Concluída" },
           message: "Publico validado.",
         }),
         { status: 200 }
@@ -352,7 +352,7 @@ describe("MissionDetailScreen", () => {
       mission: {
         ...detail.mission,
         status: "completed",
-        statusLabel: "Concluida",
+        statusLabel: "Concluída",
         evidences: [
           {
             id: 1,
@@ -376,7 +376,7 @@ describe("MissionDetailScreen", () => {
     expect(await screen.findByText("Problema final")).toBeInTheDocument();
     expect(screen.getByText("Problema refinado")).toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: "Salvar e concluir missao" })
+      screen.queryByRole("button", { name: "Salvar e concluir missão" })
     ).not.toBeInTheDocument();
   });
 
@@ -385,7 +385,7 @@ describe("MissionDetailScreen", () => {
       {
         actionType: "audience_validation" as const,
         fields: [
-          ["Publico prioritario", "30"],
+          ["Público prioritário", "30"],
           ["Sinais observados", "40"],
         ],
       },
@@ -419,7 +419,7 @@ describe("MissionDetailScreen", () => {
       }
 
       if (current.actionType === "audience_validation") {
-        expect(screen.getByLabelText("Decisao")).toHaveDisplayValue("Selecione uma decisao");
+        expect(screen.getByLabelText("Decisão")).toHaveDisplayValue("Selecione uma decisão");
         expect(screen.getByRole("option", { name: "Manter" })).toHaveValue("keep");
         expect(screen.getByRole("option", { name: "Ajustar" })).toHaveValue("adjust");
       }
@@ -438,7 +438,7 @@ describe("MissionDetailScreen", () => {
         new Response(
           JSON.stringify({
             ...audience,
-            mission: { ...audience.mission, status: "completed", statusLabel: "Concluida" },
+            mission: { ...audience.mission, status: "completed", statusLabel: "Concluída" },
             message: "Publico validado.",
           }),
           { status: 200 }
@@ -447,14 +447,14 @@ describe("MissionDetailScreen", () => {
     vi.stubGlobal("fetch", fetchMock);
     render(<MissionDetailScreen missionKey={audience.mission.key} startupId={7} />);
 
-    fireEvent.change(await screen.findByLabelText("Publico prioritario"), {
+    fireEvent.change(await screen.findByLabelText("Público prioritário"), {
       target: { value: "Donos de restaurantes independentes com controle manual de estoque." },
     });
     fireEvent.change(screen.getByLabelText("Sinais observados"), {
       target: { value: "Relatam perda semanal e decidem diretamente as compras do negocio." },
     });
-    fireEvent.change(screen.getByLabelText("Decisao"), { target: { value: "keep" } });
-    fireEvent.click(screen.getByRole("button", { name: "Salvar e concluir missao" }));
+    fireEvent.change(screen.getByLabelText("Decisão"), { target: { value: "keep" } });
+    fireEvent.click(screen.getByRole("button", { name: "Salvar e concluir missão" }));
 
     await screen.findByText("Publico validado.");
     expect(JSON.parse(String(fetchMock.mock.calls[1][1]?.body))).toEqual({
@@ -480,11 +480,11 @@ describe("MissionDetailScreen", () => {
     mockDetail(locked);
     render(<MissionDetailScreen missionKey={locked.mission.key} startupId={7} />);
 
-    const blockedRegion = await screen.findByRole("region", { name: "Missao bloqueada" });
+    const blockedRegion = await screen.findByRole("region", { name: "Missão bloqueada" });
     expect(within(blockedRegion).getByText(locked.mission.lockedReasons[0])).toBeInTheDocument();
     expect(within(blockedRegion).getByText(locked.mission.lockedReasons[1])).toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: "Salvar e concluir missao" })
+      screen.queryByRole("button", { name: "Salvar e concluir missão" })
     ).not.toBeInTheDocument();
   });
 
@@ -509,7 +509,7 @@ describe("MissionDetailScreen", () => {
     vi.stubGlobal("fetch", vi.fn().mockReturnValue(pending));
     const view = render(<MissionDetailScreen missionKey={detail.mission.key} startupId={7} />);
 
-    expect(screen.getByLabelText("Carregando detalhes da missao")).toHaveAttribute(
+    expect(screen.getByLabelText("Carregando detalhes da missão")).toHaveAttribute(
       "aria-busy",
       "true"
     );

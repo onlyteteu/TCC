@@ -49,11 +49,11 @@ const mapFields: Array<{
     key: "problem",
     label: "Problema",
     multiline: true,
-    helper: "A dor que precisa desaparecer para o publico inicial.",
+    helper: "A dor que precisa desaparecer para o público inicial.",
   },
   {
     key: "audience",
-    label: "Publico inicial",
+    label: "Público inicial",
     multiline: true,
     helper: "As primeiras pessoas ou organizacoes que sentem essa dor.",
   },
@@ -105,7 +105,7 @@ export function StartupMapSummary({
   async function saveField(field: StartupMapField) {
     const value = draft.trim();
     if (!value) {
-      setError(field === "name" ? "Informe um nome para a startup." : "Esse campo nao pode ficar vazio.");
+      setError(field === "name" ? "Informe um nome para a startup." : "Esse campo não pode ficar vazio.");
       return;
     }
 
@@ -120,7 +120,7 @@ export function StartupMapSummary({
       closeEditor();
     } catch (caughtError) {
       setError(
-        caughtError instanceof Error ? caughtError.message : "Nao foi possivel salvar agora."
+        caughtError instanceof Error ? caughtError.message : "Não foi possível salvar agora."
       );
     }
   }

@@ -4,7 +4,7 @@ Cada entrada abaixo e um retrato do projeto na data indicada. Quando uma entrada
 `painel`, `Suas startups`, `pagina de detalhe`, `Hoje` ou criacao direta em `/painel`, ela registra
 uma etapa superada; o estado vigente é o ciclo mais recente, de 2026-09-02.
 
-## 2026-09-02 (validação técnica do Incremento 1)
+## 2026-09-02 (validação técnica e correções do Incremento 1)
 
 ### Resultado da rodada
 
@@ -16,20 +16,25 @@ uma etapa superada; o estado vigente é o ciclo mais recente, de 2026-09-02.
 - Home, Jornada e Central conferidas nos quatro viewports desktop obrigatórios, sem overflow
   horizontal, recorte de ações ou erro de runtime;
 - link de salto ao conteúdo validado por teclado;
-- dois ajustes identificados para o próximo ciclo: estado do atalho de conclusão rápida após
-  `arc_complete` e acentuação de cópias derivadas;
+- o atalho de conclusão rápida passou a existir somente enquanto há missão ativa; após
+  `arc_complete`, o workspace de teste preserva apenas a ação de reinício;
+- cópias visíveis, nomes acessíveis, rótulos da API e mensagens do fluxo de missões receberam
+  acentuação correta, com a migração `startups.0010` aplicada;
+- os dois achados técnicos da rodada foram corrigidos e cobertos por regressão automatizada;
 - rodada com pessoas que não conhecem o produto permanece pendente e continua bloqueando a ampliação
   do catálogo.
 
 ### Validações executadas
 
 - `npm.cmd test -- --maxWorkers=1`: `170/170` testes aprovados em 33 arquivos;
-- `.venv\\Scripts\\python.exe manage.py test accounts startups --keepdb`: `113/113` testes aprovados;
+- `.venv\\Scripts\\python.exe manage.py test accounts startups --keepdb`: `114/114` testes aprovados;
 - `.venv\\Scripts\\python.exe manage.py check`: sem problemas;
 - `.venv\\Scripts\\python.exe manage.py makemigrations --check --dry-run`: nenhuma mudança detectada;
 - `npx.cmd tsc --noEmit --pretty false`: aprovado;
 - `npm.cmd run lint`: aprovado;
 - `npm.cmd run build`: aprovado no Next.js 16.2.10, com 12 páginas geradas.
+- Home pós-arco reinspecionada em `1280 x 720`, `1366 x 768`, `1536 x 864` e `1920 x 900`, sem
+  overflow, recorte ou retorno da ação inválida.
 
 ## 2026-09-01 (Painel 2.0)
 

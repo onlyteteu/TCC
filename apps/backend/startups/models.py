@@ -5,12 +5,12 @@ from django.utils import timezone
 
 class Startup(models.Model):
     class Stage(models.TextChoices):
-        PROBLEM = "problem", "Definicao do problema"
-        AUDIENCE = "audience", "Publico-alvo"
+        PROBLEM = "problem", "Definição do problema"
+        AUDIENCE = "audience", "Público-alvo"
         VALUE = "value", "Proposta de valor"
         DIFFERENTIATORS = "differentiators", "Diferenciais"
-        VALIDATION = "validation", "Validacao inicial"
-        BUSINESS_MODEL = "business_model", "Modelo de negocio"
+        VALIDATION = "validation", "Validação inicial"
+        BUSINESS_MODEL = "business_model", "Modelo de negócio"
         MVP = "mvp", "Planejamento do MVP"
         GOALS = "goals", "Metas iniciais"
 
@@ -62,7 +62,7 @@ class JourneyStep(models.Model):
     class Status(models.TextChoices):
         PENDING = "pending", "Pendente"
         CURRENT = "current", "Etapa atual"
-        DONE = "done", "Concluida"
+        DONE = "done", "Concluída"
 
     startup = models.ForeignKey(
         Startup,
@@ -94,33 +94,33 @@ class JourneyStep(models.Model):
 
 class Mission(models.Model):
     class Origin(models.TextChoices):
-        CATALOG = "catalog", "Catalogo"
-        DYNAMIC = "dynamic", "Dinamica"
+        CATALOG = "catalog", "Catálogo"
+        DYNAMIC = "dynamic", "Dinâmica"
 
     class ActionType(models.TextChoices):
         INTERVIEWS = "interviews", "Entrevistas"
         PROBLEM_REFINEMENT = "problem_refinement", "Refinamento do problema"
-        AUDIENCE_VALIDATION = "audience_validation", "Validacao do publico"
+        AUDIENCE_VALIDATION = "audience_validation", "Validação do público"
         VALUE_PROPOSITION = "value_proposition", "Proposta de valor"
         ALTERNATIVES_MAP = "alternatives_map", "Mapa de alternativas"
 
     class CompletionRule(models.TextChoices):
         INTERVIEWS_AND_LEARNING = "interviews_learning", "Entrevistas e aprendizado"
-        PRIMARY_SUBMISSION = "primary_submission", "Entregavel principal"
+        PRIMARY_SUBMISSION = "primary_submission", "Entregável principal"
 
     class Status(models.TextChoices):
         LOCKED = "locked", "Bloqueada"
-        AVAILABLE = "available", "Disponivel"
+        AVAILABLE = "available", "Disponível"
         IN_PROGRESS = "in_progress", "Em andamento"
-        COMPLETED = "completed", "Concluida"
+        COMPLETED = "completed", "Concluída"
 
     class Type(models.TextChoices):
-        MAIN = "main", "Missao principal"
-        WEEKLY = "weekly", "Missao semanal"
-        QUICK = "quick", "Tarefa rapida"
+        MAIN = "main", "Missão principal"
+        WEEKLY = "weekly", "Missão semanal"
+        QUICK = "quick", "Tarefa rápida"
         EXPERIMENT = "experiment", "Experimento"
         LEARNING = "learning", "Aprendizado"
-        MANAGEMENT = "management", "Gestao recorrente"
+        MANAGEMENT = "management", "Gestão recorrente"
 
     startup = models.ForeignKey(
         Startup,
@@ -187,8 +187,8 @@ class MissionEvidence(models.Model):
         INTERVIEW = "interview", "Entrevista"
         EXPERIMENT = "experiment", "Resultado de experimento"
         DOCUMENT = "document", "Documento"
-        METRIC = "metric", "Metrica"
-        OTHER = "other", "Outra evidencia"
+        METRIC = "metric", "Métrica"
+        OTHER = "other", "Outra evidência"
 
     mission = models.ForeignKey(
         Mission,
@@ -232,7 +232,7 @@ class MissionEvidence(models.Model):
 class Learning(models.Model):
     class Confidence(models.TextChoices):
         LOW = "low", "Baixa"
-        MEDIUM = "medium", "Media"
+        MEDIUM = "medium", "Média"
         HIGH = "high", "Alta"
 
     startup = models.ForeignKey(
@@ -276,12 +276,12 @@ class Learning(models.Model):
 class ActivityEvent(models.Model):
     class Kind(models.TextChoices):
         INTERVIEW_RECORDED = "interview_recorded", "Entrevista registrada"
-        EVIDENCE_RECORDED = "evidence_recorded", "Evidencia registrada"
+        EVIDENCE_RECORDED = "evidence_recorded", "Evidência registrada"
         LEARNING_RECORDED = "learning_recorded", "Aprendizado registrado"
-        MISSION_COMPLETED = "mission_completed", "Missao concluida"
-        JOURNEY_STEP_COMPLETED = "journey_step_completed", "Etapa concluida"
-        DECISION_RECORDED = "decision_recorded", "Decisao registrada"
-        GOAL_COMPLETED = "goal_completed", "Meta concluida"
+        MISSION_COMPLETED = "mission_completed", "Missão concluída"
+        JOURNEY_STEP_COMPLETED = "journey_step_completed", "Etapa concluída"
+        DECISION_RECORDED = "decision_recorded", "Decisão registrada"
+        GOAL_COMPLETED = "goal_completed", "Meta concluída"
 
     startup = models.ForeignKey(
         Startup,

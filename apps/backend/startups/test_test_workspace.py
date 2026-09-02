@@ -324,7 +324,7 @@ class TestWorkspaceResetApiTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json()["message"],
-            "Nao foi possivel interpretar a requisicao.",
+            "Não foi possível interpretar a requisição.",
         )
 
     def test_reset_returns_first_mission_payload_and_foundation_xp(self):
@@ -462,7 +462,7 @@ class TestWorkspaceCompleteMissionApiTests(TestCase):
         self.assertEqual(response.status_code, 409)
         self.assertEqual(
             response.json()["message"],
-            "Nao ha uma missao disponivel para concluir.",
+            "Não há uma missão disponível para concluir.",
         )
 
     def test_complete_service_does_not_duplicate_activity_or_xp(self):

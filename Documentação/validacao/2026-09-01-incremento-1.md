@@ -21,8 +21,12 @@ ampliado ainda.
 - Home, Jornada e Central inspecionadas em `1280 x 720`, `1366 x 768`, `1536 x 864` e `1920 x 900`,
   sem overflow horizontal, recorte de ações ou erro de runtime;
 - link `Ir para o conteúdo` alcançado por teclado e ativado com sucesso;
+- os dois achados técnicos foram corrigidos em 2026-09-02: a conclusão rápida só aparece durante
+  uma missão ativa, e as cópias visíveis e acessíveis do fluxo receberam acentuação correta;
+- Home pós-arco reinspecionada em `1280 x 720`, `1366 x 768`, `1536 x 864` e `1920 x 900`, mantendo
+  `Reiniciar ambiente` e omitindo `Concluir missão atual`, sem quebra de layout;
 - validações automatizadas e estáticas executadas em 2026-09-02: `170/170` testes frontend,
-  `113/113` testes backend, `check`, verificação de migrations, TypeScript, lint e build aprovados.
+  `114/114` testes backend, `check`, verificação de migrations, TypeScript, lint e build aprovados.
 
 ## Perguntas que a validação precisa responder
 
@@ -115,6 +119,9 @@ Preencher durante a rodada. Severidade: `trava` impede concluir, `atrito` atrasa
 | 2 | Central, detalhe, Jornada e atividade recente | Rótulos de estado e títulos derivados aparecem sem acentuação em trechos visíveis e em nomes acessíveis. | `Concluida`, `Missao concluida`, `Evidencia registrada`, `Validacao inicial` | ruído | Parte das cópias ainda vem de literais ASCII compartilhados entre catálogo, API e frontend. |
 | 3 | Acesso direto à startup de teste pela conta principal | A interface recusou o acesso e explicou que a startup não existe ou não pertence à conta. | `Essa startup não existe ou não pertence à sua conta.` | não se aplica | Comportamento esperado de isolamento entre contas; não requer mudança. |
 | 4 | Retorno ao detalhe da missão de problema depois do arco completo | O sistema preservou a formulação e as evidências e apresentou o conteúdo como consulta. | `Esta missao esta concluida. Os dados abaixo permanecem somente para consulta.` | não se aplica | Comportamento esperado de persistência e idempotência; a frase participa apenas do achado de acentuação. |
+
+Situação dos achados em 2026-09-02: os achados 1 e 2 estão corrigidos e cobertos por testes. As frases
+literais permanecem na tabela como registro do comportamento observado antes da correção.
 
 ## Respostas parciais às perguntas iniciais
 

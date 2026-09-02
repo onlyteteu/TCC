@@ -52,7 +52,7 @@ def _json_body(request):
     try:
         return json.loads(request.body.decode("utf-8") or "{}")
     except (UnicodeDecodeError, json.JSONDecodeError):
-        raise ValueError("Nao foi possivel interpretar a requisicao.")
+        raise ValueError("Não foi possível interpretar a requisição.")
 
 
 def _error_response(message, *, status=400, field_errors=None):
@@ -309,15 +309,15 @@ def _build_account_progress(startups_with_steps):
         {
             "key": "first_learning",
             "title": "Sinal encontrado",
-            "description": "Transformou evidencias em um aprendizado registrado.",
+            "description": "Transformou evidências em um aprendizado registrado.",
             "unlocked": learning_count >= 1,
             "progress": min(learning_count, 1),
             "target": 1,
         },
         {
             "key": "first_mission",
-            "title": "Missao cumprida",
-            "description": "Concluiu a primeira missao guiada da startup.",
+            "title": "Missão cumprida",
+            "description": "Concluiu a primeira missão guiada da startup.",
             "unlocked": completed_missions >= 1,
             "progress": min(completed_missions, 1),
             "target": 1,
@@ -348,7 +348,7 @@ def list_startups(request):
     try:
         user = _authenticate_request(request)
     except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
-        return _error_response("Sessao invalida ou expirada.", status=401)
+        return _error_response("Sessão inválida ou expirada.", status=401)
 
     startups = list(_ordered_startups_for_user(user))
 
@@ -384,11 +384,11 @@ def open_startup(request, startup_id):
     try:
         user = _authenticate_request(request)
     except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
-        return _error_response("Sessao invalida ou expirada.", status=401)
+        return _error_response("Sessão inválida ou expirada.", status=401)
 
     startup = Startup.objects.filter(owner=user, pk=startup_id).first()
     if startup is None:
-        return _error_response("Startup nao encontrada.", status=404)
+        return _error_response("Startup não encontrada.", status=404)
 
     startup.last_opened_at = timezone.now()
     startup.save(update_fields=["last_opened_at"])
@@ -406,7 +406,7 @@ def create_startup(request):
     try:
         user = _authenticate_request(request)
     except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
-        return _error_response("Sessao invalida ou expirada.", status=401)
+        return _error_response("Sessão inválida ou expirada.", status=401)
 
     try:
         payload = _json_body(request)
@@ -479,12 +479,12 @@ def startup_detail(request, startup_id):
     try:
         user = _authenticate_request(request)
     except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
-        return _error_response("Sessao invalida ou expirada.", status=401)
+        return _error_response("Sessão inválida ou expirada.", status=401)
 
     startup = Startup.objects.filter(owner=user, pk=startup_id).first()
 
     if startup is None:
-        return _error_response("Startup nao encontrada.", status=404)
+        return _error_response("Startup não encontrada.", status=404)
 
     if request.method == "GET":
         return JsonResponse({"startup": _serialize_startup(startup)})
@@ -717,11 +717,11 @@ def today(request, startup_id):
     try:
         user = _authenticate_request(request)
     except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
-        return _error_response("Sessao invalida ou expirada.", status=401)
+        return _error_response("Sessão inválida ou expirada.", status=401)
 
     startup = Startup.objects.filter(owner=user, pk=startup_id).first()
     if startup is None:
-        return _error_response("Startup nao encontrada.", status=404)
+        return _error_response("Startup não encontrada.", status=404)
 
     return JsonResponse(_today_payload(user, startup))
 
@@ -732,15 +732,15 @@ def test_reset(request, startup_id):
     try:
         user = _authenticate_request(request)
     except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
-        return _error_response("Sessao invalida ou expirada.", status=401)
+        return _error_response("Sessão inválida ou expirada.", status=401)
 
     startup = Startup.objects.filter(owner=user, pk=startup_id).first()
     if startup is None:
-        return _error_response("Startup nao encontrada.", status=404)
+        return _error_response("Startup não encontrada.", status=404)
 
     if not user.is_staff or not startup.is_test_workspace:
         return _error_response(
-            "Esse ambiente nao pode ser reiniciado.",
+            "Esse ambiente não pode ser reiniciado.",
             status=403,
         )
 
@@ -770,22 +770,22 @@ def test_complete_mission(request, startup_id):
     try:
         user = _authenticate_request(request)
     except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
-        return _error_response("Sessao invalida ou expirada.", status=401)
+        return _error_response("Sessão inválida ou expirada.", status=401)
 
     startup = Startup.objects.filter(owner=user, pk=startup_id).first()
     if startup is None:
-        return _error_response("Startup nao encontrada.", status=404)
+        return _error_response("Startup não encontrada.", status=404)
 
     if not user.is_staff or not startup.is_test_workspace:
         return _error_response(
-            "Esse ambiente nao permite concluir missoes de teste.",
+            "Esse ambiente não permite concluir missões de teste.",
             status=403,
         )
 
     mission = select_recommended_mission(startup)
     if mission is None:
         return _error_response(
-            "Nao ha uma missao disponivel para concluir.",
+            "Não há uma missão disponível para concluir.",
             status=409,
         )
 
@@ -836,11 +836,11 @@ def missions(request, startup_id):
     try:
         user = _authenticate_request(request)
     except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
-        return _error_response("Sessao invalida ou expirada.", status=401)
+        return _error_response("Sessão inválida ou expirada.", status=401)
 
     startup = _owned_startup(user, startup_id)
     if startup is None:
-        return _error_response("Startup nao encontrada.", status=404)
+        return _error_response("Startup não encontrada.", status=404)
 
     return JsonResponse(_mission_center_payload(user, startup))
 
@@ -850,11 +850,11 @@ def mission_detail(request, startup_id, mission_key):
     try:
         user = _authenticate_request(request)
     except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
-        return _error_response("Sessao invalida ou expirada.", status=401)
+        return _error_response("Sessão inválida ou expirada.", status=401)
 
     startup = _owned_startup(user, startup_id)
     if startup is None:
-        return _error_response("Startup nao encontrada.", status=404)
+        return _error_response("Startup não encontrada.", status=404)
 
     sync_mission_catalog(startup)
     by_key = {
@@ -862,7 +862,7 @@ def mission_detail(request, startup_id, mission_key):
     }
     mission = by_key.get(mission_key)
     if mission is None:
-        return _error_response("Missao nao encontrada.", status=404)
+        return _error_response("Missão não encontrada.", status=404)
 
     recommended = select_recommended_mission(startup)
     reason = (
@@ -887,11 +887,11 @@ def mission_submission(request, startup_id, mission_key):
     try:
         user = _authenticate_request(request)
     except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
-        return _error_response("Sessao invalida ou expirada.", status=401)
+        return _error_response("Sessão inválida ou expirada.", status=401)
 
     startup = _owned_startup(user, startup_id)
     if startup is None:
-        return _error_response("Startup nao encontrada.", status=404)
+        return _error_response("Startup não encontrada.", status=404)
 
     try:
         payload = _json_body(request)
@@ -900,7 +900,7 @@ def mission_submission(request, startup_id, mission_key):
 
     mission = _mission_for_startup(startup, mission_key)
     if mission is None:
-        return _error_response("Missao nao encontrada.", status=404)
+        return _error_response("Missão não encontrada.", status=404)
 
     try:
         mutation = apply_mission_submission(startup, mission, payload)
@@ -931,16 +931,16 @@ def mission_submission(request, startup_id, mission_key):
         ),
         "gamification": _build_account_progress(_startups_with_journey(user)),
         "message": (
-            "Missao concluida."
+            "Missão concluída."
             if mutation.completed_now
-            else "Essa missao ja esta concluida."
+            else "Essa missão já está concluída."
         ),
     }
     if mutation.completed_now:
         response_payload["celebration"] = {
-            "title": "Missao cumprida",
+            "title": "Missão cumprida",
             "xpAwarded": mutation.mission.xp_reward,
-            "unlocked": next_mission.title if next_mission else "Arco concluido",
+            "unlocked": next_mission.title if next_mission else "Arco concluído",
         }
 
     return JsonResponse(response_payload)
@@ -952,11 +952,11 @@ def mission_evidence(request, startup_id, mission_key):
     try:
         user = _authenticate_request(request)
     except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
-        return _error_response("Sessao invalida ou expirada.", status=401)
+        return _error_response("Sessão inválida ou expirada.", status=401)
 
     startup = Startup.objects.filter(owner=user, pk=startup_id).first()
     if startup is None:
-        return _error_response("Startup nao encontrada.", status=404)
+        return _error_response("Startup não encontrada.", status=404)
 
     try:
         payload = _json_body(request)
@@ -1006,16 +1006,16 @@ def mission_evidence(request, startup_id, mission_key):
     with transaction.atomic():
         mission = _mission_for_startup(startup, mission_key, for_update=True)
         if mission is None:
-            return _error_response("Missao nao encontrada.", status=404)
+            return _error_response("Missão não encontrada.", status=404)
         try:
             ensure_interview_workflow_mission(mission)
         except MissionRuleError as error:
             return _error_response(str(error), status=409)
         if mission.status == Mission.Status.LOCKED:
-            return _error_response("Essa missao ainda nao foi desbloqueada.", status=409)
+            return _error_response("Essa missão ainda não foi desbloqueada.", status=409)
         if mission.status == Mission.Status.COMPLETED:
             return _error_response(
-                "Essa missao ja foi concluida. As evidencias continuam disponiveis para consulta.",
+                "Essa missão já foi concluída. As evidências continuam disponíveis para consulta.",
                 status=409,
             )
 
@@ -1068,11 +1068,11 @@ def mission_learning(request, startup_id, mission_key):
     try:
         user = _authenticate_request(request)
     except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
-        return _error_response("Sessao invalida ou expirada.", status=401)
+        return _error_response("Sessão inválida ou expirada.", status=401)
 
     startup = Startup.objects.filter(owner=user, pk=startup_id).first()
     if startup is None:
-        return _error_response("Startup nao encontrada.", status=404)
+        return _error_response("Startup não encontrada.", status=404)
 
     try:
         payload = _json_body(request)
@@ -1086,31 +1086,31 @@ def mission_learning(request, startup_id, mission_key):
     field_errors = {}
 
     if not content:
-        field_errors["content"] = ["Resuma o principal padrao encontrado."]
+        field_errors["content"] = ["Resuma o principal padrão encontrado."]
     if not impact:
         field_errors["impact"] = ["Explique o que esse aprendizado muda na startup."]
     if not next_action:
-        field_errors["nextAction"] = ["Defina a proxima acao recomendada."]
+        field_errors["nextAction"] = ["Defina a próxima ação recomendada."]
     if confidence not in Learning.Confidence.values:
         field_errors["confidence"] = ["Escolha confianca baixa, media ou alta."]
 
     if field_errors:
         return _error_response(
-            "Revise a sintese antes de registrar.",
+            "Revise a síntese antes de registrar.",
             field_errors=field_errors,
         )
 
     with transaction.atomic():
         mission = _mission_for_startup(startup, mission_key, for_update=True)
         if mission is None:
-            return _error_response("Missao nao encontrada.", status=404)
+            return _error_response("Missão não encontrada.", status=404)
         try:
             ensure_interview_workflow_mission(mission)
         except MissionRuleError as error:
             return _error_response(str(error), status=409)
         if mission.status == Mission.Status.COMPLETED:
             return _error_response(
-                "Essa missao ja foi concluida. O aprendizado pode ser consultado no historico.",
+                "Essa missão já foi concluída. O aprendizado pode ser consultado no histórico.",
                 status=409,
             )
 
@@ -1138,7 +1138,7 @@ def mission_learning(request, startup_id, mission_key):
             ActivityEvent.objects.create(
                 startup=startup,
                 kind=ActivityEvent.Kind.LEARNING_RECORDED,
-                description="Sintese das entrevistas registrada",
+                description="Síntese das entrevistas registrada",
                 xp_awarded=XP_PER_LEARNING,
                 dedupe_key=f"mission_learning:{mission.pk}",
                 metadata={"missionKey": mission.key, "learningId": learning.pk},
@@ -1158,15 +1158,15 @@ def complete_mission(request, startup_id, mission_key):
     try:
         user = _authenticate_request(request)
     except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
-        return _error_response("Sessao invalida ou expirada.", status=401)
+        return _error_response("Sessão inválida ou expirada.", status=401)
 
     startup = Startup.objects.filter(owner=user, pk=startup_id).first()
     if startup is None:
-        return _error_response("Startup nao encontrada.", status=404)
+        return _error_response("Startup não encontrada.", status=404)
 
     mission = _mission_for_startup(startup, mission_key)
     if mission is None:
-        return _error_response("Missao nao encontrada.", status=404)
+        return _error_response("Missão não encontrada.", status=404)
 
     try:
         mission, completed_now = complete_mission_record(mission)
@@ -1184,7 +1184,7 @@ def complete_mission(request, startup_id, mission_key):
 
     if not completed_now:
         return JsonResponse(
-            _today_payload(user, startup, message="Essa missao ja esta concluida.")
+            _today_payload(user, startup, message="Essa missão já está concluída.")
         )
 
     next_mission = select_recommended_mission(startup)
@@ -1207,12 +1207,12 @@ def journey(request, startup_id):
     try:
         user = _authenticate_request(request)
     except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
-        return _error_response("Sessao invalida ou expirada.", status=401)
+        return _error_response("Sessão inválida ou expirada.", status=401)
 
     startup = Startup.objects.filter(owner=user, pk=startup_id).first()
 
     if startup is None:
-        return _error_response("Startup nao encontrada.", status=404)
+        return _error_response("Startup não encontrada.", status=404)
 
     ensure_journey(startup)
     return JsonResponse(_journey_payload(startup))
@@ -1224,12 +1224,12 @@ def journey_step(request, startup_id, step_key):
     try:
         user = _authenticate_request(request)
     except (PermissionError, User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
-        return _error_response("Sessao invalida ou expirada.", status=401)
+        return _error_response("Sessão inválida ou expirada.", status=401)
 
     startup = Startup.objects.filter(owner=user, pk=startup_id).first()
 
     if startup is None:
-        return _error_response("Startup nao encontrada.", status=404)
+        return _error_response("Startup não encontrada.", status=404)
 
     ensure_journey(startup)
     step = startup.journey_steps.filter(key=step_key).first()
@@ -1244,7 +1244,7 @@ def journey_step(request, startup_id, step_key):
 
     if payload.get("complete"):
         return _error_response(
-            "Conclua o trabalho pela missao relacionada a este marco.",
+            "Conclua o trabalho pela missão relacionada a este marco.",
             status=409,
         )
 

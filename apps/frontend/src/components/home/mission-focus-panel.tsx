@@ -157,7 +157,7 @@ export function MissionFocusPanel({
           <div className={styles.completedMissionDetails}>
             {!isInterviewMission ? (
               <section aria-labelledby="completed-evidences-title">
-                <h3 id="completed-evidences-title">Evidencias registradas</h3>
+                <h3 id="completed-evidences-title">Evidências registradas</h3>
                 <ul className={styles.completedEvidenceList}>
                   {mission.evidences.map((evidence) => (
                     <li key={evidence.id}>
@@ -181,11 +181,11 @@ export function MissionFocusPanel({
                     <dd>{mission.learning.impact}</dd>
                   </div>
                   <div>
-                    <dt>Proxima acao</dt>
+                    <dt>Próxima ação</dt>
                     <dd>{mission.learning.nextAction}</dd>
                   </div>
                   <div>
-                    <dt>Confianca</dt>
+                    <dt>Confiança</dt>
                     <dd>{mission.learning.confidenceLabel}</dd>
                   </div>
                 </dl>
@@ -194,7 +194,7 @@ export function MissionFocusPanel({
           </div>
           <div className={styles.missionActions}>
             <div>
-              <strong>Missao concluida</strong>
+              <strong>Missão concluída</strong>
               <p>
                 {mission.evidenceCount} entrevistas e {mission.learning ? "1 aprendizado" : "nenhum aprendizado"} registrados.
               </p>

@@ -38,9 +38,9 @@ type MissionDetailScreenProps = {
 
 type FieldErrors = Record<string, string[]>;
 
-const LOAD_ERROR = "Nao foi possivel carregar esta missao agora.";
-const NOT_FOUND_ERROR = "Esta missao nao existe ou voce nao pode acessa-la.";
-const SUBMISSION_ERROR = "Nao foi possivel registrar o entregavel da missao.";
+const LOAD_ERROR = "Não foi possível carregar esta missão agora.";
+const NOT_FOUND_ERROR = "Esta missão não existe ou você não pode acessá-la.";
+const SUBMISSION_ERROR = "Não foi possível registrar o entregável da missão.";
 
 const initialDrafts: Record<StructuredActionType, SubmissionDraft> = {
   problem_refinement: { problemStatement: "", evidenceSummary: "" },
@@ -51,10 +51,10 @@ const initialDrafts: Record<StructuredActionType, SubmissionDraft> = {
 
 const detailLabels: Record<string, string> = {
   problemStatement: "Problema refinado",
-  evidenceSummary: "Evidencias que sustentam o problema",
-  audienceStatement: "Publico prioritario",
+  evidenceSummary: "Evidências que sustentam o problema",
+  audienceStatement: "Público prioritário",
   observedSignals: "Sinais observados",
-  decision: "Decisao",
+  decision: "Decisão",
   valueProposition: "Proposta de valor",
   rationale: "Por que esta proposta faz sentido",
   alternatives: "Alternativas atuais",
@@ -70,21 +70,21 @@ function displayDetailValue(key: string, value: string) {
 }
 
 function missionStepStatusLabel(status: MissionDetailPayload["mission"]["steps"][number]["status"]) {
-  if (status === "completed") return "Concluida";
+  if (status === "completed") return "Concluída";
   if (status === "locked") return "Bloqueada";
   if (status === "current") return "Atual";
-  return "Disponivel";
+  return "Disponível";
 }
 
 function MissionDetailSkeleton() {
   return (
     <div
       aria-busy="true"
-      aria-label="Carregando detalhes da missao"
+      aria-label="Carregando detalhes da missão"
       className={styles.skeletonPage}
       role="status"
     >
-      <span className={styles.srOnly}>Carregando detalhes da missao.</span>
+      <span className={styles.srOnly}>Carregando detalhes da missão.</span>
       <span className={styles.skeletonBack} />
       <span className={styles.skeletonTitle} />
       <span className={styles.skeletonCopy} />
@@ -138,7 +138,7 @@ function TextareaControl({
         value={draft[field] ?? ""}
       />
       <span className={styles.fieldHint} id={hintId}>
-        Minimo de {minLength} caracteres.
+        Mínimo de {minLength} caracteres.
       </span>
       {error ? (
         <span className={styles.fieldError} id={errorId} role="alert">
@@ -181,7 +181,7 @@ function StructuredMissionFields({
           draft={draft}
           field="evidenceSummary"
           fieldErrors={fieldErrors}
-          label="Evidencias que sustentam o problema"
+          label="Evidências que sustentam o problema"
           minLength={40}
           onChange={onChange}
         />
@@ -200,7 +200,7 @@ function StructuredMissionFields({
           draft={draft}
           field="audienceStatement"
           fieldErrors={fieldErrors}
-          label="Publico prioritario"
+          label="Público prioritário"
           minLength={30}
           onChange={onChange}
         />
@@ -214,7 +214,7 @@ function StructuredMissionFields({
           onChange={onChange}
         />
         <div className={styles.field}>
-          <label htmlFor="mission-decision">Decisao</label>
+          <label htmlFor="mission-decision">Decisão</label>
           <select
             aria-describedby={error ? errorId : undefined}
             aria-invalid={error ? true : undefined}
@@ -225,7 +225,7 @@ function StructuredMissionFields({
             required
             value={draft.decision ?? ""}
           >
-            <option value="">Selecione uma decisao</option>
+            <option value="">Selecione uma decisão</option>
             <option value="keep">Manter</option>
             <option value="adjust">Ajustar</option>
           </select>
@@ -307,7 +307,7 @@ function EvidenceDetails({ evidences }: { evidences: MissionEvidenceSummary[] })
   );
 
   if (entries.length === 0) {
-    return <p className={styles.emptyDetails}>O entregavel foi registrado sem detalhes adicionais.</p>;
+    return <p className={styles.emptyDetails}>O entregável foi registrado sem detalhes adicionais.</p>;
   }
 
   return (
@@ -450,7 +450,7 @@ export function MissionDetailScreen({
 
       const nextPayload = responsePayload as MissionDetailPayload;
       setPayload(nextPayload);
-      setSubmissionMessage(nextPayload.message ?? "Entregavel registrado com sucesso.");
+      setSubmissionMessage(nextPayload.message ?? "Entregável registrado com sucesso.");
       void onWorkspaceChanged?.();
     } catch {
       setSubmissionError(SUBMISSION_ERROR);
@@ -471,7 +471,7 @@ export function MissionDetailScreen({
     return (
       <section className={styles.errorPanel} role="alert">
         <ProductIcon name="info" />
-        <h1>Nao conseguimos abrir esta missao</h1>
+        <h1>Não conseguimos abrir esta missão</h1>
         <p>{loadError ?? LOAD_ERROR}</p>
         <button className={styles.retryButton} onClick={() => void loadMission()} type="button">
           Tentar novamente
@@ -495,7 +495,7 @@ export function MissionDetailScreen({
       <div className={`${styles.page} ${styles.challengePage}`}>
         <Link className={styles.backLink} href={startupMissionsHref(startupId)}>
           <span aria-hidden="true">&larr;</span>
-          Voltar para missoes
+          Voltar para missões
         </Link>
 
         <ProblemRefinementChallenge
@@ -535,7 +535,7 @@ export function MissionDetailScreen({
     <div className={styles.page}>
       <Link className={styles.backLink} href={startupMissionsHref(startupId)}>
         <span aria-hidden="true">&larr;</span>
-        Voltar para missoes
+        Voltar para missões
       </Link>
 
       <header className={styles.header}>
@@ -552,9 +552,9 @@ export function MissionDetailScreen({
         </div>
       </header>
 
-      <section className={styles.guidance} aria-label="Orientacoes da missao">
+      <section className={styles.guidance} aria-label="Orientações da missão">
         <div>
-          <h2>Por que esta missao importa</h2>
+          <h2>Por que esta missão importa</h2>
           <p>{mission.whyItMatters}</p>
         </div>
         <div>
@@ -566,7 +566,7 @@ export function MissionDetailScreen({
           </ol>
         </div>
         <div>
-          <h2>Criterio de conclusao</h2>
+          <h2>Critério de conclusão</h2>
           <p>{mission.completionCriteria}</p>
         </div>
       </section>
@@ -574,11 +574,11 @@ export function MissionDetailScreen({
       <section className={styles.missionState} aria-labelledby="mission-state-title">
         <div className={styles.stateSummary}>
           <div className={styles.stateHeading}>
-            <h2 id="mission-state-title">Progresso da missao</h2>
+            <h2 id="mission-state-title">Progresso da missão</h2>
             <strong>{mission.progress}%</strong>
           </div>
           <div
-            aria-label="Progresso da missao"
+            aria-label="Progresso da missão"
             aria-valuemax={100}
             aria-valuemin={0}
             aria-valuenow={mission.progress}
@@ -598,7 +598,7 @@ export function MissionDetailScreen({
           </ul>
         </div>
         <div className={styles.executionSteps}>
-          <h2>Etapas da missao</h2>
+          <h2>Etapas da missão</h2>
           <ol>
             {mission.steps.map((step) => (
               <li key={step.key}>
@@ -617,13 +617,13 @@ export function MissionDetailScreen({
       <aside className={styles.tip}>
         <ProductIcon name="info" />
         <div>
-          <strong>Dica para uma evidencia melhor</strong>
+          <strong>Dica para uma evidência melhor</strong>
           <p>{mission.contextualTip}</p>
         </div>
       </aside>
 
       {submissionMessage ? (
-        <section className={styles.successPanel} aria-label="Missao concluida" role="status">
+        <section className={styles.successPanel} aria-label="Missão concluída" role="status">
           <ProductIcon name="check" />
           <div>
             <strong>{submissionMessage}</strong>
@@ -653,11 +653,11 @@ export function MissionDetailScreen({
       ) : null}
 
       {locked ? (
-        <section className={styles.lockedPanel} aria-label="Missao bloqueada">
+        <section className={styles.lockedPanel} aria-label="Missão bloqueada">
           <ProductIcon name="lock" />
           <div>
-            <h2>Esta missao ainda esta bloqueada</h2>
-            <p>Conclua todos os requisitos abaixo antes de iniciar este entregavel.</p>
+            <h2>Esta missão ainda está bloqueada</h2>
+            <p>Conclua todos os requisitos abaixo antes de iniciar este entregável.</p>
             <ul>
               {mission.lockedReasons.map((reason) => (
                 <li key={reason}>{reason}</li>
@@ -669,8 +669,8 @@ export function MissionDetailScreen({
         <section className={styles.readOnly} aria-labelledby="registered-delivery-title">
           <div className={styles.sectionHeading}>
             <div>
-              <h2 id="registered-delivery-title">Entregavel registrado</h2>
-              <p>Esta missao esta concluida. Os dados abaixo permanecem somente para consulta.</p>
+              <h2 id="registered-delivery-title">Entregável registrado</h2>
+              <p>Esta missão está concluída. Os dados abaixo permanecem somente para consulta.</p>
             </div>
             <span className={styles.readOnlyBadge}>Somente leitura</span>
           </div>
@@ -682,8 +682,8 @@ export function MissionDetailScreen({
           <div>
             <h2 id="home-handoff-title">Registre cada conversa no fluxo de entrevistas</h2>
             <p>
-              As entrevistas continuam na Home, onde evidencias e aprendizados compartilham o mesmo
-              contexto. Esta missao nao cria um segundo formulario.
+              As entrevistas continuam na Home, onde evidências e aprendizados compartilham o mesmo
+              contexto. Esta missão não cria um segundo formulário.
             </p>
             <Link className={styles.primaryLink} href={startupHomeHref(startupId)}>
               Continuar na Home
@@ -695,8 +695,8 @@ export function MissionDetailScreen({
         <section className={styles.formSection} aria-labelledby="mission-delivery-title">
           <div className={styles.sectionHeading}>
             <div>
-              <h2 id="mission-delivery-title">Entregavel da missao</h2>
-              <p>Registre uma sintese concreta, sustentada pelo que voce observou.</p>
+              <h2 id="mission-delivery-title">Entregável da missão</h2>
+              <p>Registre uma síntese concreta, sustentada pelo que você observou.</p>
             </div>
           </div>
           <form noValidate onSubmit={submitMission}>
@@ -721,9 +721,9 @@ export function MissionDetailScreen({
                 disabled={isSubmitting}
                 type="submit"
               >
-                {isSubmitting ? "Salvando missao..." : "Salvar e concluir missao"}
+                {isSubmitting ? "Salvando missão..." : "Salvar e concluir missão"}
               </button>
-              <span>Revise o texto antes de concluir. A entrega vira parte do historico da startup.</span>
+              <span>Revise o texto antes de concluir. A entrega vira parte do histórico da startup.</span>
             </div>
           </form>
         </section>

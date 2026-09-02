@@ -14,8 +14,8 @@ type MissionCenterScreenProps = {
   startupId: number;
 };
 
-const LOAD_ERROR = "Nao foi possivel carregar as missoes agora.";
-const NOT_FOUND_ERROR = "Esta startup nao existe ou voce nao pode mais acessa-la.";
+const LOAD_ERROR = "Não foi possível carregar as missões agora.";
+const NOT_FOUND_ERROR = "Esta startup não existe ou você não pode mais acessá-la.";
 
 function boundedProgress(progress: number) {
   return Math.max(0, Math.min(100, progress));

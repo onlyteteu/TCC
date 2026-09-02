@@ -123,7 +123,7 @@ export function StartupJourneyScreen({
           ? Object.values(errorPayload.fieldErrors)[0]?.[0]
           : undefined;
         throw new JourneyRequestError(
-          firstFieldError ?? errorPayload.message ?? "Nao foi possivel salvar agora."
+          firstFieldError ?? errorPayload.message ?? "Não foi possível salvar agora."
         );
       }
 
@@ -158,7 +158,7 @@ export function StartupJourneyScreen({
       void onWorkspaceChanged?.();
     } catch (caughtError) {
       if (caughtError instanceof JourneyRequestError) throw caughtError;
-      throw new Error("Nao foi possivel salvar agora.");
+      throw new Error("Não foi possível salvar agora.");
     } finally {
       setIsSavingField(false);
     }

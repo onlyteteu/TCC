@@ -7,6 +7,7 @@ from accounts.tokens import issue_auth_token
 from .mission_engine import reconcile_mission_states, sync_mission_catalog
 from .models import (
     ActivityEvent,
+    JourneyStep,
     Learning,
     Mission,
     MissionEvidence,
@@ -66,6 +67,36 @@ class MissionV2ApiTests(TestCase):
         self.assertEqual(payload["availableMissions"], [])
         self.assertEqual(len(payload["lockedMissions"]), 4)
         self.assertTrue(payload["lockedMissions"][0]["lockedReasons"])
+
+    def test_api_serializes_user_facing_labels_with_portuguese_accents(self):
+        center = self.client.get(
+            f"/api/startups/{self.startup.pk}/missions/", **self.auth
+        ).json()
+        self.assertEqual(center["recommendedMission"]["statusLabel"], "Disponível")
+
+        self.complete_directly("customer_interviews_5")
+        center = self.client.get(
+            f"/api/startups/{self.startup.pk}/missions/", **self.auth
+        ).json()
+        self.assertEqual(center["completedMissions"][0]["statusLabel"], "Concluída")
+
+        ActivityEvent.objects.create(
+            startup=self.startup,
+            kind=ActivityEvent.Kind.EVIDENCE_RECORDED,
+            description="Entregável registrado",
+            xp_awarded=0,
+            dedupe_key="accented-label-test",
+        )
+        ensure_journey(self.startup)
+        self.startup.journey_steps.update(status=JourneyStep.Status.PENDING)
+        self.startup.journey_steps.filter(key=Startup.Stage.VALIDATION).update(
+            status=JourneyStep.Status.CURRENT
+        )
+        today = self.client.get(
+            f"/api/startups/{self.startup.pk}/today/", **self.auth
+        ).json()
+        self.assertEqual(today["journey"]["currentStepLabel"], "Validação inicial")
+        self.assertEqual(today["recentActivities"][0]["kindLabel"], "Evidência registrada")
 
     def test_center_returns_value_as_focus_and_alternatives_as_available(self):
         self.complete_directly(
@@ -174,6 +205,8 @@ class MissionV2ApiTests(TestCase):
             "validate_priority_audience",
         )
         self.assertIn("celebration", first.json())
+        self.assertEqual(first.json()["message"], "Missão concluída.")
+        self.assertEqual(first.json()["celebration"]["title"], "Missão cumprida")
         self.assertNotIn("celebration", second.json())
 
     def test_another_user_cannot_read_center_detail_or_submit(self):

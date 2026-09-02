@@ -172,7 +172,7 @@ describe("StartupJourneyScreen", () => {
     fireEvent.change(field, { target: { value: "Fila longa em horários de pico" } });
     fireEvent.click(screen.getByRole("button", { name: "Salvar Problema" }));
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("Nao foi possivel salvar agora.");
+    expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível salvar agora.");
     expect(field).toHaveValue("Fila longa em horários de pico");
   });
 

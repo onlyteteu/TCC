@@ -27,7 +27,7 @@ def ensure_interview_workflow_mission(mission):
         != Mission.CompletionRule.INTERVIEWS_AND_LEARNING
     ):
         raise MissionRuleError(
-            "Esta rota aceita apenas a missao de entrevistas e aprendizado."
+            "Esta rota aceita apenas a missão de entrevistas e aprendizado."
         )
 
 
@@ -172,7 +172,7 @@ def evaluate_mission(mission):
             can_complete=has_submission and not is_completed,
         )
 
-    raise MissionRuleError(f"Regra de conclusao desconhecida: {mission.completion_rule}")
+    raise MissionRuleError(f"Regra de conclusão desconhecida: {mission.completion_rule}")
 
 
 def select_recommended_mission(startup):
