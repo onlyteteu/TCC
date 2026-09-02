@@ -5,6 +5,25 @@ Data de abertura: 2026-09-01. Documento vivo: preencher durante e logo após cad
 `proximos-passos.md` condiciona a ampliação do catálogo a esta validação. O objetivo não é confirmar
 que o arco funciona, é descobrir onde ele falha enquanto ainda é barato mudar texto, critério e ordem.
 
+## Estado em 2026-09-02
+
+A rodada técnica foi concluída em uma conta descartável separada da conta principal. Ela confirma
+persistência, regras, navegação e apresentação do arco, mas não substitui uma rodada com fundador que
+nunca viu o produto. Por isso, a validação com usuário permanece aberta e o catálogo não deve ser
+ampliado ainda.
+
+- conta de validação separada, com a `Startup de Teste` de identificador `8`;
+- cinco entrevistas, síntese de aprendizado e cinco missões concluídas pelo fluxo real do navegador;
+- Central em `5 de 5`, Home em `arc_complete`, Jornada em `4 de 8` etapas e conta com `945 XP`;
+- respostas persistidas e reapresentadas no detalhe concluído em modo somente leitura;
+- tentativa de abrir a startup `8` na conta principal corretamente bloqueada como recurso inexistente
+  ou não pertencente à conta;
+- Home, Jornada e Central inspecionadas em `1280 x 720`, `1366 x 768`, `1536 x 864` e `1920 x 900`,
+  sem overflow horizontal, recorte de ações ou erro de runtime;
+- link `Ir para o conteúdo` alcançado por teclado e ativado com sucesso;
+- validações automatizadas e estáticas executadas em 2026-09-02: `170/170` testes frontend,
+  `113/113` testes backend, `check`, verificação de migrations, TypeScript, lint e build aprovados.
+
 ## Perguntas que a validação precisa responder
 
 1. o fundador entende por que aquela missão foi recomendada?
@@ -92,7 +111,23 @@ Preencher durante a rodada. Severidade: `trava` impede concluir, `atrito` atrasa
 
 | # | Momento | O que aconteceu | Frase literal | Severidade | Hipótese de causa |
 | --- | --- | --- | --- | --- | --- |
-|  |  |  |  |  |  |
+| 1 | Home, depois de concluir a quinta missão | O atalho de teste `Concluir missão atual` continuou habilitado mesmo sem missão disponível; o clique não alterou XP nem progresso, mas exibiu erro. | `Nao ha uma missao disponivel para concluir.` | atrito | O banner de teste não deriva seu estado do `arc_complete` para ocultar ou desabilitar a ação. |
+| 2 | Central, detalhe, Jornada e atividade recente | Rótulos de estado e títulos derivados aparecem sem acentuação em trechos visíveis e em nomes acessíveis. | `Concluida`, `Missao concluida`, `Evidencia registrada`, `Validacao inicial` | ruído | Parte das cópias ainda vem de literais ASCII compartilhados entre catálogo, API e frontend. |
+| 3 | Acesso direto à startup de teste pela conta principal | A interface recusou o acesso e explicou que a startup não existe ou não pertence à conta. | `Essa startup não existe ou não pertence à sua conta.` | não se aplica | Comportamento esperado de isolamento entre contas; não requer mudança. |
+| 4 | Retorno ao detalhe da missão de problema depois do arco completo | O sistema preservou a formulação e as evidências e apresentou o conteúdo como consulta. | `Esta missao esta concluida. Os dados abaixo permanecem somente para consulta.` | não se aplica | Comportamento esperado de persistência e idempotência; a frase participa apenas do achado de acentuação. |
+
+## Respostas parciais às perguntas iniciais
+
+1. A Home e a Central exibem o motivo da recomendação, mas a compreensão por um fundador novo não
+   foi validada nesta rodada técnica.
+2. O fluxo completo é executável sem trava mecânica e mantém dependências, bloqueios, persistência e
+   idempotência. Isso não demonstra que uma pessoa nova consiga concluí-lo sem explicação externa.
+3. Não houve abandono técnico. A qualidade das respostas foi deliberadamente suficiente para os
+   critérios; ainda falta observar onde um usuário novo entrega resposta superficial.
+4. Home, Central, detalhe e Jornada permaneceram coerentes depois de cada avanço. A distinção entre
+   essas áreas ainda precisa ser explicada por um participante, sem indução.
+5. O XP só avançou com entrevistas, entregáveis e missões; abrir telas e entrar na conta não gerou
+   recompensa. Ainda falta observar se a gamificação ajuda ou distrai uma pessoa real.
 
 ## Decisões derivadas
 
@@ -102,10 +137,16 @@ decisão nesta seção não entra no código.
 
 | Achado | Decisão | Onde muda | Vira DEC? |
 | --- | --- | --- | --- |
-|  |  |  |  |
+| 1 | Quando o arco estiver concluído, retirar a ação de conclusão rápida ou apresentá-la desabilitada com texto de estado, sem provocar uma requisição destinada a falhar. | Banner `Modo de teste` da Home | não |
+| 2 | Corrigir acentuação em todas as cópias visíveis e nomes acessíveis derivados de status, evento, marco e erro. | Catálogo/API e componentes de Home, Central, detalhe e Jornada | não |
+| Validação externa pendente | Não ampliar para as missões 6 a 8 antes de duas ou três rodadas com pessoas que não conhecem o produto. | Planejamento do Incremento 2 | decisão já vigente |
 
 ## Critério de encerramento
 
 A validação está encerrada quando as cinco perguntas iniciais tiverem resposta amarrada a observação
 e as travas encontradas tiverem decisão registrada. Só então o catálogo pode crescer para as missões
 6 a 8, conforme `proximos-passos.md`.
+
+Situação em 2026-09-02: a rodada técnica está encerrada e não encontrou trava. A validação do
+Incremento 1 continua aberta porque as perguntas 1 e 3, e as partes subjetivas das perguntas 4 e 5,
+dependem de participantes externos.

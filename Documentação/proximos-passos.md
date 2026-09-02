@@ -27,6 +27,12 @@ Depois, validar o Incremento 1 em uso real. Observar especialmente:
 
 Essa validação deve orientar texto, critérios e ordem antes de aumentar o catálogo.
 
+A rodada técnica foi encerrada em 2026-09-02 e está registrada em
+`validacao/2026-09-01-incremento-1.md`. Antes das rodadas externas, corrigir os dois achados de baixo
+risco já reproduzidos: o atalho de conclusão rápida ainda ativo depois de `arc_complete` e as cópias
+derivadas sem acentuação. Depois, conduzir duas ou três rodadas com pessoas que não conhecem o produto
+para responder às perguntas de compreensão e superficialidade sem viés do autor.
+
 ## Incremento 2 recomendado
 
 Depois da validação do arco atual:

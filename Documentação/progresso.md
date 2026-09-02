@@ -2,7 +2,34 @@
 
 Cada entrada abaixo e um retrato do projeto na data indicada. Quando uma entrada antiga menciona
 `painel`, `Suas startups`, `pagina de detalhe`, `Hoje` ou criacao direta em `/painel`, ela registra
-uma etapa superada; o estado vigente e o ciclo mais recente, de 2026-09-01.
+uma etapa superada; o estado vigente é o ciclo mais recente, de 2026-09-02.
+
+## 2026-09-02 (validação técnica do Incremento 1)
+
+### Resultado da rodada
+
+- percurso real concluído em conta e workspace descartáveis, separados da conta principal;
+- cinco entrevistas, síntese e cinco missões concluídas, com Central em `5/5`, Home em
+  `arc_complete`, Jornada em `4/8` e `945 XP`;
+- persistência confirmada no retorno ao detalhe concluído e isolamento entre contas confirmado pela
+  recusa de acesso à startup de teste pela conta principal;
+- Home, Jornada e Central conferidas nos quatro viewports desktop obrigatórios, sem overflow
+  horizontal, recorte de ações ou erro de runtime;
+- link de salto ao conteúdo validado por teclado;
+- dois ajustes identificados para o próximo ciclo: estado do atalho de conclusão rápida após
+  `arc_complete` e acentuação de cópias derivadas;
+- rodada com pessoas que não conhecem o produto permanece pendente e continua bloqueando a ampliação
+  do catálogo.
+
+### Validações executadas
+
+- `npm.cmd test -- --maxWorkers=1`: `170/170` testes aprovados em 33 arquivos;
+- `.venv\\Scripts\\python.exe manage.py test accounts startups --keepdb`: `113/113` testes aprovados;
+- `.venv\\Scripts\\python.exe manage.py check`: sem problemas;
+- `.venv\\Scripts\\python.exe manage.py makemigrations --check --dry-run`: nenhuma mudança detectada;
+- `npx.cmd tsc --noEmit --pretty false`: aprovado;
+- `npm.cmd run lint`: aprovado;
+- `npm.cmd run build`: aprovado no Next.js 16.2.10, com 12 páginas geradas.
 
 ## 2026-09-01 (Painel 2.0)
 
