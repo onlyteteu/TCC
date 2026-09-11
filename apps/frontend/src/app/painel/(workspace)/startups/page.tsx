@@ -34,7 +34,7 @@ export default function StartupManagerPage() {
     const opened = await openStartup(startupId);
 
     if (!opened) {
-      throw new Error("Nao foi possivel abrir a startup agora.");
+      throw new Error("Não foi possível abrir a startup agora.");
     }
   }
 
@@ -57,17 +57,17 @@ export default function StartupManagerPage() {
         return (
           errorPayload?.fieldErrors?.name?.[0] ??
           errorPayload?.message ??
-          "Nao foi possivel renomear a startup agora."
+          "Não foi possível renomear a startup agora."
         );
       }
 
       const refreshed = await refreshWorkspace({ silent: true });
       if (!refreshed) {
-        return "Nome alterado, mas nao foi possivel atualizar a lista.";
+        return "Nome alterado, mas não foi possível atualizar a lista.";
       }
       return null;
     } catch {
-      return "Nao foi possivel renomear a startup agora.";
+      return "Não foi possível renomear a startup agora.";
     }
   }
 
@@ -77,7 +77,7 @@ export default function StartupManagerPage() {
     try {
       response = await fetch(`/api/startups/${startup.id}`, { method: "DELETE" });
     } catch {
-      throw new Error("Nao foi possivel excluir a startup agora.");
+      throw new Error("Não foi possível excluir a startup agora.");
     }
 
     const payload = await readPayload<AuthErrorPayload | StartupDeletePayload>(response);
@@ -90,12 +90,12 @@ export default function StartupManagerPage() {
     if (!response.ok) {
       throw new Error(
         (payload as AuthErrorPayload | null)?.message ??
-          "Nao foi possivel excluir a startup agora."
+          "Não foi possível excluir a startup agora."
       );
     }
 
     if (!payload) {
-      throw new Error("Nao foi possivel confirmar a exclusao da startup.");
+      throw new Error("Não foi possível confirmar a exclusão da startup.");
     }
 
     const successPayload = payload as StartupDeletePayload;
@@ -118,7 +118,7 @@ export default function StartupManagerPage() {
 
     return refreshed
       ? null
-      : "Startup excluida. Recarregue a pagina para atualizar a lista.";
+      : "Startup excluída. Recarregue a página para atualizar a lista.";
   }
 
   return (

@@ -50,10 +50,10 @@ describe("StartupMapSummary", () => {
   it("restores focus after cancelling an edit", () => {
     render(<StartupMapSummary isSaving={false} onSaveField={vi.fn()} startup={startup} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Editar Territorio" }));
+    fireEvent.click(screen.getByRole("button", { name: "Editar Território" }));
     fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
 
-    expect(screen.getByRole("button", { name: "Editar Territorio" })).toHaveFocus();
+    expect(screen.getByRole("button", { name: "Editar Território" })).toHaveFocus();
   });
 
   it("saves the selected field", async () => {

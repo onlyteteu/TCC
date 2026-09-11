@@ -9,7 +9,7 @@ export async function POST(
     `/startups/${startupId}/missions/${missionKey}/submission/`,
     {
       body: await request.text(),
-      fallbackMessage: "Nao foi possivel registrar o entregavel da missao.",
+      fallbackMessage: "Não foi possível registrar o entregável da missão.",
       method: "POST",
     }
   );

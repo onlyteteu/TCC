@@ -86,7 +86,7 @@ describe("StartupManagerScreen", () => {
     fireEvent.click(screen.getByRole("button", { name: "Excluir Aurora" }));
 
     expect(screen.getByRole("dialog")).toHaveAttribute("aria-modal", "true");
-    expect(screen.getByText(/jornada, missoes e evidencias/i)).toBeInTheDocument();
+    expect(screen.getByText(/jornada, missões e evidências/i)).toBeInTheDocument();
     const confirmation = screen.getByLabelText("Digite Aurora para confirmar");
     await waitFor(() => expect(confirmation).toHaveFocus());
     expect(screen.getByRole("button", { name: "Excluir definitivamente" })).toBeDisabled();

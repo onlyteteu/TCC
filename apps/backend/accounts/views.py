@@ -17,7 +17,7 @@ def _json_body(request):
     try:
         return json.loads(request.body.decode("utf-8") or "{}")
     except (UnicodeDecodeError, json.JSONDecodeError):
-        raise ValueError("Nao foi possivel interpretar a requisicao.")
+        raise ValueError("Não foi possível interpretar a requisição.")
 
 
 def _user_payload(user):
@@ -60,7 +60,7 @@ def register_view(request):
     if not name:
         field_errors["name"] = ["Informe seu nome."]
     elif len(name) > 150:
-        field_errors["name"] = ["Use um nome com ate 150 caracteres."]
+        field_errors["name"] = ["Use um nome com até 150 caracteres."]
 
     if not email:
         field_errors["email"] = ["Informe seu e-mail."]
@@ -68,16 +68,16 @@ def register_view(request):
         try:
             validate_email(email)
         except ValidationError:
-            field_errors["email"] = ["Informe um e-mail valido."]
+            field_errors["email"] = ["Informe um e-mail válido."]
         else:
             if User.objects.filter(username__iexact=email).exists():
-                field_errors["email"] = ["Ja existe uma conta com este e-mail."]
+                field_errors["email"] = ["Já existe uma conta com este e-mail."]
 
     if not password:
         field_errors["password"] = ["Informe uma senha."]
 
     if password != confirm_password:
-        field_errors["confirmPassword"] = ["A confirmacao de senha nao confere."]
+        field_errors["confirmPassword"] = ["A confirmação de senha não confere."]
 
     if field_errors:
         return _error_response(
@@ -95,7 +95,7 @@ def register_view(request):
 
     return JsonResponse(
         {
-            "message": "Conta criada com sucesso. Sua jornada ja pode comecar.",
+            "message": "Conta criada com sucesso. Sua jornada já pode começar.",
             "token": token,
             "user": _user_payload(user),
         },
@@ -129,7 +129,7 @@ def login_view(request):
     user = authenticate(request, username=email, password=password)
     if user is None or not user.is_active:
         return _error_response(
-            "Nao encontramos uma conta com este e-mail e senha.",
+            "Não encontramos uma conta com este e-mail e senha.",
             status=401,
         )
 
@@ -148,12 +148,12 @@ def login_view(request):
 def current_user(request):
     token = _extract_token(request)
     if token is None:
-        return _error_response("Sessao nao encontrada.", status=401)
+        return _error_response("Sessão não encontrada.", status=401)
 
     try:
         user = get_user_from_token(token)
     except (User.DoesNotExist, signing.BadSignature, signing.SignatureExpired):
-        return _error_response("Sessao invalida ou expirada.", status=401)
+        return _error_response("Sessão inválida ou expirada.", status=401)
 
     return JsonResponse({"authenticated": True, "user": _user_payload(user)})
 
@@ -161,4 +161,4 @@ def current_user(request):
 @csrf_exempt
 @require_POST
 def logout_view(request):
-    return JsonResponse({"message": "Sessao encerrada com sucesso."})
+    return JsonResponse({"message": "Sessão encerrada com sucesso."})

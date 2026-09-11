@@ -262,7 +262,7 @@ def _build_account_progress(startups_with_steps):
     achievements = [
         {
             "key": "founder",
-            "title": "Fundacao",
+            "title": "Fundação",
             "description": "Criou a primeira startup na plataforma.",
             "unlocked": len(startups_with_steps) > 0,
         },
@@ -275,7 +275,7 @@ def _build_account_progress(startups_with_steps):
         {
             "key": "first_door",
             "title": "Primeira porta",
-            "description": "Concluiu uma etapa alem da fundacao.",
+            "description": "Concluiu uma etapa além da fundação.",
             "unlocked": any(done > FOUNDATION_STEPS for _, done, _ in startups_with_steps),
         },
         {
@@ -325,7 +325,7 @@ def _build_account_progress(startups_with_steps):
         {
             "key": "three_day_streak",
             "title": "Ritmo de fundador",
-            "description": "Manteve tres dias seguidos de atividade significativa.",
+            "description": "Manteve três dias seguidos de atividade significativa.",
             "unlocked": streak["longestStreak"] >= 3,
             "progress": min(streak["longestStreak"], 3),
             "target": 3,
@@ -394,7 +394,7 @@ def open_startup(request, startup_id):
     startup.save(update_fields=["last_opened_at"])
     return JsonResponse(
         {
-            "message": f"{startup.name} agora e a startup ativa.",
+            "message": f"{startup.name} agora é a startup ativa.",
             "startup": _serialize_startup(startup),
         }
     )
@@ -424,7 +424,7 @@ def create_startup(request):
     if not name and not defer_naming:
         field_errors["name"] = ["Informe o nome da startup ou marque que vai definir isso depois."]
     elif len(name) > 120:
-        field_errors["name"] = ["Use um nome com ate 120 caracteres."]
+        field_errors["name"] = ["Use um nome com até 120 caracteres."]
 
     required_fields = {
         "description": (description, "Conte a ideia da startup em uma frase."),
@@ -438,7 +438,7 @@ def create_startup(request):
             field_errors[field_name] = [message]
 
     if len(segment) > 120:
-        field_errors["segment"] = ["Use um segmento com ate 120 caracteres."]
+        field_errors["segment"] = ["Use um segmento com até 120 caracteres."]
 
     if field_errors:
         return _error_response(
@@ -459,7 +459,7 @@ def create_startup(request):
     sync_mission_catalog(startup)
 
     message = (
-        "Mapa inicial criado. Voce pode definir o nome com calma depois."
+        "Mapa inicial criado. Você pode definir o nome com calma depois."
         if defer_naming and not name
         else "Mapa inicial da startup criado com sucesso."
     )
@@ -504,7 +504,7 @@ def _delete_startup(startup, startup_id, user):
         {
             "deletedStartupId": startup_id,
             "nextStartupId": next_startup.pk if next_startup else None,
-            "message": f'{startup_name} foi excluida com sucesso.',
+            "message": f'{startup_name} foi excluída com sucesso.',
         }
     )
 
@@ -539,17 +539,17 @@ def _update_startup(request, startup):
         if not cleaned["name"]:
             field_errors["name"] = ["Informe um nome para a startup."]
         elif len(cleaned["name"]) > 120:
-            field_errors["name"] = ["Use um nome com ate 120 caracteres."]
+            field_errors["name"] = ["Use um nome com até 120 caracteres."]
 
     if "segment" in cleaned and len(cleaned["segment"]) > 120:
-        field_errors["segment"] = ["Use um segmento com ate 120 caracteres."]
+        field_errors["segment"] = ["Use um segmento com até 120 caracteres."]
 
     if "initialGoal" in cleaned and len(cleaned["initialGoal"]) > 255:
-        field_errors["initialGoal"] = ["Use uma meta inicial com ate 255 caracteres."]
+        field_errors["initialGoal"] = ["Use uma meta inicial com até 255 caracteres."]
 
     for field in ("description", "problem", "audience"):
         if field in cleaned and not cleaned[field]:
-            field_errors[field] = ["Esse campo nao pode ficar vazio."]
+            field_errors[field] = ["Esse campo não pode ficar vazio."]
 
     if field_errors:
         return _error_response(
@@ -974,27 +974,27 @@ def mission_evidence(request, startup_id, mission_key):
     field_errors = {}
 
     if not interviewee_name:
-        field_errors["intervieweeName"] = ["Informe com quem voce conversou."]
+        field_errors["intervieweeName"] = ["Informe com quem você conversou."]
     elif len(interviewee_name) > 120:
-        field_errors["intervieweeName"] = ["Use ate 120 caracteres."]
+        field_errors["intervieweeName"] = ["Use até 120 caracteres."]
 
     if len(interviewee_profile) > 180:
-        field_errors["intervieweeProfile"] = ["Use ate 180 caracteres."]
+        field_errors["intervieweeProfile"] = ["Use até 180 caracteres."]
     if len(context) > 300:
-        field_errors["context"] = ["Use ate 300 caracteres."]
+        field_errors["context"] = ["Use até 300 caracteres."]
     if not notes:
         field_errors["notes"] = ["Registre o que a pessoa contou na entrevista."]
     elif len(notes) < 20:
         field_errors["notes"] = ["Inclua um pouco mais de contexto, com pelo menos 20 caracteres."]
     if occurred_on is None:
-        field_errors["occurredOn"] = ["Use uma data valida."]
+        field_errors["occurredOn"] = ["Use uma data válida."]
     elif occurred_on > timezone.localdate():
-        field_errors["occurredOn"] = ["A entrevista nao pode estar no futuro."]
+        field_errors["occurredOn"] = ["A entrevista não pode estar no futuro."]
     if frequency and frequency not in INTERVIEW_FREQUENCIES:
-        field_errors["frequency"] = ["Escolha uma frequencia valida."]
+        field_errors["frequency"] = ["Escolha uma frequência válida."]
     if current_alternative and current_alternative not in INTERVIEW_ALTERNATIVES:
         field_errors["currentAlternative"] = [
-            "Escolha uma alternativa atual valida."
+            "Escolha uma alternativa atual válida."
         ]
 
     if field_errors:
@@ -1092,7 +1092,7 @@ def mission_learning(request, startup_id, mission_key):
     if not next_action:
         field_errors["nextAction"] = ["Defina a próxima ação recomendada."]
     if confidence not in Learning.Confidence.values:
-        field_errors["confidence"] = ["Escolha confianca baixa, media ou alta."]
+        field_errors["confidence"] = ["Escolha confiança baixa, média ou alta."]
 
     if field_errors:
         return _error_response(
@@ -1196,7 +1196,7 @@ def complete_mission(request, startup_id, mission_key):
             celebration={
                 "title": "Miss\u00e3o cumprida",
                 "xpAwarded": mission.xp_reward,
-                "unlocked": next_mission.title if next_mission else "Arco concluido",
+                "unlocked": next_mission.title if next_mission else "Arco concluído",
             },
         )
     )
@@ -1235,7 +1235,7 @@ def journey_step(request, startup_id, step_key):
     step = startup.journey_steps.filter(key=step_key).first()
 
     if step is None:
-        return _error_response("Etapa da jornada nao encontrada.", status=404)
+        return _error_response("Etapa da jornada não encontrada.", status=404)
 
     try:
         payload = _json_body(request)
@@ -1252,14 +1252,14 @@ def journey_step(request, startup_id, step_key):
 
     if step.status == JourneyStep.Status.PENDING:
         return _error_response(
-            "Essa porta ainda nao abriu. Conclua a etapa atual primeiro.",
+            "Essa porta ainda não abriu. Conclua a etapa atual primeiro.",
             status=409,
         )
 
     if not answer:
         return _error_response(
             "Revise a resposta antes de salvar.",
-            field_errors={"answer": ["A resposta dessa etapa nao pode ficar vazia."]},
+            field_errors={"answer": ["A resposta dessa etapa não pode ficar vazia."]},
         )
 
     step.answer = answer

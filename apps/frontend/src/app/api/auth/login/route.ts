@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       const errorPayload = await readJsonResponse<AuthErrorPayload>(backendResponse);
 
       return NextResponse.json(
-        errorPayload ?? { message: "Nao foi possivel realizar o login agora." },
+        errorPayload ?? { message: "Não foi possível realizar o login agora." },
         {
           status: backendResponse.status,
         }
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     return response;
   } catch {
     return NextResponse.json(
-      { message: "O backend nao respondeu. Verifique se o Django esta em execucao." },
+      { message: "Não foi possível conectar ao servidor. Tente novamente em instantes." },
       { status: 503 }
     );
   }

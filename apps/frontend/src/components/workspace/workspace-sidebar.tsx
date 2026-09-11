@@ -34,7 +34,7 @@ function destination(key: "home" | "journey" | "missions", startupId: number) {
 
 export function WorkspaceSidebar({ activeSection, startupId }: WorkspaceSidebarProps) {
   return (
-    <nav aria-label="Navegacao principal" className={styles.navigation}>
+    <nav aria-label="Navegação principal" className={styles.navigation}>
       <ul className={styles.navigationList}>
         {items.map((item) => {
           const icon = <ProductIcon className={styles.navigationIcon} name={item.icon} />;

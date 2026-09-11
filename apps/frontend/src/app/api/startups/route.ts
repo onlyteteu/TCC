@@ -8,7 +8,7 @@ import type { AuthErrorPayload } from "@/lib/auth-types";
 import type { StartupCreatePayload, StartupListPayload } from "@/lib/startup-types";
 
 function unauthorizedResponse() {
-  return NextResponse.json({ message: "Sessao nao encontrada." }, { status: 401 });
+  return NextResponse.json({ message: "Sessão não encontrada." }, { status: 401 });
 }
 
 export async function GET() {
@@ -29,7 +29,7 @@ export async function GET() {
     if (!backendResponse.ok) {
       const errorPayload = await readJsonResponse<AuthErrorPayload>(backendResponse);
       const response = NextResponse.json(
-        errorPayload ?? { message: "Nao foi possivel carregar as startups agora." },
+        errorPayload ?? { message: "Não foi possível carregar as startups agora." },
         { status: backendResponse.status }
       );
 
@@ -49,7 +49,7 @@ export async function GET() {
     return NextResponse.json(payload);
   } catch {
     return NextResponse.json(
-      { message: "O backend nao respondeu. Verifique se o Django esta em execucao." },
+      { message: "Não foi possível conectar ao servidor. Tente novamente em instantes." },
       { status: 503 }
     );
   }
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
     if (!backendResponse.ok) {
       const errorPayload = await readJsonResponse<AuthErrorPayload>(backendResponse);
       const response = NextResponse.json(
-        errorPayload ?? { message: "Nao foi possivel criar a startup agora." },
+        errorPayload ?? { message: "Não foi possível criar a startup agora." },
         { status: backendResponse.status }
       );
 
@@ -98,7 +98,7 @@ export async function POST(request: Request) {
     return NextResponse.json(payload, { status: 201 });
   } catch {
     return NextResponse.json(
-      { message: "O backend nao respondeu. Verifique se o Django esta em execucao." },
+      { message: "Não foi possível conectar ao servidor. Tente novamente em instantes." },
       { status: 503 }
     );
   }

@@ -6,7 +6,7 @@ export async function POST(
 ) {
   const { startupId } = await params;
   return proxyAuthenticatedBackend(`/startups/${startupId}/open/`, {
-    fallbackMessage: "Nao foi possivel abrir a startup agora.",
+    fallbackMessage: "Não foi possível abrir a startup agora.",
     method: "POST",
   });
 }

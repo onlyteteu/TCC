@@ -1,4 +1,5 @@
 .shell {
+  color-scheme: dark;
   --sq-bg: #070b13;
   --sq-sidebar: #060a12;
   --sq-surface: #0b111c;
@@ -42,6 +43,12 @@
 :global(body:has(.shell)) {
   height: 100%;
   overflow: hidden;
+}
+
+.shell h1 {
+  max-width: none;
+  overflow-wrap: anywhere;
+  line-height: 1.15;
 }
 
 .skipLink {

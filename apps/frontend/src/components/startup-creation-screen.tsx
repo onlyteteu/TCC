@@ -58,74 +58,74 @@ const steps: StepContent[] = [
     badge: "Etapa 1 / 5",
     key: "name",
     label: "Nome da startup",
-    placeholder: "De um nome a sua startup",
-    subtitle: "O primeiro passo da jornada e dar um nome ao que vai nascer.",
+    placeholder: "Dê um nome à sua startup",
+    subtitle: "O primeiro passo da jornada é dar um nome ao que vai nascer.",
     title: "Crie sua startup",
   },
   {
     badge: "Etapa 2 / 5",
     helper: "Dica: escreva como se contasse para um amigo em 20 segundos.",
     key: "description",
-    label: "Minha startup e...",
-    placeholder: "Ex: Um app que ajuda restaurantes pequenos a controlar estoque e evitar desperdicio.",
-    subtitle: "Sem plano de negocio ainda. So queremos entender o que esta nascendo.",
+    label: "Minha startup é...",
+    placeholder: "Ex: Um app que ajuda restaurantes pequenos a controlar estoque e evitar desperdício.",
+    subtitle: "Sem plano de negócio ainda. Só queremos entender o que está nascendo.",
     title: "Conte a ideia em uma frase.",
   },
   {
     badge: "Etapa 3 / 5",
     key: "segment",
-    label: "Territorio inicial",
-    subtitle: "Escolha um ponto de partida. Segmento nao e prisao, e so o primeiro mapa.",
+    label: "Território inicial",
+    subtitle: "Escolha um ponto de partida. Segmento não é prisão, é só o primeiro mapa.",
     title: "Qual \u00e9 o territ\u00f3rio dessa ideia?",
   },
   {
     badge: "Etapa 4 / 5",
-    helper: "Foque no prejuizo, atraso, medo, incomodo ou desperdicio. A solucao vem depois.",
+    helper: "Foque no prejuízo, atraso, medo, incômodo ou desperdício. A solução vem depois.",
     key: "problem",
-    label: "O problema e...",
-    placeholder: "Ex: Restaurantes pequenos compram ingrediente duplicado porque nao sabem o que ja existe no estoque.",
-    subtitle: "Descreva o problema antes da solucao. Quem sente isso aparece na proxima porta.",
+    label: "O problema é...",
+    placeholder: "Ex: Restaurantes pequenos compram ingrediente duplicado porque não sabem o que já existe no estoque.",
+    subtitle: "Descreva o problema antes da solução. Quem sente isso aparece na próxima porta.",
     title: "Que dor precisa desaparecer?",
   },
   {
     badge: "Etapa 5 / 5",
     helper: "Tente juntar pessoa, contexto e sinal da dor. Quanto mais concreto, melhor.",
     key: "audience",
-    label: "Meu primeiro publico e...",
-    placeholder: "Ex: Donos de restaurantes pequenos, com ate 15 funcionarios, que controlam estoque por caderno ou planilha.",
-    subtitle: "Comece por um grupo pequeno. Publico inicial bom parece pessoa real, nao estatistica.",
+    label: "Meu primeiro público é...",
+    placeholder: "Ex: Donos de restaurantes pequenos, com até 15 funcionários, que controlam estoque por caderno ou planilha.",
+    subtitle: "Comece por um grupo pequeno. Público inicial bom parece pessoa real, não estatística.",
     title: "Quem sente essa dor primeiro?",
   },
 ];
 
 const segmentOptions = [
   {
-    description: "restaurantes, delivery, estoque, cozinha, desperdicio",
-    value: "Alimentacao",
+    description: "restaurantes, delivery, estoque, cozinha, desperdício",
+    value: "Alimentação",
   },
   {
     description: "alunos, professores, cursos, aprendizagem, carreira",
-    value: "Educacao",
+    value: "Educação",
   },
   {
-    description: "clinicas, pacientes, cuidado, bem-estar, rotina",
-    value: "Saude",
+    description: "clínicas, pacientes, cuidado, bem-estar, rotina",
+    value: "Saúde",
   },
   {
-    description: "pagamentos, credito, controle, renda, planejamento",
-    value: "Financas",
+    description: "pagamentos, crédito, controle, renda, planejamento",
+    value: "Finanças",
   },
   {
-    description: "software, dados, automacao, IA, produtividade",
+    description: "software, dados, automação, IA, produtividade",
     value: "IA / Tecnologia",
   },
   {
-    description: "impacto, residuos, reuso, energia, meio ambiente",
+    description: "impacto, resíduos, reúso, energia, meio ambiente",
     value: "Sustentabilidade",
   },
   {
     description: "moda, games, eventos ou outro mercado inicial",
-    value: "Outro territorio",
+    value: "Outro território",
   },
 ];
 
@@ -190,7 +190,7 @@ export function StartupCreationScreen({
         nextFieldErrors.name = [
           "Informe o nome da startup ou marque que vai definir isso depois.",
         ];
-        nextStatusMessage = "Falta so decidir como voce quer iniciar essa startup.";
+        nextStatusMessage = "Falta só decidir como você quer iniciar essa startup.";
       }
     }
 
@@ -200,18 +200,18 @@ export function StartupCreationScreen({
     }
 
     if (currentStep.key === "segment" && !formState.segment) {
-      nextFieldErrors.segment = ["Escolha um territorio inicial para sua startup."];
-      nextStatusMessage = "Escolha um segmento para abrir a proxima porta.";
+      nextFieldErrors.segment = ["Escolha um território inicial para sua startup."];
+      nextStatusMessage = "Escolha um segmento para abrir a próxima porta.";
     }
 
     if (currentStep.key === "problem" && !formState.problem.trim()) {
       nextFieldErrors.problem = ["Descreva a dor que essa startup quer resolver."];
-      nextStatusMessage = "Antes do publico, precisamos nomear a dor.";
+      nextStatusMessage = "Antes do público, precisamos nomear a dor.";
     }
 
     if (currentStep.key === "audience" && !formState.audience.trim()) {
       nextFieldErrors.audience = ["Descreva quem sente essa dor primeiro."];
-      nextStatusMessage = "Recorte um primeiro publico para gerar o mapa.";
+      nextStatusMessage = "Recorte um primeiro público para gerar o mapa.";
     }
 
     setFieldErrors(nextFieldErrors);
@@ -272,7 +272,7 @@ export function StartupCreationScreen({
       }, FOUNDATION_SEQUENCE_MS);
     } catch {
       setStatusMessage(
-        "Nao foi possivel criar a startup agora. Confira se o backend Django esta rodando."
+        "Não foi possível criar a startup agora. Tente novamente em instantes."
       );
     } finally {
       if (shouldResetSubmitting) {
@@ -297,7 +297,7 @@ export function StartupCreationScreen({
   }
 
   const submitLabel = isFinalStep ? "Gerar meu primeiro mapa" : "Continuar";
-  const submittingLabel = isFinalStep ? "Fundando sua startup..." : "Abrindo proxima porta...";
+  const submittingLabel = isFinalStep ? "Fundando sua startup..." : "Abrindo próxima porta...";
 
   return (
     <main className={[styles.page, isCelebrating ? styles.pageCelebrating : ""].join(" ")}>
@@ -341,7 +341,7 @@ export function StartupCreationScreen({
               isNameStep ? styles.cardNameStep : "",
               isSegmentStep ? styles.cardSegmentStep : "",
             ].join(" ")}
-            aria-label="Criacao da startup"
+            aria-label="Criação da startup"
           >
             <div className={styles.cardNav}>
               {canStepBack ? (
@@ -514,7 +514,7 @@ function NameStep({
             disabled={disabled}
             name="name"
             onChange={(event) => updateField("name", event.target.value)}
-            placeholder="De um nome a sua startup"
+            placeholder="Dê um nome à sua startup"
             type="text"
             value={formState.name}
           />
@@ -533,7 +533,7 @@ function NameStep({
         />
         <span className={styles.checkboxBox} aria-hidden="true" />
         <span className={styles.deferCopy}>
-          <strong>Ainda nao sei o nome</strong>
+          <strong>Ainda não sei o nome</strong>
           <span>Posso definir isso depois</span>
         </span>
       </label>
@@ -595,7 +595,7 @@ function SegmentStep({
 }) {
   return (
     <div className={styles.field}>
-      <span className={styles.label}>Escolha um territorio</span>
+      <span className={styles.label}>Escolha um território</span>
 
       <div className={styles.segmentGrid}>
         {segmentOptions.map((option) => {

@@ -7,6 +7,6 @@ export async function GET(
   const { startupId } = await params;
 
   return proxyAuthenticatedBackend(`/startups/${startupId}/missions/`, {
-    fallbackMessage: "Nao foi possivel carregar as missoes.",
+    fallbackMessage: "Não foi possível carregar as missões.",
   });
 }

@@ -53,6 +53,8 @@ gráficos ou estados especializados podem permanecer locais quando carregarem si
 - Texto de interface: IBM Plex Sans, com `--font-body` e fallback `Segoe UI`.
 - Elementos compactos de produto podem usar Inter por `--font-product`.
 - Títulos de página: entre `1.9rem` e `2.3rem`, com escala fixa e quebra balanceada.
+- Títulos do workspace usam a largura disponível, sem herdar o limite de `11ch` da página pública;
+  nomes longos podem quebrar sem comprimir a saudação em várias linhas curtas.
 - Títulos de seção: entre `1rem` e `1.4rem`.
 - Corpo: `0.86rem` a `1rem`, linha entre `1.45` e `1.6`.
 - Rótulos: no mínimo `0.72rem`, usados com peso alto e nunca como único sinal de estado.
@@ -75,6 +77,9 @@ gráficos ou estados especializados podem permanecer locais quando carregarem si
 - Erro: mensagem acionável e tentativa novamente quando a operação puder ser repetida.
 - Sucesso: confirmação persistente o suficiente para ser percebida, sem depender de animação.
 - Conteúdo desktop: apenas a região principal rola; sidebar e topbar permanecem estáveis.
+- O workspace e os diálogos portados ao documento declaram `color-scheme: dark` para manter
+  controles nativos coerentes com o tema. Placeholders e rótulos de leitura usam contraste de texto,
+  mesmo quando indicam uma verificação ainda pendente.
 
 ## Viewports de aceite
 

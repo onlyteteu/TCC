@@ -143,7 +143,7 @@ export function StartupManagerScreen({
     } catch (error) {
       setRowErrors((current) => ({
         ...current,
-        [startup.id]: errorMessage(error, "Nao foi possivel abrir a startup agora."),
+        [startup.id]: errorMessage(error, "Não foi possível abrir a startup agora."),
       }));
     } finally {
       setPendingAction(null);
@@ -173,7 +173,7 @@ export function StartupManagerScreen({
     } catch (error) {
       setRowErrors((current) => ({
         ...current,
-        [startup.id]: errorMessage(error, "Nao foi possivel renomear a startup agora."),
+        [startup.id]: errorMessage(error, "Não foi possível renomear a startup agora."),
       }));
     } finally {
       setPendingAction(null);
@@ -220,7 +220,7 @@ export function StartupManagerScreen({
       setDeleteTarget(null);
       setDeleteConfirmation("");
     } catch (error) {
-      setDeleteError(errorMessage(error, "Nao foi possivel excluir a startup agora."));
+      setDeleteError(errorMessage(error, "Não foi possível excluir a startup agora."));
     } finally {
       setIsDeleting(false);
     }
@@ -460,7 +460,7 @@ export function StartupManagerScreen({
             </span>
             <h2 id="delete-startup-title">Excluir {deleteTarget.name}?</h2>
             <p>
-              Esta ação é permanente. A jornada, missoes e evidencias desta startup serão removidas.
+              Esta ação é permanente. A jornada, missões e evidências desta startup serão removidas.
             </p>
             <label className={styles.confirmField}>
               <span>Digite {deleteTarget.name} para confirmar</span>

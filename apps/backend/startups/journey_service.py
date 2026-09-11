@@ -45,14 +45,14 @@ COMPLETION_MISSION_BY_STEP = {
 }
 
 MILESTONE_DESCRIPTIONS = {
-    Startup.Stage.PROBLEM: "Delimite uma dor real antes de pensar na solucao.",
+    Startup.Stage.PROBLEM: "Delimite uma dor real antes de pensar na solução.",
     Startup.Stage.AUDIENCE: "Escolha o primeiro grupo para o qual vale resolver essa dor.",
-    Startup.Stage.VALUE: "Transforme problema e publico em uma promessa clara de resultado.",
+    Startup.Stage.VALUE: "Transforme problema e público em uma promessa clara de resultado.",
     Startup.Stage.DIFFERENTIATORS: "Mostre por que a proposta supera as alternativas atuais.",
-    Startup.Stage.VALIDATION: "Reuna sinais de que o publico deseja a proposta.",
+    Startup.Stage.VALIDATION: "Reúna sinais de que o público deseja a proposta.",
     Startup.Stage.BUSINESS_MODEL: "Explique como a startup entrega e captura valor.",
     Startup.Stage.MVP: "Defina a menor entrega capaz de testar a proposta.",
-    Startup.Stage.GOALS: "Escolha medidas concretas para acompanhar o avanco.",
+    Startup.Stage.GOALS: "Escolha medidas concretas para acompanhar o avanço.",
 }
 
 

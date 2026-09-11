@@ -664,6 +664,8 @@
 }
 
 .workDialog {
+  color-scheme: dark;
+  color: var(--sq-text, #f7efe3);
   width: min(760px, 100%);
   max-height: calc(100vh - 48px);
   padding: 26px;

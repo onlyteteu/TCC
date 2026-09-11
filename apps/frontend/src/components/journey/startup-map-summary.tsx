@@ -31,7 +31,7 @@ const mapFields: Array<{
     key: "name",
     label: "Nome",
     multiline: false,
-    helper: "Como a startup sera reconhecida durante a jornada.",
+    helper: "Como a startup será reconhecida durante a jornada.",
   },
   {
     key: "description",
@@ -41,7 +41,7 @@ const mapFields: Array<{
   },
   {
     key: "segment",
-    label: "Territorio",
+    label: "Território",
     multiline: false,
     helper: "O mercado ou contexto inicial em que a startup vai atuar.",
   },
@@ -55,7 +55,7 @@ const mapFields: Array<{
     key: "audience",
     label: "Público inicial",
     multiline: true,
-    helper: "As primeiras pessoas ou organizacoes que sentem essa dor.",
+    helper: "As primeiras pessoas ou organizações que sentem essa dor.",
   },
   {
     key: "initialGoal",

@@ -39,7 +39,7 @@ function WorkspaceFrame({ activeSection: section, children }: WorkspaceFrameProp
         href="#workspace-content"
         inert={isWorkspaceModalOpen ? true : undefined}
       >
-        Ir para o conteudo
+        Ir para o conteúdo
       </a>
       <div
         aria-hidden={isWorkspaceModalOpen ? "true" : undefined}

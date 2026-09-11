@@ -627,7 +627,7 @@ export function MissionDetailScreen({
           <ProductIcon name="check" />
           <div>
             <strong>{submissionMessage}</strong>
-            <p>O progresso e o XP do workspace ja foram atualizados.</p>
+            <p>O progresso e o XP já foram atualizados.</p>
           </div>
         </section>
       ) : null}

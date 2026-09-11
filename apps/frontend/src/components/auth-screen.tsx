@@ -109,7 +109,7 @@ export function AuthScreen() {
 
     if (mode === "register" && formState.password !== formState.confirmPassword) {
       setFieldErrors({
-        confirmPassword: ["A confirmacao de senha nao confere."],
+        confirmPassword: ["A confirmação de senha não confere."],
       });
       setStatusMessage("Revise os campos do cadastro antes de continuar.");
       return;
@@ -154,7 +154,7 @@ export function AuthScreen() {
       });
     } catch {
       setStatusMessage(
-        "Nao foi possivel falar com o servidor agora. Confira se o backend Django esta rodando."
+        "Não foi possível conectar ao servidor. Tente novamente em instantes."
       );
     } finally {
       setIsAuthenticating(false);
@@ -217,7 +217,7 @@ export function AuthScreen() {
             className={[styles.card, mode === "register" ? styles.cardRegister : styles.cardLogin]
               .filter(Boolean)
               .join(" ")}
-            aria-label="Autenticacao"
+            aria-label="Autenticação"
           >
             <div className={styles.logoRegion}>
               <QuestMark animated mode={mode} />

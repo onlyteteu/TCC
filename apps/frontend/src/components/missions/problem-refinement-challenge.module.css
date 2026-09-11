@@ -335,7 +335,7 @@
 }
 
 .composerGrid input::placeholder {
-  color: #607286;
+  color: var(--sq-text-muted, #9aa8b8);
 }
 
 .composerGrid input:focus {
@@ -372,7 +372,7 @@
   padding: 7px 10px;
   border: 1px solid #2d3e52;
   border-radius: 999px;
-  color: #6f8093;
+  color: var(--sq-text-muted, #9aa8b8);
   font-size: 0.72rem;
   font-weight: 750;
 }

@@ -108,7 +108,7 @@ describe("StartupManagerPage", () => {
     fireEvent.click(screen.getByRole("button", { name: "Salvar nome" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent(
-      "Nome alterado, mas nao foi possivel atualizar a lista."
+      "Nome alterado, mas não foi possível atualizar a lista."
     );
     expect(workspace.current.refreshWorkspace).toHaveBeenCalledWith({ silent: true });
     expect(screen.queryByText("Workspace indisponivel")).not.toBeInTheDocument();

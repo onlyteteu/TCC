@@ -12,7 +12,7 @@ import type {
 } from "@/lib/startup-types";
 
 function unauthorizedResponse() {
-  return NextResponse.json({ message: "Sessao nao encontrada." }, { status: 401 });
+  return NextResponse.json({ message: "Sessão não encontrada." }, { status: 401 });
 }
 
 export async function GET(
@@ -38,7 +38,7 @@ export async function GET(
     if (!backendResponse.ok) {
       const errorPayload = await readJsonResponse<AuthErrorPayload>(backendResponse);
       const response = NextResponse.json(
-        errorPayload ?? { message: "Nao foi possivel carregar a startup agora." },
+        errorPayload ?? { message: "Não foi possível carregar a startup agora." },
         { status: backendResponse.status }
       );
 
@@ -58,7 +58,7 @@ export async function GET(
     return NextResponse.json(payload);
   } catch {
     return NextResponse.json(
-      { message: "O backend nao respondeu. Verifique se o Django esta em execucao." },
+      { message: "Não foi possível conectar ao servidor. Tente novamente em instantes." },
       { status: 503 }
     );
   }
@@ -82,7 +82,7 @@ export async function PATCH(
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ message: "Corpo da requisicao invalido." }, { status: 400 });
+    return NextResponse.json({ message: "Corpo da requisição inválido." }, { status: 400 });
   }
 
   try {
@@ -98,7 +98,7 @@ export async function PATCH(
     if (!backendResponse.ok) {
       const errorPayload = await readJsonResponse<AuthErrorPayload>(backendResponse);
       const response = NextResponse.json(
-        errorPayload ?? { message: "Nao foi possivel atualizar a startup agora." },
+        errorPayload ?? { message: "Não foi possível atualizar a startup agora." },
         { status: backendResponse.status }
       );
 
@@ -118,7 +118,7 @@ export async function PATCH(
     return NextResponse.json(payload);
   } catch {
     return NextResponse.json(
-      { message: "O backend nao respondeu. Verifique se o Django esta em execucao." },
+      { message: "Não foi possível conectar ao servidor. Tente novamente em instantes." },
       { status: 503 }
     );
   }
@@ -148,7 +148,7 @@ export async function DELETE(
     if (!backendResponse.ok) {
       const errorPayload = await readJsonResponse<AuthErrorPayload>(backendResponse);
       const response = NextResponse.json(
-        errorPayload ?? { message: "Nao foi possivel excluir a startup agora." },
+        errorPayload ?? { message: "Não foi possível excluir a startup agora." },
         { status: backendResponse.status }
       );
 
@@ -168,7 +168,7 @@ export async function DELETE(
     return NextResponse.json(payload);
   } catch {
     return NextResponse.json(
-      { message: "O backend nao respondeu. Verifique se o Django esta em execucao." },
+      { message: "Não foi possível conectar ao servidor. Tente novamente em instantes." },
       { status: 503 }
     );
   }

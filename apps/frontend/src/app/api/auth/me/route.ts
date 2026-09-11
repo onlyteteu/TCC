@@ -11,7 +11,7 @@ export async function GET() {
   const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
 
   if (!token) {
-    return NextResponse.json({ message: "Sessao nao encontrada." }, { status: 401 });
+    return NextResponse.json({ message: "Sessão não encontrada." }, { status: 401 });
   }
 
   try {
@@ -22,7 +22,7 @@ export async function GET() {
     });
 
     if (!backendResponse.ok) {
-      const response = NextResponse.json({ message: "Sessao invalida ou expirada." }, { status: 401 });
+      const response = NextResponse.json({ message: "Sessão invalida ou expirada." }, { status: 401 });
       clearAuthCookie(response);
       return response;
     }
@@ -36,7 +36,7 @@ export async function GET() {
     return NextResponse.json(payload);
   } catch {
     return NextResponse.json(
-      { message: "Nao foi possivel validar a sessao agora." },
+      { message: "Não foi possível validar a sessao agora." },
       { status: 503 }
     );
   }

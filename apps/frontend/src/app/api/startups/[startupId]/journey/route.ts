@@ -15,7 +15,7 @@ export async function GET(
   const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
 
   if (!token) {
-    return NextResponse.json({ message: "Sessao nao encontrada." }, { status: 401 });
+    return NextResponse.json({ message: "Sessão não encontrada." }, { status: 401 });
   }
 
   const { startupId } = await params;
@@ -30,7 +30,7 @@ export async function GET(
     if (!backendResponse.ok) {
       const errorPayload = await readJsonResponse<AuthErrorPayload>(backendResponse);
       const response = NextResponse.json(
-        errorPayload ?? { message: "Nao foi possivel carregar a jornada agora." },
+        errorPayload ?? { message: "Não foi possível carregar a jornada agora." },
         { status: backendResponse.status }
       );
 
@@ -50,7 +50,7 @@ export async function GET(
     return NextResponse.json(payload);
   } catch {
     return NextResponse.json(
-      { message: "O backend nao respondeu. Verifique se o Django esta em execucao." },
+      { message: "Não foi possível conectar ao servidor. Tente novamente em instantes." },
       { status: 503 }
     );
   }

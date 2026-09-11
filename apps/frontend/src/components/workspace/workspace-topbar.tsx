@@ -109,11 +109,11 @@ export function WorkspaceTopbar() {
         </span>
         <details className={styles.profileMenu} ref={profileMenuRef}>
           <summary aria-label="Abrir menu do perfil" className={styles.avatar}>
-            {initials(user?.name ?? "Usuario") || "U"}
+            {initials(user?.name ?? "Usuário") || "U"}
           </summary>
           <div className={styles.profilePopover}>
             <div>
-              <strong>{user?.name ?? "Usuario"}</strong>
+              <strong>{user?.name ?? "Usuário"}</strong>
               <small>{user?.email ?? ""}</small>
             </div>
             <button disabled={isLoggingOut} onClick={() => void handleLogout()} type="button">

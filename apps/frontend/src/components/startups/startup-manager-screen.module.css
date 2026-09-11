@@ -183,7 +183,7 @@
 .activity span,
 .progressBlock span,
 .progressBlock > div span {
-  color: #6f7f92;
+  color: var(--sq-text-muted, #9aa8b8);
   font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 0.06em;

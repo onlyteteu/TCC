@@ -105,7 +105,7 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
 
       if (!userResponse.ok || !startupsResponse.ok) {
         if (!silent) {
-          setError("Nao foi possivel carregar seu workspace agora.");
+          setError("Não foi possível carregar seu workspace agora.");
         }
         return false;
       }
@@ -134,7 +134,7 @@ export function WorkspaceProvider({ activeStartupId = null, children }: Workspac
       return true;
     } catch {
       if (requestId === refreshRequestSequence.current && !silent) {
-        setError("Nao foi possivel carregar seu workspace agora.");
+        setError("Não foi possível carregar seu workspace agora.");
       }
       return false;
     } finally {
